@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
-# @Time    : 5/13/2019 1:27 PM
-# @Author  : Carl
-# @Email   : carl.chen@hp.com
-# @File    : ConfigurationEngine.py
-# @Project : Automation-Framework
+# @Time   : 2019/5/13 14:00
+# @Author  : Bamboo.pan
+# @Email   : Bamboo.pan@hp.com
+# @File    : test.py
+# @Project : demo
 from Common_Library.Engine import Engine
 from Common_Library.Configurator import Configurator
 from Common_Library.host import Windows_Build_Host,Windows_Deploy_Host
