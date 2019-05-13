@@ -51,3 +51,4 @@ class ExecuteQueue(Queue):
 
     def collect_result(self, task):
         print('Q collect result')
+        return 'data'
