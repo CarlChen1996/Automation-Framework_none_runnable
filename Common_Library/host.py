@@ -33,7 +33,7 @@ class Build:
         print(sys._getframe().f_code.co_name + "  finished")
 class Deploy:
     def deploy(self,task):
-        print(sys._getframe().f_code.co_name +task+"  finished")
+        print(sys._getframe().f_code.co_name+' '+task.get_name()+" finished")
 class Execute:
     def execute_task(self):
         print(sys._getframe().f_code.co_name + "  finished")

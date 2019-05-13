@@ -29,5 +29,6 @@ def execute():
         exeQ.collect_result(i)
         # r.generate(i.collect_result())
     print(exeQ.task_list)
+
 if __name__ == '__main__':
     execute()
