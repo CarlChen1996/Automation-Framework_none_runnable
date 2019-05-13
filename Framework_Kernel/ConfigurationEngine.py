@@ -13,7 +13,7 @@ from Common_Library.Validator import Validator
 class ConfigurationEngine(Engine):
     pass
 
-def config():
+def config_process():
     con=ConfigurationEngine()
     con.start()
     c=Configurator()
@@ -22,14 +22,21 @@ def config():
     analyze.load()
     analyze.generate()
 
-    b=Windows_Build_Host("","","","","","","","")
-    d=Windows_Deploy_Host("","","","","","","","")
-
+    b=Windows_Build_Host("1","","","","","","","")
+    d=Windows_Deploy_Host("2","","","","","","","")
     v=Validator()
     v.validate(b)
     v.validate(d)
+    build_list.append(b)
+    deploy_list.append(d)
+    con.stop()
 
 
 if __name__=="__main__":
-    config()
+    build_list=[]
+    deploy_list=[]
+    config_process()
+
+    print(build_list)
+    print(deploy_list)
 
