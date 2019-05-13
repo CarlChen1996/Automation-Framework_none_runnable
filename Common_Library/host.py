@@ -1,3 +1,9 @@
+# -*- coding: utf-8 -*-
+# @Time   : 2019/5/13 14:00
+# @Author  : Bamboo.pan
+# @Email   : Bamboo.pan@hp.com
+# @File    : test.py
+# @Project : demo
 import sys
 class Host():
     def __init__(self,IP,HostName,version,Mac,Username,Password ,Domain ,Status):

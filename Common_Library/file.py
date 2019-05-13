@@ -1,3 +1,9 @@
+# -*- coding: utf-8 -*-
+# @Time   : 2019/5/13 14:00
+# @Author  : Bamboo.pan
+# @Email   : Bamboo.pan@hp.com
+# @File    : test.py
+# @Project : demo
 import sys
 
 class File:
@@ -77,14 +83,19 @@ if __name__=="__main__":
     # xx.getRows()
     # xx.close()
 
-    subject="bamboo's mail"
-    receiver="bamboo.pan@hp.com"
-    sender="bamboo1@hp.com"
-    senddate="20190501"
-    content="test mail"
-    attachment="123.txt"
+    # subject="bamboo's mail"
+    # receiver="bamboo.pan@hp.com"
+    # sender="bamboo1@hp.com"
+    # senddate="20190501"
+    # content="test mail"
+    # attachment="123.txt"
+    #
+    # msg=MSG(folderpath,name,size,subject,receiver,sender,senddate,content,attachment)
+    # msg.open()
+    # msg.getAttanchment()
+    # msg.close()
 
-    msg=MSG(folderpath,name,size,subject,receiver,sender,senddate,content,attachment)
-    msg.open()
-    msg.getAttanchment()
-    msg.close()
+    txt=TXT(folderpath,name,size)
+    txt.open()
+    txt.read()
+    txt.close()
