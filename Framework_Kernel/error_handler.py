@@ -4,17 +4,23 @@
 # @Email   : carl.chen@hp.com
 # @File    : errorhandler.py
 # @Project : Automation-Framework
-class ErrorHandler:
-    def __init__(self,error_code):
-        self.error_code=error_code
 
-    def handle(self,error_code):
+
+class ErrorHandler:
+    def __init__(self, error_code):
+        self.error_code = error_code
+
+    def handle(self, error_code):
         pass
+
     def exit(self):
         pass
+
     def reset_framework(self):
         pass
-    def rest_engine(self,engine):
+
+    def rest_engine(self, engine):
         pass
+
     def continue_work(self):
         pass

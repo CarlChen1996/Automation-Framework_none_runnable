@@ -6,7 +6,6 @@
 # @Project : framework
 
 
-
 class Queue:
     def __init__(self):
         self.task_list = []

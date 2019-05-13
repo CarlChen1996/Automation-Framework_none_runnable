@@ -5,10 +5,13 @@
 # @File    : Engine.py
 # @Project : demo
 
+
 class Engine:
-    def __init__(self,status='off'):
-        self.status=status
+    def __init__(self, status='off'):
+        self.status = status
+
     def start(self):
         print('start')
+
     def stop(self):
         print('stop')

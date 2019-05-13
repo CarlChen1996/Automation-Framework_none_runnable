@@ -20,27 +20,43 @@ class AssembleEngine(Engine):
 
 def execute():
     assembleQueue = AssembleQueue()
-    analyzor =Analyzer()
+    analyzor = Analyzer()
     data = analyzor.load('test.txt')
     # task_data = analyzor.generate(data)
-    task_data = [{'name':'task1','testscripts':['t1script1','t1scripts2','t1scripts3'],'testtc':['15.83.1.1'],'needbuild':True},
-                 {'name':'task2','testscripts':['t2script1','t2scripts2','t2scripts3'],'testtc':['15.83.1.2'],'needbuild':True},
-                 {'name':'task3','testscripts':['t3script1','t3scripts2','t3scripts3'],'testtc':['15.83.1.3'],'needbuild':False}]
-    task1 = Task(task_data[0]['name'],task_data[0]['needbuild'])
+    task_data = [{
+        'name': 'task1',
+        'testscripts': ['t1script1', 't1scripts2', 't1scripts3'],
+        'testtc': ['15.83.1.1'],
+        'needbuild': True
+    }, {
+        'name': 'task2',
+        'testscripts': ['t2script1', 't2scripts2', 't2scripts3'],
+        'testtc': ['15.83.1.2'],
+        'needbuild': True
+    }, {
+        'name': 'task3',
+        'testscripts': ['t3script1', 't3scripts2', 't3scripts3'],
+        'testtc': ['15.83.1.3'],
+        'needbuild': False
+    }]
+    task1 = Task(task_data[0]['name'], task_data[0]['needbuild'])
     for script in task_data[0]['testscripts']:
         task1.insert_script(script)
 
-    uut = WindowsExecuteHost('15.83.1.1', 'host1', 'win7', 'mac1', 'user1', 'password1', 'domain1', 'oneline')
+    uut = WindowsExecuteHost('15.83.1.1', 'host1', 'win7', 'mac1', 'user1',
+                             'password1', 'domain1', 'oneline')
     task1.insert_uut_list(uut)
     task2 = Task(task_data[1]['name'], task_data[1]['needbuild'])
     for script in task_data[1]['testscripts']:
         task2.insert_script(script)
-    uut = WindowsExecuteHost('15.83.1.2', 'host2', 'win7', 'mac2', 'user2', 'password2', 'domain2', 'oneline')
+    uut = WindowsExecuteHost('15.83.1.2', 'host2', 'win7', 'mac2', 'user2',
+                             'password2', 'domain2', 'oneline')
     task2.insert_uut_list(uut)
     task3 = Task(task_data[2]['name'], task_data[2]['needbuild'])
     for script in task_data[2]['testscripts']:
         task3.insert_script(script)
-    uut = WindowsExecuteHost('15.83.1.3', 'host3', 'win7', 'mac3', 'user3', 'password3', 'domain3', 'oneline')
+    uut = WindowsExecuteHost('15.83.1.3', 'host3', 'win7', 'mac3', 'user3',
+                             'password3', 'domain3', 'oneline')
     task3.insert_uut_list(uut)
     assembleQueue.insert_task(task=task1)
     assembleQueue.insert_task(task=task2)

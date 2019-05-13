@@ -6,68 +6,90 @@
 # @Project : demo
 import sys
 
+
 class File:
-    def __init__(self,folder_path,name,size):
-        self.folder_path=folder_path
-        self.name=name
-        self.size=size
+    def __init__(self, folder_path, name, size):
+        self.folder_path = folder_path
+        self.name = name
+        self.size = size
+
     def open(self):
-        print(sys._getframe().f_code.co_name +" "+ self.name+"  finished")
+        print(sys._getframe().f_code.co_name + " " + self.name + "  finished")
+
     def read(self):
-        print(sys._getframe().f_code.co_name +"  finished")
+        print(sys._getframe().f_code.co_name + "  finished")
+
     def write(self):
-        print(sys._getframe().f_code.co_name +"  finished")
+        print(sys._getframe().f_code.co_name + "  finished")
+
     def close(self):
-        print(sys._getframe().f_code.co_name+" "+ self.name +"  finished")
+        print(sys._getframe().f_code.co_name + " " + self.name + "  finished")
+
     def copy(self):
-        print(sys._getframe().f_code.co_name +"  finished")
+        print(sys._getframe().f_code.co_name + "  finished")
+
     def move(self):
-        print(sys._getframe().f_code.co_name +"  finished")
+        print(sys._getframe().f_code.co_name + "  finished")
+
     def delete(self):
-        print(sys._getframe().f_code.co_name +"  finished")
+        print(sys._getframe().f_code.co_name + "  finished")
+
     def rename(self):
-        print(sys._getframe().f_code.co_name +"  finished")
+        print(sys._getframe().f_code.co_name + "  finished")
+
     def exist(self):
-        print(sys._getframe().f_code.co_name +"  finished")
+        print(sys._getframe().f_code.co_name + "  finished")
+
 
 class XlsxFile(File):
-    def __init__(self,folder_path,name,size,sheet_name,rows,cols):
-        File.__init__(self,folder_path,name,size)
-        self.sheet_name=sheet_name
-        self.rows=rows
-        self.cols=cols
+    def __init__(self, folder_path, name, size, sheet_name, rows, cols):
+        File.__init__(self, folder_path, name, size)
+        self.sheet_name = sheet_name
+        self.rows = rows
+        self.cols = cols
+
     def get_sheet_name(self):
         print(sys._getframe().f_code.co_name + "  finished")
+
     def get_rows(self):
         print(sys._getframe().f_code.co_name + "  finished")
+
     def get_cols(self):
         print(sys._getframe().f_code.co_name + "  finished")
 
+
 class MsgFile(File):
-    def __init__(self, folder_path, name, size,subject,receiver,sender,send_date,content,attachment):
+    def __init__(self, folder_path, name, size, subject, receiver, sender,
+                 send_date, content, attachment):
         File.__init__(self, folder_path, name, size)
-        self.subject=subject
-        self.receiver=receiver
-        self.sender=sender
-        self.send_date=send_date
-        self.content=content
-        self.attachment=attachment
+        self.subject = subject
+        self.receiver = receiver
+        self.sender = sender
+        self.send_date = send_date
+        self.content = content
+        self.attachment = attachment
+
     def get_attanchment(self):
         print(sys._getframe().f_code.co_name + "  finished")
 
+
 class YamlFile(File):
     pass
+
+
 class HtmlFile(File):
     pass
+
 
 class TxtFile(File):
     pass
 
-if __name__=="__main__":
 
-    folder_path="c:\\test"
-    name="123.txt"
-    size=0
+if __name__ == "__main__":
+
+    folder_path = "c:\\test"
+    name = "123.txt"
+    size = 0
 
     # f=File(folder_path,name,size)
     # f.open()
@@ -95,7 +117,7 @@ if __name__=="__main__":
     # msg.getAttanchment()
     # msg.close()
 
-    txt=TxtFile(folder_path,name,size)
+    txt = TxtFile(folder_path, name, size)
     txt.open()
     txt.read()
     txt.close()
