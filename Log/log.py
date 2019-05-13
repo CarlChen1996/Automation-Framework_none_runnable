@@ -12,3 +12,7 @@ class Log:
     def log(self,level,msg):
         self.level=level
         print(self.name+'-'+self.level+'-'+msg)
+        with open('log.log','w',encoding='utf-8',) as f:
+            f.write(self.name+'-'+self.level+'-'+msg)
+
+
