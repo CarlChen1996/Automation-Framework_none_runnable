@@ -24,24 +24,6 @@ class Email:
         self.sender = attanchments
         print('send email')
 
-class Log:
-    def __init__(self,name='',type='',level=''):
-        self.name=name
-        self.type=type
-        self.level=level
-    def log(self,level,msg):
-        self.level=level
-        print(self.name+'-'+self.level+'-'+msg)
 
-class Validator:
-    def validate(self):
-        print('validate finished')
 
-class Host_validator(Validator):
-    def validate(self,host):
-        print('validate '+host+' finished')
-
-class Script_validator(Validator):
-    def validate(self,task):
-        print('validate '+task+' finished')
 
