@@ -32,7 +32,7 @@ class AssembleQueue(Queue):
         self.task_list = []
 
     def build_task(self, task):
-        pass
+        print('build {} pass'.format(task.get_name()))
 
 
 class ExecuteQueue(Queue):
