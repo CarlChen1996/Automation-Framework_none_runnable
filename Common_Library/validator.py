@@ -2,7 +2,7 @@
 # @Time    : 5/13/2019 1:23 PM
 # @Author  : Carl
 # @Email   : carl.chen@hp.com
-# @File    : validator.py
+# @File    : Validator.py
 # @Project : Automation-Framework
 class Validator:
     def validate(self,name):
