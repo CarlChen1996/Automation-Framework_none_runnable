@@ -4,13 +4,9 @@
 # @Email   : carl.chen@hp.com
 # @File    : ExecutionEngine.py
 # @Project : Automation-Framework
-class ExecutionEngine:
-    def __init__(self,status='off'):
-        self.status=status
-    def start(self):
-        print('start')
-    def stop(self):
-        print('stop')
+from Common_Library.Engine import Engine
+class ExecutionEngine(Engine):
+    pass
 
 def execute():
     pass

@@ -4,13 +4,9 @@
 # @Email   : carl.chen@hp.com
 # @File    : ConfigurationEngine.py
 # @Project : Automation-Framework
+from Common_Library.Engine import Engine
 class ConfigurationEngine:
-    def __init__(self,status='off'):
-        self.status=status
-    def start(self):
-        print('start')
-    def stop(self):
-        print('stop')
+    pass
 
 def execute():
     pass

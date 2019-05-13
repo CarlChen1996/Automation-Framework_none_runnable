@@ -4,13 +4,8 @@
 # @Email   : carl.chen@hp.com
 # @File    : AssembleEngine.py
 # @Project : Automation-Framework
-class AssembleEngine:
-    def __init__(self,status='off'):
-        self.status=status
-    def start(self):
-        print('start')
-    def stop(self):
-        print('stop')
-
+from Common_Library.Engine import Engine
+class AssembleEngine(Engine):
+    pass
 def execute():
     pass
