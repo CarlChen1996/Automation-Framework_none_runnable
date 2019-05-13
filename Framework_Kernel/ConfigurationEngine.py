@@ -22,11 +22,13 @@ def config_process():
     analyze.load()
     analyze.generate()
 
-    b=Windows_Build_Host("1","","","","","","","")
-    d=Windows_Deploy_Host("2","","","","","","","")
+    b=Windows_Build_Host("192.168.1.1","win_build","1.0","123456789","bamboo","123456","sh","off")
+    d=Windows_Deploy_Host("192.168.1.2","win_deploy","1.0","987654321","bamboo","123456","sh","off")
     v=Validator()
     v.validate(b)
     v.validate(d)
+    b.Status="on"
+    d.Status = "on"
     build_list.append(b)
     deploy_list.append(d)
     con.stop()
