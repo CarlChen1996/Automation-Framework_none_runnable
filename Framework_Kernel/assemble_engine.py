@@ -4,13 +4,13 @@
 # @Email   : balance.cheng@hp.com
 # @File    : AssembleEngine.py
 # @Project : Automation-Framework
-from Common_Library.Engine import Engine
-from Common_Library.Queue import AssembleQueue
-from Common_Library.Analyzer import Analyzer
-from Common_Library.Task import Task
-from Common_Library.host import Windows_Execute_Host
-from Common_Library.validator import Host_validator
-from Common_Library.validator import Script_validator
+from engine import Engine
+from queue import AssembleQueue
+from analyzer import Analyzer
+from task import Task
+from host import WindowsExecuteHost
+from validator import HostValidator
+from validator import ScriptValidator
 
 
 class AssembleEngine(Engine):
@@ -30,26 +30,26 @@ def execute():
     for script in task_data[0]['testscripts']:
         task1.insert_script(script)
 
-    uut = Windows_Execute_Host('15.83.1.1', 'host1', 'win7', 'mac1', 'user1', 'password1', 'domain1', 'oneline')
+    uut = WindowsExecuteHost('15.83.1.1', 'host1', 'win7', 'mac1', 'user1', 'password1', 'domain1', 'oneline')
     task1.insert_uut_list(uut)
     task2 = Task(task_data[1]['name'], task_data[1]['needbuild'])
     for script in task_data[1]['testscripts']:
         task2.insert_script(script)
-    uut = Windows_Execute_Host('15.83.1.2', 'host2', 'win7', 'mac2', 'user2', 'password2', 'domain2', 'oneline')
+    uut = WindowsExecuteHost('15.83.1.2', 'host2', 'win7', 'mac2', 'user2', 'password2', 'domain2', 'oneline')
     task2.insert_uut_list(uut)
     task3 = Task(task_data[2]['name'], task_data[2]['needbuild'])
     for script in task_data[2]['testscripts']:
         task3.insert_script(script)
-    uut = Windows_Execute_Host('15.83.1.3', 'host3', 'win7', 'mac3', 'user3', 'password3', 'domain3', 'oneline')
+    uut = WindowsExecuteHost('15.83.1.3', 'host3', 'win7', 'mac3', 'user3', 'password3', 'domain3', 'oneline')
     task3.insert_uut_list(uut)
     assembleQueue.insert_task(task=task1)
     assembleQueue.insert_task(task=task2)
     assembleQueue.insert_task(task=task3)
-    h_validator = Host_validator()
+    h_validator = HostValidator()
     h_validator.validate(task1.get_uut_list()[0].IP)
     h_validator.validate(task2.get_uut_list()[0].IP)
     h_validator.validate(task3.get_uut_list()[0].IP)
-    s_validator = Script_validator()
+    s_validator = ScriptValidator()
     for temp in task1.get_script_list():
         s_validator.validate(temp)
     for temp in task2.get_script_list():

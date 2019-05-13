@@ -4,11 +4,11 @@
 # @Email   : Bamboo.pan@hp.com
 # @File    : test.py
 # @Project : demo
-from Common_Library.Engine import Engine
-from Common_Library.Configurator import Configurator
-from Common_Library.host import Windows_Build_Host,Windows_Deploy_Host
-from Common_Library.Analyzer import Analyzer
-from Common_Library.Validator import Validator
+from engine import Engine
+from configurator import Configurator
+from host import WindowsBuildHost,WindowsDeployHost
+from analyzer import Analyzer
+from validator import Validator
 
 class ConfigurationEngine(Engine):
     pass
@@ -22,8 +22,8 @@ def config_process():
     analyze.load()
     analyze.generate()
 
-    b=Windows_Build_Host("192.168.1.1","win_build","1.0","123456789","bamboo","123456","sh","off")
-    d=Windows_Deploy_Host("192.168.1.2","win_deploy","1.0","987654321","bamboo","123456","sh","off")
+    b=WindowsBuildHost("192.168.1.1","win_build","1.0","123456789","bamboo","123456","sh","off")
+    d=WindowsDeployHost("192.168.1.2","win_deploy","1.0","987654321","bamboo","123456","sh","off")
     v=Validator()
     v.validate(b)
     v.validate(d)

@@ -8,10 +8,10 @@ class Validator:
     def validate(self,name):
         print('validate finished')
 
-class Host_validator(Validator):
+class HostValidator(Validator):
     def validate(self,host):
         print('validate '+host+' finished')
 
-class Script_validator(Validator):
+class ScriptValidator(Validator):
     def validate(self,task):
         print('validate '+task+' finished')
