@@ -12,6 +12,7 @@ class Report:
 
     def generate(self,result):
         print('generate html finished')
+        print(result)
 
 class Email:
     def __init__(self):
