@@ -6,7 +6,6 @@
 # @Project : framework
 
 
-
 class Task:
     def __init__(self, name, need_build=True):
         self._script_list = []
@@ -89,4 +88,3 @@ class Task:
     def validate_scripts(self, validator):
         for script in self._script_list:
             validator.validate(script)
-

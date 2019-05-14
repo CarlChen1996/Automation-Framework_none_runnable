@@ -5,10 +5,14 @@
 # @File    : Analyzer.py
 # @Project : demo
 import sys
+
+
 class Analyzer:
-    def __init__(self,File_list=None):
-        self.File_list=File_list
+    def __init__(self, file_list=None):
+        self.file_list = file_list
+
     def load(self):
         print(sys._getframe().f_code.co_name + "  finished")
+
     def generate(self):
         print(sys._getframe().f_code.co_name + "  finished")

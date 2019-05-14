@@ -6,7 +6,6 @@
 # @Project : framework
 
 
-
 class Queue:
     def __init__(self):
         self.task_list = []
@@ -32,7 +31,7 @@ class AssembleQueue(Queue):
         self.task_list = []
 
     def build_task(self, task):
-        pass
+        print('build {} pass'.format(task.get_name()))
 
 
 class ExecuteQueue(Queue):
@@ -51,4 +50,3 @@ class ExecuteQueue(Queue):
 
     def collect_result(self, task):
         print('Q collect result')
-        return 'data'

@@ -5,10 +5,12 @@
 # @File    : Configurator.py
 # @Project : demo
 import sys
+
+
 class Configurator:
-    def __init__(self,object_list=None):
-        self.object_list=object_list
+    def __init__(self, object_list=None):
+        self.object_list = object_list
         pass
+
     def config(self):
         print(sys._getframe().f_code.co_name + "  finished")
-
