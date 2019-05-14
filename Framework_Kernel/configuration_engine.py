@@ -39,7 +39,6 @@ def config_process(build_list, deploy_list):
     b_hostname = build_host_data.get("hostname")
     b_version = build_host_data.get("version")
     b_mac = build_host_data.get("mac")
-
     '''
     d_ip = deploy_host_data.get("ip")
     d_hostname = deploy_host_data.get("hostname")
