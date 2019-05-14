@@ -6,12 +6,17 @@
 # @Project : demo
 import sys,os
 from Common_Library.file import YamlFile
+from Framework_Kernel.log import Log
+
+
+log = Log('analyzer')
 
 class Analyzer:
     def __init__(self, file_list):
         self.file_list = file_list
 
     def load(self):
+        log.log('Load Data from file ')
         res_tem_list=[]
         for i in self.file_list:
             f = YamlFile(os.path.dirname(i), os.path.basename(i))
@@ -25,6 +30,7 @@ class Analyzer:
         return res_tem_list
 
     def generate(self,res_list):
+        log.log('generate Data')
         print("generate data finished")
         return res_list
 
