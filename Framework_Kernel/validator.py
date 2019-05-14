@@ -4,7 +4,10 @@
 # @Email   : carl.chen@hp.com
 # @File    : Validator.py
 # @Project : Automation-Framework
+from Framework_Kernel.log import Log
 
+
+log = Log('Validator')
 
 class Validator:
     def validate(self, name):
@@ -13,11 +16,11 @@ class Validator:
 
 class HostValidator(Validator):
     def validate(self, host):
-        print('validate ' + host.hostnamme + ' finished')
+        log.log('validate ' + host.hostnamme + ' finished')
         return True
 
 
 class ScriptValidator(Validator):
     def validate(self, task):
-        print('validate ' + task.get_name() + ' finished')
+        log.log('validate ' + task.get_name() + ' scripts finished')
         return True

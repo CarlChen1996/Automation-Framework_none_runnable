@@ -4,6 +4,9 @@
 # @Email   : balance.cheng@hp.com
 # @File    : Queue.py
 # @Project : framework
+from Framework_Kernel.log import Log
+
+
 
 
 class Queue:
@@ -31,31 +34,35 @@ class Queue:
 
 class AssembleQueue(Queue):
     def __init__(self):
+        self.log = Log('Assemble Queue')
         self.task_list = []
 
     def build_task(self, task, host):
+        self.log.log('Assembly Queue build {} on {}'.format(task.get_name(), host.hostnamme))
         task.build(host)
 
 
 class ExecuteQueue(Queue):
     def __init__(self):
+        self.log = Log("Execute Queue")
         self.task_list = []
 
     def deploy(self, task, host):
+        self.log.log('Execute Queue deploy {} to {}'.format(task.get_name(), host.hostnamme))
         task.deploy(host)
-        print('Q deploy task')
 
     def execute(self, task):
         for host in task.get_uut_list():
+            self.log.log('Execute Queue execute {} on {}'.format(task.get_name(), host.hostnamme))
             task.execute(host)
-            print('Q execute task finished')
 
     def check_status(self, task):
         for host in task.get_uut_list():
+            self.log.log('Execute Queue check status {} on {}'.format(task.get_name(), host.hostnamme))
             task.check_status(host)
-        print('Q check status')
 
     def collect_result(self, task):
+        print(task.get_uut_list(), '=========================')
         for host in task.get_uut_list():
+            self.log.log('Execute Queue collect result {} from {}'.format(task.get_name(), host.hostnamme))
             task.collect_result(host)
-        print('Q collect result')

@@ -5,6 +5,10 @@
 # @File    : Analyzer.py
 # @Project : demo
 import sys
+from Framework_Kernel.log import Log
+
+
+log = Log('analyzer')
 
 
 class Analyzer:
@@ -12,7 +16,9 @@ class Analyzer:
         self.file_list = file_list
 
     def load(self):
-        print(sys._getframe().f_code.co_name + "  finished")
+        log.log('Load Data from file ')
+        return 'Load data'
 
     def generate(self):
-        print(sys._getframe().f_code.co_name + "  finished")
+        log.log('generate Data')
+        return 'generate data'
