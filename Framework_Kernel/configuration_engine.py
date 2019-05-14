@@ -25,31 +25,48 @@ def config_process(build_list, deploy_list):
     c = Configurator()
     c.config()
 
-    env_host = os.path.join((os.path.abspath(r".\Configuration")), "env_host.yml")
+    env_host = os.path.join((os.path.abspath(r".\Configuration")),
+                            "env_host.yml")
     analyze = Analyzer([env_host])
-    env_host_res=analyze.load()
-    env_host_data=analyze.generate(env_host_res)
+    env_host_res = analyze.load()
+    env_host_data = analyze.generate(env_host_res)
 
-    build_host_data=env_host_data[0][0]
-    deploy_host_data=env_host_data[0][1]
+    build_host_data = env_host_data[0][0]
+    '''
+    deploy_host_data = env_host_data[0][1]
+    '''
+    b_ip = build_host_data.get("ip")
+    b_hostname = build_host_data.get("hostname")
+    b_version = build_host_data.get("version")
+    b_mac = build_host_data.get("mac")
 
-    b_ip=build_host_data.get("ip")
-    b_hostname=build_host_data.get("hostname")
-    b_version=build_host_data.get("version")
-    b_mac=build_host_data.get("mac")
-
-    d_ip=deploy_host_data.get("ip")
-    d_hostname=deploy_host_data.get("hostname")
-    d_version=deploy_host_data.get("version")
-    d_mac=deploy_host_data.get("mac")
-
-    b = WindowsBuildHost(ip=b_ip, hostname=b_hostname, version=b_version, mac=b_mac)
+    '''
+    d_ip = deploy_host_data.get("ip")
+    d_hostname = deploy_host_data.get("hostname")
+    d_version = deploy_host_data.get("version")
+    d_mac = deploy_host_data.get("mac")
+    '''
+    b = WindowsBuildHost(ip=b_ip,
+                         hostname=b_hostname,
+                         version=b_version,
+                         mac=b_mac)
     log.log('Init {}'.format(b.hostnamme))
-    d = WindowsDeployHost(ip=b_ip, hostname=b_hostname, version=b_version, mac=b_mac)
+    d = WindowsDeployHost(ip=b_ip,
+                          hostname=b_hostname,
+                          version=b_version,
+                          mac=b_mac)
     log.log('Init {}'.format(d.hostnamme))
-    # b = WindowsBuildHost(ip="192.168.1.1", hostname="windows_Build_server1", version="1.0", mac='27832784292')
+    # b = WindowsBuildHost(
+    #                       ip="192.168.1.1",
+    #                       hostname="windows_Build_server1",
+    #                       version="1.0",
+    #                       mac='27832784292')
 
-    # d = WindowsDeployHost(ip="192.168.1.2", hostname="windows_Deploy_server1", version="1.1", mac='98765432')
+    # d = WindowsDeployHost(
+    #                       ip="192.168.1.2",
+    #                       hostname="windows_Deploy_server1",
+    #                       version="1.1",
+    #                       mac='98765432')
 
     v = HostValidator()
     # 下面要判断OFF的情况--------------------------------------------------------
@@ -59,7 +76,6 @@ def config_process(build_list, deploy_list):
     if v.validate(d):
         d.Status = "on"
         deploy_list.append(d)
-
 
 
 if __name__ == "__main__":

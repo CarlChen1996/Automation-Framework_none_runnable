@@ -6,11 +6,12 @@
 # @Project : Automation-Framework
 from Framework_Kernel.engine import Engine
 from Framework_Kernel.queue import ExecuteQueue
+'''
 from Framework_Kernel.task import Task
 from Framework_Kernel.host import WindowsDeployHost, WindowsExecuteHost
+'''
 from Framework_Kernel.report import Report
 from Framework_Kernel.log import Log
-
 
 log = Log('Execution')
 
@@ -38,7 +39,6 @@ def execute(deploy_list, task_list):
         r.generate()
         # exeQ.task_list.remove(i)
         # print('removed {}'.format(i.get_name()))
-
 
 
 if __name__ == '__main__':

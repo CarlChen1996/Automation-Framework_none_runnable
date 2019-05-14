@@ -2,8 +2,6 @@ from Framework_Kernel import configuration_engine
 from Framework_Kernel import assemble_engine
 from Framework_Kernel import execution_engine
 from Framework_Kernel import log
-import os
-
 
 log = log.Log(name='framework')
 log.log('Begin to start controller')

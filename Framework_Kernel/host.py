@@ -9,7 +9,14 @@ from Framework_Kernel.log import Log
 
 
 class Host():
-    def __init__(self, ip, mac, hostname='', version='', username='', password='', domain='',
+    def __init__(self,
+                 ip,
+                 mac,
+                 hostname='',
+                 version='',
+                 username='',
+                 password='',
+                 domain='',
                  status='off'):
         self.ip = ip
         self.hostnamme = hostname
@@ -46,11 +53,12 @@ class Build:
         for script in task.get_script_list():
             pass
         self.log.log('get  {} scripts PASS'.format(task.get_name()))
+
     def build(self, task):
         for script in task.get_script_list():
             pass
-        self.log.log('build ' + task.get_name()+ ' PASS')
-        task.insert_exe_list(task.get_name()+'.exe')
+        self.log.log('build ' + task.get_name() + ' PASS')
+        task.insert_exe_list(task.get_name() + '.exe')
         task.insert_exe_list(task.get_name())
 
 
@@ -67,39 +75,69 @@ class Execute:
         self.log = Log('uut')
 
     def execute_task(self, task):
-        self.log.log('execute {} on  {}'.format(task.get_name(), task.get_uut_list()[0].hostnamme))
+        self.log.log('execute {} on  {}'.format(
+            task.get_name(),
+            task.get_uut_list()[0].hostnamme))
 
     def check_status(self, task):
-        self.log.log('check {} status on {}'.format(task.get_name(), task.get_uut_list()[0].hostnamme))
+        self.log.log('check {} status on {}'.format(
+            task.get_name(),
+            task.get_uut_list()[0].hostnamme))
 
     def collect_result(self, task):
-        self.log.log('collect {} result from {}'.format(task.get_name(), task.get_uut_list()[0].hostnamme))
+        self.log.log('collect {} result from {}'.format(
+            task.get_name(),
+            task.get_uut_list()[0].hostnamme))
 
 
 class WindowsBuildHost(WindowsHost, Build):
-    def __init__(self, ip, mac, hostname='', version='', username='', password='', domain='',
+    def __init__(self,
+                 ip,
+                 mac,
+                 hostname='',
+                 version='',
+                 username='',
+                 password='',
+                 domain='',
                  status='off'):
-        WindowsHost.__init__(self, ip, mac, hostname, version, username, password, domain,
-                             status)
+        WindowsHost.__init__(self, ip, mac, hostname, version, username,
+                             password, domain, status)
         Build.__init__(self)
+
     pass
 
 
 class WindowsDeployHost(WindowsHost, Deploy):
-    def __init__(self, ip, mac, hostname='', version='', username='', password='', domain='',
+    def __init__(self,
+                 ip,
+                 mac,
+                 hostname='',
+                 version='',
+                 username='',
+                 password='',
+                 domain='',
                  status='off'):
-        WindowsHost.__init__(self, ip, mac, hostname, version, username, password, domain,
-                             status)
+        WindowsHost.__init__(self, ip, mac, hostname, version, username,
+                             password, domain, status)
         Deploy.__init__(self)
+
     pass
 
 
 class WindowsExecuteHost(WindowsHost, Execute):
-    def __init__(self, ip, mac, hostname='', version='', username='', password='', domain='',
+    def __init__(self,
+                 ip,
+                 mac,
+                 hostname='',
+                 version='',
+                 username='',
+                 password='',
+                 domain='',
                  status='off'):
-        WindowsHost.__init__(self, ip, mac, hostname, version, username, password, domain,
-                             status)
+        WindowsHost.__init__(self, ip, mac, hostname, version, username,
+                             password, domain, status)
         Execute.__init__(self)
+
     pass
 
 

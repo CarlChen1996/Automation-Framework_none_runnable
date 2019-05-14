@@ -8,44 +8,83 @@ from jinja2 import Environment, FileSystemLoader
 from Framework_Kernel.log import Log
 import yaml
 import os
-log=Log('report')
+log = Log('report')
+
 
 class Report:
-    def __init__(self, name='', type='HTML', template='1',):
+    def __init__(
+            self,
+            name='',
+            type='HTML',
+            template='1',
+    ):
         self.name = name
         self.type = type
         self.template = template
-        self.data=self.fdata()
+        self.data = self.fdata()
+
     def generate(self):
         # print('generate html finished')
-        env = Environment(loader=FileSystemLoader(os.path.join(os.getcwd(),'Framework_Kernel/templates'), encoding='utf-8'))
-        information = {'Category': 'HPDM / HPWF / UWF /ThinUpdate/ ',
-                       'Version': ' 1.0/ 1.0/ 1.0/ 1.0	',
-                       'Start Time': ' 2018-5-14 14:58:27',
-                       'Duration': ' 00:30:03',
-                       'Note': '为了RC的最后一次回归测试',
-                       }
+        env = Environment(loader=FileSystemLoader(os.path.join(
+            os.getcwd(), 'Framework_Kernel/templates'),
+                                                  encoding='utf-8'))
+        information = {
+            'Category': 'HPDM / HPWF / UWF /ThinUpdate/ ',
+            'Version': ' 1.0/ 1.0/ 1.0/ 1.0	',
+            'Start Time': ' 2018-5-14 14:58:27',
+            'Duration': ' 00:30:03',
+            'Note': '为了RC的最后一次回归测试',
+        }
         ffdata = self.data['fdata']
         passCount = self.data['passCount']
         failCount = self.data['failCount']
         norunCount = self.data['norunCount']
         count = self.data['count']
         # total=[PassingRate,Pass,Fail,NoRun,Count]
-        total = {'Passing rate': '%.2f'%(100 * passCount / count), 'Pass': passCount, 'Fail': failCount, 'NoRun': norunCount,
-                 'Count': count}
+        total = {
+            'Passing rate': '%.2f' % (100 * passCount / count),
+            'Pass': passCount,
+            'Fail': failCount,
+            'NoRun': norunCount,
+            'Count': count
+        }
 
-        data = [{'value': total['Pass'], 'name': 'Pass', 'itemStyle': {'color': '#5cb85c'}},
-                {'value': total['Fail'], 'name': 'Fail', 'itemStyle': {'color': '#d9534f'}},
-                # {'value': total['NoRun'], 'name': 'No Run', 'itemStyle': {'color': 'grey'}},
-                ]
+        data = [
+            {
+                'value': total['Pass'],
+                'name': 'Pass',
+                'itemStyle': {
+                    'color': '#5cb85c'
+                }
+            },
+            {
+                'value': total['Fail'],
+                'name': 'Fail',
+                'itemStyle': {
+                    'color': '#d9534f'
+                }
+            },
+            # {
+            #   'value': total['NoRun'],
+            #   'name': 'No Run',
+            #   'itemStyle': {'color': 'grey'}},
+        ]
         template = env.get_template('tmp.html')
-        html = template.render(information=information, fdata=ffdata, data=data, total=total,task_name=self.name,
+        html = template.render(information=information,
+                               fdata=ffdata,
+                               data=data,
+                               total=total,
+                               task_name=self.name,
                                encoding='utf-8')  # unicode string
-        with open(os.path.join(os.getcwd(),'Report\\'+self.name+'.html'), 'w', encoding='utf-8') as f:
+        with open(os.path.join(os.getcwd(), 'Report\\' + self.name + '.html'),
+                  'w',
+                  encoding='utf-8') as f:
             f.write(html)
         log.log('generate {}.html finished'.format(self.name))
+
     def fdata(self):
-        file = os.path.join(os.getcwd(),'Framework_Kernel\\{}_result.yaml'.format(self.name))
+        file = os.path.join(
+            os.getcwd(), 'Framework_Kernel\\{}_result.yaml'.format(self.name))
         passCount = 0
         failCount = 0
         norunCount = 0
@@ -86,6 +125,7 @@ class Report:
         data_dict['count'] = count
         return data_dict
 
+
 class Email:
     def __init__(self):
         pass
@@ -103,9 +143,8 @@ class Email:
         self.sender = attanchments
         print('send email')
 
+
 if __name__ == '__main__':
-    r=Report(name='task1')
-    fdata=r.fdata()
+    r = Report(name='task1')
+    fdata = r.fdata()
     r.generate(fdata)
-
-
