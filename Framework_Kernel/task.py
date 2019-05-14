@@ -67,7 +67,7 @@ class Task:
         host.execute_task(self)
 
     def deploy(self, host):
-        host.deploy(self.get_name())
+        host.deploy(self)
 
     def check_status(self, host):
         host.check_status(self)

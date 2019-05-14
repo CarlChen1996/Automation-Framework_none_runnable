@@ -38,27 +38,27 @@ class LinuxHost(Host):
 
 
 class Build:
-    def get_scripts(self):
-        print(sys._getframe().f_code.co_name + "  finished")
+    def get_scripts(self, task):
+        print(sys._getframe().f_code.co_name + task.get_name() + "  finished")
 
-    def build(self):
-        print(sys._getframe().f_code.co_name + "  finished")
+    def build(self, task):
+        print(sys._getframe().f_code.co_name + task.get_name() + "  finished")
 
 
 class Deploy:
     def deploy(self, task):
-        print(sys._getframe().f_code.co_name + task + "  finished")
+        print(sys._getframe().f_code.co_name + task.get_name() + "  finished")
 
 
 class Execute:
-    def execute_task(self):
-        print(sys._getframe().f_code.co_name + "  finished")
+    def execute_task(self, task):
+        print(sys._getframe().f_code.co_name + task.get_name()+ "  finished")
 
-    def check_status(self):
-        print(sys._getframe().f_code.co_name + "  finished")
+    def check_status(self, task):
+        print(sys._getframe().f_code.co_name + task.get_name() + "  finished")
 
-    def collect_result(self):
-        print(sys._getframe().f_code.co_name + "  finished")
+    def collect_result(self, task):
+        print(sys._getframe().f_code.co_name + task.get_name() + "  finished")
 
 
 class WindowsBuildHost(WindowsHost, Build):
