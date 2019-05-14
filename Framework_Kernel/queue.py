@@ -62,7 +62,6 @@ class ExecuteQueue(Queue):
             task.check_status(host)
 
     def collect_result(self, task):
-        print(task.get_uut_list(), '=========================')
         for host in task.get_uut_list():
             self.log.log('Execute Queue collect result {} from {}'.format(task.get_name(), host.hostnamme))
             task.collect_result(host)

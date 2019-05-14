@@ -5,8 +5,11 @@
 # @File    : report.py
 # @Project : Automation-Framework
 from jinja2 import Environment, FileSystemLoader
+from Framework_Kernel.log import Log
 import yaml
 import os
+log=Log('report')
+
 class Report:
     def __init__(self, name='default', type='HTML', template='1'):
         self.name = name
@@ -41,7 +44,7 @@ class Report:
                                encoding='utf-8')  # unicode string
         with open(os.path.join(os.getcwd(),'Report\\'+self.name+'.html'), 'w', encoding='utf-8') as f:
             f.write(html)
-
+        log.log('generate {}.html finished'.format(self.name))
     def fdata(file='result.yaml'):
         passCount = 0
         failCount = 0
