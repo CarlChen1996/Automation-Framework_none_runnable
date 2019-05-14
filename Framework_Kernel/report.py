@@ -6,7 +6,7 @@
 # @Project : Automation-Framework
 from jinja2 import Environment, FileSystemLoader
 import yaml
-
+import os
 class Report:
     def __init__(self, name='default', type='HTML', template='1'):
         self.name = name
@@ -16,7 +16,7 @@ class Report:
     def generate(self,fdata):
         # print('generate html finished')
 
-        env = Environment(loader=FileSystemLoader('./templates', encoding='utf-8'))
+        env = Environment(loader=FileSystemLoader(os.path.join(os.getcwd(),'Framework_Kernel/templates'), encoding='utf-8'))
         information = {'Category': 'HPDM / HPWF / UWF /ThinUpdate/ ',
                        'Version': ' 1.0/ 1.0/ 1.0/ 1.0	',
                        'Start Time': ' 2018-5-14 14:58:27',
@@ -39,7 +39,7 @@ class Report:
         template = env.get_template('tmp.html')
         html = template.render(information=information, fdata=ffdata, data=data, total=total,task_name=self.name,
                                encoding='utf-8')  # unicode string
-        with open('../Report/'+self.name+'.html', 'w', encoding='utf-8') as f:
+        with open(os.path.join(os.getcwd(),'Report\\'+self.name+'.html'), 'w', encoding='utf-8') as f:
             f.write(html)
 
     def fdata(file='result.yaml'):
@@ -49,7 +49,7 @@ class Report:
         data_dict = {}
         test_list = []
         fdata = []
-        f = open('result.yaml', encoding='utf-8')
+        f = open(os.path.join(os.getcwd(),'Framework_Kernel\\result.yaml'), encoding='utf-8')
         a = yaml.safe_load(f.read())
         for v in a.values():
             if v[-1] not in test_list:

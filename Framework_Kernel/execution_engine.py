@@ -23,7 +23,7 @@ class ExecutionEngine(Engine):
 
 def execute(deploy_list, task_list):
     d = deploy_list[0]
-    r = Report()
+
     exeQ = ExecuteQueue()
     # -----------execute结束后需要同时删除task list-----------------
     exeQ.task_list = task_list.copy()
@@ -34,7 +34,9 @@ def execute(deploy_list, task_list):
         # --------需要得到返回值 ------------------
         exeQ.check_status(i)
         exeQ.collect_result(i)
-        r.generate(i.collect_result(i.get_uut_list()[0]))
+        r = Report(i.get_name())
+        fdata=r.fdata()
+        r.generate(fdata)
         # exeQ.task_list.remove(i)
         # print('removed {}'.format(i.get_name()))
 
