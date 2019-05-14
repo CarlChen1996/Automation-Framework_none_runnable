@@ -32,14 +32,16 @@ def execute(deploy_list, task_list):
         r.generate(i.collect_result(i.get_uut_list()[0]))
         # exeQ.task_list.remove(i)
         # print('removed {}'.format(i.get_name()))
+        print(task_list)
+        print(exeQ.get_task_list())
         task_list.remove(i)
-    for i in task_list:
-        uuts = i.get_uut_list()
-        for uut in uuts:
-            print('================')
-            print(uut.hostnamme)
-            print('================')
+    # for i in task_list:
+    #     uuts = i.get_uut_list()
+    #     for uut in uuts:
+    #         print('================')
+    #         print(uut.hostnamme)
+    #         print('================')
 
 
 if __name__ == '__main__':
-    execute()
+    pass
