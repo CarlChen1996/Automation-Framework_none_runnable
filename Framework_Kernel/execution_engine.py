@@ -35,8 +35,7 @@ def execute(deploy_list, task_list):
         exeQ.check_status(i)
         exeQ.collect_result(i)
         r = Report(i.get_name())
-        fdata=r.fdata()
-        r.generate(fdata)
+        r.generate()
         # exeQ.task_list.remove(i)
         # print('removed {}'.format(i.get_name()))
 

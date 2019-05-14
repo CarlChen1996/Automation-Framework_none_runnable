@@ -1,36 +1,45 @@
-testplan1: task1
-testscripts:
-    - script1
-    - scripts2
-    - script3
-uutlist:
-    - uut1:
-          hostname: uut1
-          ip: 15.83.250.1
-          mac: 13354k31sf
-          version: win7
-    - uut2:
-          hostname: uut2
-          ip: 15.83.250.2
-          mac: 1dsf332222
-          version: win7
-mac: 123456778
-needbuild: True
+testplan1:
+  name: task1
+  testscripts:
+      - task1script1
+      - task1script2
+      - task1script3
+      - task1script4
+      - task1script5
+      - task1script6
+  uutlist:
+      - uut1:
+            hostname: uut1
+            ip: 15.83.250.1
+            mac: 13354k31sf
+            version: win7
+  needbuild: True
 
-testplan2: task2
-testscripts: 
-    - script1
-    - scripts2
-    - script3
-ip: 192.168.1.2
-mac: 9876633132
-needBuild: True
+testplan2:
+  name: task2
+  testscripts:
+      - task2script1
+      - task2script2
+      - task2script3
+      - task2script4
+  uutlist:
+      - uut1:
+            hostname: uut1
+            ip: 15.83.250.1
+            mac: 13354k31sf
+            version: win7
+  needbuild: True
 
-testplan3: task3
-testscripts: 
-    - script1
-    - scripts2
-    - script3
-ip: 192.168.1.3
-mac: jk23lkjk42
-needBuild: True
+testplan3:
+  name: task3
+  testscripts:
+      - task3script1
+      - task3script2
+      - task3script3
+  uutlist:
+      - uut1:
+            hostname: uut1
+            ip: 15.83.250.1
+            mac: 13354k31sf
+            version: win7
+  needbuild: True

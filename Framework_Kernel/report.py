@@ -11,28 +11,27 @@ import os
 log=Log('report')
 
 class Report:
-    def __init__(self, name='default', type='HTML', template='1'):
+    def __init__(self, name='', type='HTML', template='1',):
         self.name = name
         self.type = type
         self.template = template
-
-    def generate(self,fdata):
+        self.data=self.fdata()
+    def generate(self):
         # print('generate html finished')
-
         env = Environment(loader=FileSystemLoader(os.path.join(os.getcwd(),'Framework_Kernel/templates'), encoding='utf-8'))
         information = {'Category': 'HPDM / HPWF / UWF /ThinUpdate/ ',
                        'Version': ' 1.0/ 1.0/ 1.0/ 1.0	',
                        'Start Time': ' 2018-5-14 14:58:27',
-                       'Duration': ' 00:30:03	#仅保留秒',
-                       'Note': '为了RC的最后一次的回归测试',
+                       'Duration': ' 00:30:03',
+                       'Note': '为了RC的最后一次回归测试',
                        }
-        ffdata = fdata['fdata']
-        passCount = fdata['passCount']
-        failCount = fdata['failCount']
-        norunCount = fdata['norunCount']
-        count = fdata['count']
+        ffdata = self.data['fdata']
+        passCount = self.data['passCount']
+        failCount = self.data['failCount']
+        norunCount = self.data['norunCount']
+        count = self.data['count']
         # total=[PassingRate,Pass,Fail,NoRun,Count]
-        total = {'Passing rate': 100 * passCount / count, 'Pass': passCount, 'Fail': failCount, 'NoRun': norunCount,
+        total = {'Passing rate': '%.2f'%(100 * passCount / count), 'Pass': passCount, 'Fail': failCount, 'NoRun': norunCount,
                  'Count': count}
 
         data = [{'value': total['Pass'], 'name': 'Pass', 'itemStyle': {'color': '#5cb85c'}},
@@ -45,14 +44,15 @@ class Report:
         with open(os.path.join(os.getcwd(),'Report\\'+self.name+'.html'), 'w', encoding='utf-8') as f:
             f.write(html)
         log.log('generate {}.html finished'.format(self.name))
-    def fdata(file='result.yaml'):
+    def fdata(self):
+        file = os.path.join(os.getcwd(),'Framework_Kernel\\{}_result.yaml'.format(self.name))
         passCount = 0
         failCount = 0
         norunCount = 0
         data_dict = {}
         test_list = []
         fdata = []
-        f = open(os.path.join(os.getcwd(),'Framework_Kernel\\result.yaml'), encoding='utf-8')
+        f = open(file, encoding='utf-8')
         a = yaml.safe_load(f.read())
         for v in a.values():
             if v[-1] not in test_list:
