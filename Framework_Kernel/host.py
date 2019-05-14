@@ -8,8 +8,8 @@ import sys
 
 
 class Host():
-    def __init__(self, ip, hostnamme, version, mac, username, password, domain,
-                 status):
+    def __init__(self, ip, mac, hostnamme='', version='', username='', password='', domain='',
+                 status='off'):
         self.ip = ip
         self.hostnamme = hostnamme
         self.version = version
@@ -39,26 +39,31 @@ class LinuxHost(Host):
 
 class Build:
     def get_scripts(self, task):
-        print(sys._getframe().f_code.co_name + task.get_name() + "  finished")
+        for script in task.get_script_list():
+            print('get scripts: {} PASS'.format(script.name))
 
     def build(self, task):
-        print(sys._getframe().f_code.co_name + task.get_name() + "  finished")
+        for script in task.get_script_list():
+            print('build ' + script.name + ' PASS')
+        task.insert_exe_list(task.get_name() + 'Exe')
+        task.insert_exe_list(task.get_name() + ' Folder Path')
 
 
 class Deploy:
     def deploy(self, task):
-        print(sys._getframe().f_code.co_name + task.get_name() + "  finished")
+        print('deploy exe name:' + task.get_exe_list()[0] + ' Pass')
+        print('deploy exe folder:' + task.get_exe_list()[1])
 
 
 class Execute:
     def execute_task(self, task):
-        print(sys._getframe().f_code.co_name + task.get_name()+ "  finished")
+        print('execute task: {} PASS'.format(task.get_exe_list()[0]))
 
     def check_status(self, task):
-        print(sys._getframe().f_code.co_name + task.get_name() + "  finished")
+        print('check task: {} status'.format(task.get_exe_list()[0]))
 
     def collect_result(self, task):
-        print(sys._getframe().f_code.co_name + task.get_name() + "  finished")
+        print('collect task: {} result'.format(task.get_exe_list()[0]))
 
 
 class WindowsBuildHost(WindowsHost, Build):

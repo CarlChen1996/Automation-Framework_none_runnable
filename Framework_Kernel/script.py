@@ -7,9 +7,9 @@
 
 
 class Script:
-    def __init__(self):
-        self.name = ''
-        self.status = ''
+    def __init__(self, name, status='NoRun'):
+        self.name = name
+        self.status = status
 
     def get_status(self):
         return self.status

@@ -13,9 +13,11 @@ class Validator:
 
 class HostValidator(Validator):
     def validate(self, host):
-        print('validate ' + host + ' finished')
+        print('validate ' + host.hostnamme + ' finished')
+        return True
 
 
 class ScriptValidator(Validator):
     def validate(self, task):
-        print('validate ' + task + ' finished')
+        print('validate ' + task.get_name() + ' finished')
+        return True
