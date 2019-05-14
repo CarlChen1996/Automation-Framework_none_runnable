@@ -5,6 +5,10 @@
 # @File    : Configurator.py
 # @Project : demo
 import sys
+from Framework_Kernel.log import Log
+
+
+log = Log('Configurator')
 
 
 class Configurator:
@@ -13,4 +17,4 @@ class Configurator:
         pass
 
     def config(self):
-        print(sys._getframe().f_code.co_name + "  finished")
+        log.log(sys._getframe().f_code.co_name + "  finished")

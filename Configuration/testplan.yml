@@ -3,7 +3,17 @@ testscripts:
     - script1
     - scripts2
     - script3
-ip: 192.168.1.1
+uutlist:
+    - uut1:
+          hostname: uut1
+          ip: 15.83.250.1
+          mac: 13354k31sf
+          version: win7
+    - uut2:
+          hostname: uut2
+          ip: 15.83.250.2
+          mac: 1dsf332222
+          version: win7
 mac: 123456778
 needbuild: True
 

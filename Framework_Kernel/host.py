@@ -5,13 +5,14 @@
 # @File    : test.py
 # @Project : demo
 import sys
+from Framework_Kernel.log import Log
 
 
 class Host():
-    def __init__(self, ip, mac, hostnamme='', version='', username='', password='', domain='',
+    def __init__(self, ip, mac, hostname='', version='', username='', password='', domain='',
                  status='off'):
         self.ip = ip
-        self.hostnamme = hostnamme
+        self.hostnamme = hostname
         self.version = version
         self.mac = mac
         self.username = username
@@ -38,43 +39,67 @@ class LinuxHost(Host):
 
 
 class Build:
+    def __init__(self):
+        self.log = Log('Build host')
+
     def get_scripts(self, task):
         for script in task.get_script_list():
-            print('get scripts: {} PASS'.format(script.name))
-
+            pass
+        self.log.log('get  {} scripts PASS'.format(task.get_name()))
     def build(self, task):
         for script in task.get_script_list():
-            print('build ' + script.name + ' PASS')
-        task.insert_exe_list(task.get_name() + 'Exe')
-        task.insert_exe_list(task.get_name() + ' Folder Path')
+            pass
+        self.log.log('build ' + task.get_name()+ ' PASS')
+        task.insert_exe_list(task.get_name()+'.exe')
+        task.insert_exe_list(task.get_name())
 
 
 class Deploy:
+    def __init__(self):
+        self.log = Log('Deploy host')
+
     def deploy(self, task):
-        print('deploy exe name:' + task.get_exe_list()[0] + ' Pass')
-        print('deploy exe folder:' + task.get_exe_list()[1])
+        self.log.log('deploy package: ' + task.get_name() + ' Pass')
 
 
 class Execute:
+    def __init__(self):
+        self.log = Log('uut')
+
     def execute_task(self, task):
-        print('execute task: {} PASS'.format(task.get_exe_list()[0]))
+        self.log.log('execute {} on  {}'.format(task.get_name(), task.get_uut_list()[0].hostnamme))
 
     def check_status(self, task):
-        print('check task: {} status'.format(task.get_exe_list()[0]))
+        self.log.log('check {} status on {}'.format(task.get_name(), task.get_uut_list()[0].hostnamme))
 
     def collect_result(self, task):
-        print('collect task: {} result'.format(task.get_exe_list()[0]))
+        self.log.log('collect {} result from {}'.format(task.get_name(), task.get_uut_list()[0].hostnamme))
 
 
 class WindowsBuildHost(WindowsHost, Build):
+    def __init__(self, ip, mac, hostname='', version='', username='', password='', domain='',
+                 status='off'):
+        WindowsHost.__init__(self, ip, mac, hostname, version, username, password, domain,
+                             status)
+        Build.__init__(self)
     pass
 
 
 class WindowsDeployHost(WindowsHost, Deploy):
+    def __init__(self, ip, mac, hostname='', version='', username='', password='', domain='',
+                 status='off'):
+        WindowsHost.__init__(self, ip, mac, hostname, version, username, password, domain,
+                             status)
+        Deploy.__init__(self)
     pass
 
 
 class WindowsExecuteHost(WindowsHost, Execute):
+    def __init__(self, ip, mac, hostname='', version='', username='', password='', domain='',
+                 status='off'):
+        WindowsHost.__init__(self, ip, mac, hostname, version, username, password, domain,
+                             status)
+        Execute.__init__(self)
     pass
 
 
