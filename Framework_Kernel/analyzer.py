@@ -4,21 +4,28 @@
 # @Email   : Bamboo.pan@hp.com
 # @File    : Analyzer.py
 # @Project : demo
-import sys
-from Framework_Kernel.log import Log
-
-
-log = Log('analyzer')
-
+import sys,os
+from Common_Library.file import YamlFile
 
 class Analyzer:
-    def __init__(self, file_list=None):
+    def __init__(self, file_list):
         self.file_list = file_list
 
     def load(self):
-        log.log('Load Data from file ')
-        return 'Load data'
+        res_tem_list=[]
+        for i in self.file_list:
+            f = YamlFile(os.path.dirname(i), os.path.basename(i))
+            file_handle=f.open()
+            res = f.read(file_handle)
+            res_tem_list.append(res)
+            print("load data {} finished".format(i))
+            f.close(file_handle)
+            print("close file {} finished".format(i))
+        print("load all data finised")
+        return res_tem_list
 
-    def generate(self):
-        log.log('generate Data')
-        return 'generate data'
+    def generate(self,res_list):
+        print("generate data finished")
+        return res_list
+
+

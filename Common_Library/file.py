@@ -5,16 +5,22 @@
 # @File    : test.py
 # @Project : demo
 import sys
+import os
+import yaml
 
 
 class File:
-    def __init__(self, folder_path, name, size):
+    def __init__(self, folder_path, name, size=0):
         self.folder_path = folder_path
         self.name = name
         self.size = size
 
     def open(self):
-        print(sys._getframe().f_code.co_name + " " + self.name + "  finished")
+        file_name=os.path.join(self.folder_path,self.name)
+        f=open(file_name)
+        print("open {} pass".format(file_name))
+        return f
+
 
     def read(self):
         print(sys._getframe().f_code.co_name + "  finished")
@@ -23,6 +29,7 @@ class File:
         print(sys._getframe().f_code.co_name + "  finished")
 
     def close(self):
+
         print(sys._getframe().f_code.co_name + " " + self.name + "  finished")
 
     def copy(self):
@@ -74,7 +81,12 @@ class MsgFile(File):
 
 
 class YamlFile(File):
-    pass
+    def read(self,file_handle):
+        res=yaml.load(file_handle)
+        return res
+    def close(self,file_handle):
+        file_handle.close()
+
 
 
 class HtmlFile(File):
