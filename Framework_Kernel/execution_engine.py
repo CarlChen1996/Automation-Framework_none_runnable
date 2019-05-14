@@ -20,24 +20,20 @@ def execute(deploy_list, task_list):
     d = deploy_list[0]
     r = Report()
     exeQ = ExecuteQueue()
-    exeQ.task_list = task_list
-    print('there is {} in tasklist'.format(len(exeQ.get_task_list())))
+    # -----------execute结束后需要同时删除task list-----------------
+    exeQ.task_list = task_list.copy()
+    # ----------循环里面添加 刷新list的方法 ---------------------
     for i in exeQ.task_list:
-        print(i.get_name() + '---------------task')
         exeQ.deploy(i, d)
         exeQ.execute(i)
+        # --------需要得到返回值 ------------------
         exeQ.check_status(i)
         exeQ.collect_result(i)
         r.generate(i.collect_result(i.get_uut_list()[0]))
-        exeQ.task_list.remove(i)
-        print('removed {}'.format(i.get_name()))
-        # for i in exeQ.task_list:
-        #     uuts = i.get_uut_list()
-        #     for uut in uuts:
-        #         print('================')
-        #         print(uut.HostName)
-        #         print('================')
-    for i in exeQ.task_list:
+        # exeQ.task_list.remove(i)
+        # print('removed {}'.format(i.get_name()))
+        task_list.remove(i)
+    for i in task_list:
         uuts = i.get_uut_list()
         for uut in uuts:
             print('================')

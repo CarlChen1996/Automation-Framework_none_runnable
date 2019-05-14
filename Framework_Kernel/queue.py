@@ -48,7 +48,7 @@ class ExecuteQueue(Queue):
     def execute(self, task):
         for host in task.get_uut_list():
             task.execute(host)
-        print('Q execute task finished')
+            print('Q execute task finished')
 
     def check_status(self, task):
         for host in task.get_uut_list():

@@ -8,7 +8,7 @@ from Framework_Kernel.engine import Engine
 from Framework_Kernel.configurator import Configurator
 from Framework_Kernel.host import WindowsBuildHost, WindowsDeployHost
 from Framework_Kernel.analyzer import Analyzer
-from Framework_Kernel.validator import Validator
+from Framework_Kernel.validator import HostValidator
 
 
 class ConfigurationEngine(Engine):
@@ -23,15 +23,17 @@ def config_process(build_list, deploy_list):
     analyze.load()
     analyze.generate()
 
-    b = WindowsBuildHost("192.168.1.1", "win_build", "1.0", "123456789", "bamboo", "123456", "sh", "off")
-    d = WindowsDeployHost("192.168.1.2", "win_deploy", "1.0", "987654321", "bamboo", "123456", "sh", "off")
-    v = Validator()
-    v.validate(b)
-    v.validate(d)
-    b.Status = "on"
-    d.Status = "on"
-    build_list.append(b)
-    deploy_list.append(d)
+    b = WindowsBuildHost(ip="192.168.1.1", hostnamme="win_build", version="1.0", mac='27832784292')
+    d = WindowsDeployHost(ip="192.168.1.2", hostnamme="win_deploy", version="1.1", mac='98765432')
+    v = HostValidator()
+    # 下面要判断OFF的情况--------------------------------------------------------
+    if v.validate(b):
+        b.Status = "on"
+        build_list.append(b)
+    if v.validate(d):
+        d.Status = "on"
+        deploy_list.append(d)
+
 
 
 if __name__ == "__main__":
