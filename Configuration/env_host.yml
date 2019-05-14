@@ -1,0 +1,18 @@
+---
+-   
+    hostname: windows_build_server1
+    ip: 192.168.1.1
+    mac: 27832784292
+    version: 1.0
+    username: bamboo
+    password: 123
+    domain: sh
+    
+-   
+    hostname: windows_deploy_server1
+    ip: 192.168.1.2
+    mac: 5666666
+    version: 1.0
+    username: bamboo
+    password: 123
+    domain: sh

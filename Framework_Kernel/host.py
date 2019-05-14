@@ -9,10 +9,10 @@ from Framework_Kernel.log import Log
 
 
 class Host():
-    def __init__(self, ip, mac, hostnamme='', version='', username='', password='', domain='',
+    def __init__(self, ip, mac, hostname='', version='', username='', password='', domain='',
                  status='off'):
         self.ip = ip
-        self.hostnamme = hostnamme
+        self.hostnamme = hostname
         self.version = version
         self.mac = mac
         self.username = username
@@ -77,27 +77,27 @@ class Execute:
 
 
 class WindowsBuildHost(WindowsHost, Build):
-    def __init__(self, ip, mac, hostnamme='', version='', username='', password='', domain='',
+    def __init__(self, ip, mac, hostname='', version='', username='', password='', domain='',
                  status='off'):
-        WindowsHost.__init__(self, ip, mac, hostnamme, version, username, password, domain,
-                 status)
+        WindowsHost.__init__(self, ip, mac, hostname, version, username, password, domain,
+                             status)
         Build.__init__(self)
     pass
 
 
 class WindowsDeployHost(WindowsHost, Deploy):
-    def __init__(self, ip, mac, hostnamme='', version='', username='', password='', domain='',
+    def __init__(self, ip, mac, hostname='', version='', username='', password='', domain='',
                  status='off'):
-        WindowsHost.__init__(self, ip, mac, hostnamme, version, username, password, domain,
+        WindowsHost.__init__(self, ip, mac, hostname, version, username, password, domain,
                              status)
         Deploy.__init__(self)
     pass
 
 
 class WindowsExecuteHost(WindowsHost, Execute):
-    def __init__(self, ip, mac, hostnamme='', version='', username='', password='', domain='',
+    def __init__(self, ip, mac, hostname='', version='', username='', password='', domain='',
                  status='off'):
-        WindowsHost.__init__(self, ip, mac, hostnamme, version, username, password, domain,
+        WindowsHost.__init__(self, ip, mac, hostname, version, username, password, domain,
                              status)
         Execute.__init__(self)
     pass

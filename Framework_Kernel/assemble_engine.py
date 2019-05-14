@@ -26,8 +26,8 @@ class AssembleEngine(Engine):
 
 def execute(build_list, task_list):
     assembleQueue = AssembleQueue()
-    analyzor = Analyzer(['test.txt'])
-    data = analyzor.load()
+    # analyzor = Analyzer(['test.txt'])
+    # data = analyzor.load()
     # task_data = analyzor.generate(data)
     task_data = [{'name': 'task1', 'testscripts': ['t1script1', 't1scripts2', 't1scripts3'],
                   'uutlist': [{'ip': '15.83.1.1', 'hostname': 'uut1', 'version': 'win7', 'mac': '56789tyui'} ],
@@ -44,7 +44,7 @@ def execute(build_list, task_list):
             task.insert_script(Script(name=script))
         for uutitem in taskitem['uutlist']:
             # ------需要根据 uut的os 来实例，目前没实现，只考虑windows------------
-            uut = WindowsExecuteHost(ip=uutitem['ip'], hostnamme=uutitem['hostname'], version=uutitem['version'], mac= uutitem['mac'])
+            uut = WindowsExecuteHost(ip=uutitem['ip'], hostname=uutitem['hostname'], version=uutitem['version'], mac= uutitem['mac'])
             task.insert_uut_list(uut)
         log.log('inset {} to assembly queue list'.format(task.get_name()))
         assembleQueue.insert_task(task=task)
