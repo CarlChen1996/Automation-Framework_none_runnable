@@ -6,8 +6,8 @@
 # @Project : Automation-Framework
 from Framework_Kernel.log import Log
 
-
 log = Log('Validator')
+
 
 class Validator:
     def validate(self, name):

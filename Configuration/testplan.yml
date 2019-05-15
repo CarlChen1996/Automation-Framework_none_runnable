@@ -8,11 +8,11 @@ testplan1:
       - task1script5
       - task1script6
   uutlist:
-      - uut1:
-            hostname: uut1
-            ip: 15.83.250.1
-            mac: 13354k31sf
-            version: win7
+    - uut1:
+        hostname: uut1
+        ip: 15.83.250.1
+        mac: 13354k31sf
+        version: win7
   needbuild: True
 
 testplan2:

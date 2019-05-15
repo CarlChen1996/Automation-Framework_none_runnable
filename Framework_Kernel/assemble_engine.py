@@ -14,7 +14,6 @@ from Framework_Kernel.validator import ScriptValidator
 from Framework_Kernel.script import Script
 from Framework_Kernel.log import Log
 
-
 log = Log(name='assemble')
 
 
@@ -26,25 +25,45 @@ class AssembleEngine(Engine):
 
 def execute(build_list, task_list):
     assembleQueue = AssembleQueue()
-    # analyzor = Analyzer(['test.txt'])
-    # data = analyzor.load()
-    # task_data = analyzor.generate(data)
-    task_data = [{'name': 'task1', 'testscripts': ['t1script1', 't1scripts2', 't1scripts3'],
-                  'uutlist': [{'ip': '15.83.1.1', 'hostname': 'uut1', 'version': 'win7', 'mac': '56789tyui'} ],
-                  'needbuild': True},
-                 {'name': 'task2', 'testscripts': ['t2script1', 't2scripts2', 't2scripts3'],
-                  'uutlist': [{'ip': '15.83.1.2', 'hostname': 'uut2', 'version': 'win7', 'mac': '1234567893'} ],
-                  'needbuild': True},
-                 {'name': 'task3', 'testscripts': ['t3script1', 't3scripts2', 't3scripts3'],
-                  'uutlist': [{'ip': '15.83.1.3', 'hostname': 'uut3', 'version': 'win10', 'mac': '987654321'} ],
-                  'needbuild': False}]
-    for taskitem in task_data:
+    analyzor = Analyzer(['.\\Configuration\\testplan.yml'])
+    data = analyzor.load()
+    task_data = analyzor.generate(data)
+    task_source_list = []
+    """
+    # ***************convert source data to task source list *****************
+    # tasklist contains task source
+    # tasklist member(taskitem): {
+    #                               name:task1,
+    #                               testscripts:[script1, script2,],
+    #                               uutlist:[{uut1:uutinformation},
+    #                               {uut2:uutinformation}],
+    #                               needbuild:true}
+    # uutinformation: {uut1:{
+    #                           hostname: uut1,
+    #                           ip:1.1.1.1,
+    #                           mac:1234566,
+    #                           version: win7}}
+    # ************************************************************************
+    """
+    for task_source in task_data:
+        task_source_list = list(task_source.values())
+    for taskitem in task_source_list:
         task = Task(taskitem['name'], taskitem['needbuild'])
         for script in taskitem['testscripts']:
             task.insert_script(Script(name=script))
-        for uutitem in taskitem['uutlist']:
+        """
+        # *************convert uut source data to uut source list ************
+        #
+        """
+        uut_source_list = []
+        for uut_source in taskitem['uutlist']:
+            uut_source_list.append(list(uut_source.values())[0])
+        for uutitem in uut_source_list:
             # ------需要根据 uut的os 来实例，目前没实现，只考虑windows------------
-            uut = WindowsExecuteHost(ip=uutitem['ip'], hostname=uutitem['hostname'], version=uutitem['version'], mac= uutitem['mac'])
+            uut = WindowsExecuteHost(ip=uutitem['ip'],
+                                     hostname=uutitem['hostname'],
+                                     version=uutitem['version'],
+                                     mac=uutitem['mac'])
             task.insert_uut_list(uut)
         log.log('inset {} to assembly queue list'.format(task.get_name()))
         assembleQueue.insert_task(task=task)
@@ -62,7 +81,7 @@ def execute(build_list, task_list):
         # assembleQueue.remove_task(task)
         # print('left task:\n', assembleQueue.get_task_list())
         print('------------------------------------')
-    #　＝＝＝＝＝＝＝＝＝＝通过判读build server的status随机选择要用的 build server =============
+        # ＝＝＝＝＝＝＝＝＝＝通过判读build server的status随机选择要用的 build server =============
     return task_list
 
 

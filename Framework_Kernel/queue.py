@@ -7,8 +7,6 @@
 from Framework_Kernel.log import Log
 
 
-
-
 class Queue:
     def __init__(self):
         self.task_list = []
@@ -38,7 +36,8 @@ class AssembleQueue(Queue):
         self.task_list = []
 
     def build_task(self, task, host):
-        self.log.log('Assembly Queue build {} on {}'.format(task.get_name(), host.hostnamme))
+        self.log.log('Assembly Queue build {} on {}'.format(
+            task.get_name(), host.hostnamme))
         task.build(host)
 
 
@@ -48,20 +47,24 @@ class ExecuteQueue(Queue):
         self.task_list = []
 
     def deploy(self, task, host):
-        self.log.log('Execute Queue deploy {} to {}'.format(task.get_name(), host.hostnamme))
+        self.log.log('Execute Queue deploy {} to {}'.format(
+            task.get_name(), host.hostnamme))
         task.deploy(host)
 
     def execute(self, task):
         for host in task.get_uut_list():
-            self.log.log('Execute Queue execute {} on {}'.format(task.get_name(), host.hostnamme))
+            self.log.log('Execute Queue execute {} on {}'.format(
+                task.get_name(), host.hostnamme))
             task.execute(host)
 
     def check_status(self, task):
         for host in task.get_uut_list():
-            self.log.log('Execute Queue check status {} on {}'.format(task.get_name(), host.hostnamme))
+            self.log.log('Execute Queue check status {} on {}'.format(
+                task.get_name(), host.hostnamme))
             task.check_status(host)
 
     def collect_result(self, task):
         for host in task.get_uut_list():
-            self.log.log('Execute Queue collect result {} from {}'.format(task.get_name(), host.hostnamme))
+            self.log.log('Execute Queue collect result {} from {}'.format(
+                task.get_name(), host.hostnamme))
             task.collect_result(host)

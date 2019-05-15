@@ -16,11 +16,10 @@ class File:
         self.size = size
 
     def open(self):
-        file_name=os.path.join(self.folder_path,self.name)
-        f=open(file_name)
+        file_name = os.path.join(self.folder_path, self.name)
+        f = open(file_name)
         print("open {} pass".format(file_name))
         return f
-
 
     def read(self):
         print(sys._getframe().f_code.co_name + "  finished")
@@ -81,12 +80,12 @@ class MsgFile(File):
 
 
 class YamlFile(File):
-    def read(self,file_handle):
-        res=yaml.load(file_handle)
+    def read(self, file_handle):
+        res = yaml.load(file_handle)
         return res
-    def close(self,file_handle):
-        file_handle.close()
 
+    def close(self, file_handle):
+        file_handle.close()
 
 
 class HtmlFile(File):

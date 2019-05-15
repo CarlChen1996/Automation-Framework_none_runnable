@@ -4,12 +4,12 @@
 # @Email   : Bamboo.pan@hp.com
 # @File    : Analyzer.py
 # @Project : demo
-import sys,os
+import os
 from Common_Library.file import YamlFile
 from Framework_Kernel.log import Log
 
-
 log = Log('analyzer')
+
 
 class Analyzer:
     def __init__(self, file_list):
@@ -17,10 +17,10 @@ class Analyzer:
 
     def load(self):
         log.log('Load Data from file ')
-        res_tem_list=[]
+        res_tem_list = []
         for i in self.file_list:
             f = YamlFile(os.path.dirname(i), os.path.basename(i))
-            file_handle=f.open()
+            file_handle = f.open()
             res = f.read(file_handle)
             res_tem_list.append(res)
             print("load data {} finished".format(i))
@@ -29,9 +29,7 @@ class Analyzer:
         print("load all data finised")
         return res_tem_list
 
-    def generate(self,res_list):
+    def generate(self, res_list):
         log.log('generate Data')
         print("generate data finished")
         return res_list
-
-
