@@ -81,7 +81,7 @@ class MsgFile(File):
 
 class YamlFile(File):
     def read(self, file_handle):
-        res = yaml.load(file_handle)
+        res = yaml.safe_load(file_handle)
         return res
 
     def close(self, file_handle):
