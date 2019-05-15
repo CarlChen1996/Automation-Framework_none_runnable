@@ -18,7 +18,7 @@ class File:
     def open(self):
         file_name = os.path.join(self.folder_path, self.name)
         f = open(file_name)
-        print("open {} pass".format(file_name))
+        # print("open {} pass".format(file_name))
         return f
 
     def read(self):

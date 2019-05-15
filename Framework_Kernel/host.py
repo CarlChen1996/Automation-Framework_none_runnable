@@ -19,7 +19,7 @@ class Host():
                  domain='',
                  status='off'):
         self.ip = ip
-        self.hostnamme = hostname
+        self.hostname = hostname
         self.version = version
         self.mac = mac
         self.username = username
@@ -77,17 +77,17 @@ class Execute:
     def execute_task(self, task):
         self.log.log('execute {} on  {}'.format(
             task.get_name(),
-            task.get_uut_list()[0].hostnamme))
+            task.get_uut_list()[0].hostname))
 
     def check_status(self, task):
         self.log.log('check {} status on {}'.format(
             task.get_name(),
-            task.get_uut_list()[0].hostnamme))
+            task.get_uut_list()[0].hostname))
 
     def collect_result(self, task):
         self.log.log('collect {} result from {}'.format(
             task.get_name(),
-            task.get_uut_list()[0].hostnamme))
+            task.get_uut_list()[0].hostname))
 
 
 class WindowsBuildHost(WindowsHost, Build):
