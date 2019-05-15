@@ -29,7 +29,7 @@ def execute(deploy_list, task_list):
     # -----------execute结束后需要同时删除task list-----------------
     exeQ.task_list = task_list.copy()
     # ----------循环里面添加 刷新list的方法 ---------------------
-    for i in exeQ.task_list:
+    for i in exeQ.task_list[:]:
         exeQ.deploy(i, d)
         exeQ.execute(i)
         # --------需要得到返回值 ------------------
@@ -37,8 +37,8 @@ def execute(deploy_list, task_list):
         exeQ.collect_result(i)
         r = Report(i.get_name(),i.get_script_list())
         r.generate()
-        # exeQ.task_list.remove(i)
-        # print('removed {}'.format(i.get_name()))
+        exeQ.task_list.remove(i)
+        print('removed {}'.format(i.get_name()))
 
 
 if __name__ == '__main__':

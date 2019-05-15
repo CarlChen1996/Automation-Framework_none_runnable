@@ -13,18 +13,29 @@ from Framework_Kernel.validator import HostValidator
 from Framework_Kernel.validator import ScriptValidator
 from Framework_Kernel.script import Script
 from Framework_Kernel.log import Log
+import time
+
 
 log = Log(name='assemble')
 
 
 class AssembleEngine(Engine):
-    def start(self, build_list, task_list):
+    def __init__(self):
+        self.assembleQueue = AssembleQueue()
+        self.tasklist = []
+    def start(self, build_list):
         log.log('start assemble engine')
-        return execute(build_list, task_list)
+        while 1:
+            execute(self.assembleQueue, build_list, self.tasklist)
+            time.sleep(3)
+            print('=======================================')
+            print('       waitting for new task ...')
+            print('=======================================')
+            break
 
 
-def execute(build_list, task_list):
-    assembleQueue = AssembleQueue()
+def execute(assembleQueue, build_list, task_list):
+    # assembleQueue = AssembleQueue()
     analyzor = Analyzer(['.\\Configuration\\testplan.yml'])
     data = analyzor.load()
     task_data = analyzor.generate(data)
@@ -71,18 +82,24 @@ def execute(build_list, task_list):
     h_validator = HostValidator()
     s_validator = ScriptValidator()
     b_host = build_list[0]
-    for task in assembleQueue.get_task_list():
+    """
+    2019/05/15
+    assembly one task then back to refresh assemble queue,
+    so remove loop task list, only assemble tasklist[0], 
+    modify after review **********************************************************************
+    """
+    for task in assembleQueue.get_task_list()[:]:
         for uut in task.get_uut_list():
             h_validator.validate(uut)
         s_validator.validate(task)
         assembleQueue.build_task(task, b_host)
         task_list.append(task)
         log.log('delete {} from assemble queue list'.format(task.get_name()))
-        # assembleQueue.remove_task(task)
-        # print('left task:\n', assembleQueue.get_task_list())
+        assembleQueue.remove_task(task)
+        print('left task:\n', assembleQueue.get_task_list())
         print('------------------------------------')
         # ＝＝＝＝＝＝＝＝＝＝通过判读build server的status随机选择要用的 build server =============
-    return task_list
+    # task_list
 
 
 if __name__ == '__main__':
