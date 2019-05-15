@@ -16,7 +16,7 @@ class Log:
     def log(self, msg):
         print('[{}]-[{}]-[{}]: {}'.format(datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S.%f"),self.name, self.level, msg))
         with open(
-                os.path.join(os.getcwd(),'Log\\{}.log'.format(time.strftime("%Y-%m-%d_%H-%M-%S", time.localtime()))),
+                os.path.join(os.getcwd(),'Log\\{}.log'.format(time.strftime("%Y-%m-%d_%H-%M", time.localtime()))),
                 'a',
                 encoding='utf-8',
         ) as f:
