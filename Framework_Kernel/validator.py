@@ -16,7 +16,7 @@ class Validator:
 
 class HostValidator(Validator):
     def validate(self, host):
-        log.log('validate ' + host.hostnamme + ' finished')
+        log.log('validate ' + host.hostname + ' finished')
         return True
 
 

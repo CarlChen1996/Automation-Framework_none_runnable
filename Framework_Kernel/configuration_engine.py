@@ -47,12 +47,12 @@ def config_process(build_list, deploy_list):
                          hostname=b_hostname,
                          version=b_version,
                          mac=b_mac)
-    log.log('Init {}'.format(b.hostnamme))
+    log.log('Init {}'.format(b.hostname))
     d = WindowsDeployHost(ip=d_ip,
                           hostname=d_hostname,
                           version=d_version,
                           mac=d_mac)
-    log.log('Init {}'.format(d.hostnamme))
+    log.log('Init {}'.format(d.hostname))
     # b = WindowsBuildHost(
     #                       ip="192.168.1.1",
     #                       hostname="windows_Build_server1",
