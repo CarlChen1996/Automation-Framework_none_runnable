@@ -17,4 +17,4 @@ class Configurator:
         pass
 
     def config(self):
-        log.log(sys._getframe().f_code.co_name + "  finished")
+        pass

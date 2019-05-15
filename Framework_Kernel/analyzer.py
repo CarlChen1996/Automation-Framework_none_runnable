@@ -23,13 +23,13 @@ class Analyzer:
             file_handle = f.open()
             res = f.read(file_handle)
             res_tem_list.append(res)
-            print("load data {} finished".format(i))
+            # print("load data {} finished".format(i))
             f.close(file_handle)
-            print("close file {} finished".format(i))
-        print("load all data finised")
+            # print("close file {} finished".format(i))
+        # print("load all data finised")
         return res_tem_list
 
     def generate(self, res_list):
         log.log('generate Data')
-        print("generate data finished")
+        # print("generate data finished")
         return res_list

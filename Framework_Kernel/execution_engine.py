@@ -18,8 +18,11 @@ log = Log('Execution')
 
 class ExecutionEngine(Engine):
     def start(self, deploy_list, task_list):
-        log.log('start execution')
+
         execute(deploy_list, task_list)
+        print('=======================================')
+        print('       waitting for new task ...')
+        print('=======================================')
 
 
 def execute(deploy_list, task_list):
@@ -38,7 +41,9 @@ def execute(deploy_list, task_list):
         r = Report(i.get_name(),i.get_script_list())
         r.generate()
         exeQ.task_list.remove(i)
-        print('removed {}'.format(i.get_name()))
+        log.log('removed {}'.format(i.get_name()))
+        print('task left in execute queue: {}'.format(len(exeQ.task_list)))
+        print('---------------------------------------------------------------')
 
 
 if __name__ == '__main__':

@@ -24,7 +24,7 @@ class AssembleEngine(Engine):
         self.assembleQueue = AssembleQueue()
         self.tasklist = []
     def start(self, build_list):
-        log.log('start assemble engine')
+
         while 1:
             execute(self.assembleQueue, build_list, self.tasklist)
             time.sleep(3)
@@ -93,10 +93,11 @@ def execute(assembleQueue, build_list, task_list):
             h_validator.validate(uut)
         s_validator.validate(task)
         assembleQueue.build_task(task, b_host)
+        log.log('insert {} into global task_list'.format(task.get_name()))
         task_list.append(task)
-        log.log('delete {} from assemble queue list'.format(task.get_name()))
+        log.log('remove {} from assemble queue list'.format(task.get_name()))
         assembleQueue.remove_task(task)
-        print('left task:\n', assembleQueue.get_task_list())
+        print('task left in assemble queue:', len(assembleQueue.get_task_list()))
         print('------------------------------------')
         # ＝＝＝＝＝＝＝＝＝＝通过判读build server的status随机选择要用的 build server =============
     # task_list

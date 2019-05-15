@@ -47,8 +47,8 @@ class ExecuteQueue(Queue):
         self.task_list = []
 
     def deploy(self, task, host):
-        self.log.log('Execute Queue deploy {} to {}'.format(
-            task.get_name(), host.hostnamme))
+        self.log.log('Execute Queue deploy {} to {} with {}'.format(
+            task.get_name(), task.get_uut_list()[0].hostnamme, host.hostnamme))
         task.deploy(host)
 
     def execute(self, task):
