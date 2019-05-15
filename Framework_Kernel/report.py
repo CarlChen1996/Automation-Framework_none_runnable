@@ -61,14 +61,15 @@ class Report:
         # print(list(a.values()))
 
         for v in list(a.values()):
-            print(v[0])
+            # print(v[0])
+            v[0]=self.script_list[list(a.values()).index(v)].get_name()
             # for s in self.script_list:
             #     v[0]=s.get_name()
             if v[-1] not in test_list:
                 test_list.append(v[-1])
         # print(test_list)
-        for s in self.script_list:
-            print(s.get_name())
+        # for s in self.script_list:
+        #     print(s.get_name())
 
         for l in test_list:
             fdata.append([l, [], 0, 0, 0, 0])
