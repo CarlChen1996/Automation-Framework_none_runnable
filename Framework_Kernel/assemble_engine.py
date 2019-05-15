@@ -13,7 +13,6 @@ from Framework_Kernel.validator import HostValidator
 from Framework_Kernel.validator import ScriptValidator
 from Framework_Kernel.script import Script
 from Framework_Kernel.log import Log
-import time
 
 
 log = Log(name='assemble')
@@ -23,6 +22,7 @@ class AssembleEngine(Engine):
     def __init__(self):
         self.assembleQueue = AssembleQueue()
         self.tasklist = []
+
     def start(self, build_list):
 
         while 1:
@@ -85,7 +85,7 @@ def execute(assembleQueue, build_list, task_list):
     """
     2019/05/15
     assembly one task then back to refresh assemble queue,
-    so below should remove loop task list, only assemble tasklist[0], 
+    so below should remove loop task list, only assemble tasklist[0],
     modify after review **********************************************************************
     """
     for task in assembleQueue.get_task_list()[:]:

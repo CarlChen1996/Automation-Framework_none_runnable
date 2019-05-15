@@ -4,7 +4,7 @@
 # @Email   : Bamboo.pan@hp.com
 # @File    : Configurator.py
 # @Project : demo
-import sys
+
 from Framework_Kernel.log import Log
 
 

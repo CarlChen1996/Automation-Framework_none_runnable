@@ -13,7 +13,7 @@ deploy_list = []
 log.log('start configuration engine')
 conf = configuration_engine.ConfigurationEngine()
 conf.start(build_list, deploy_list)
-log.log( "configurator  finished")
+log.log("configurator  finished")
 print('====================================')
 log.log('start assemble engine')
 assemble = assemble_engine.AssembleEngine()
