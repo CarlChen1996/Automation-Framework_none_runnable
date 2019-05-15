@@ -27,7 +27,7 @@ class AssembleEngine(Engine):
 
         while 1:
             execute(self.assembleQueue, build_list, self.tasklist)
-            time.sleep(3)
+            # time.sleep(3)
             print('=======================================')
             print('       waitting for new task ...')
             print('=======================================')

@@ -4,8 +4,8 @@
 # @Email   : carl.chen@hp.com
 # @File    : log.py
 # @Project : Automation-Framework
-
-
+import os
+import time
 class Log:
     def __init__(self, name='', type='', level='info'):
         self.name = name
@@ -15,8 +15,8 @@ class Log:
     def log(self, msg):
         print('[{}]-[{}]: {}'.format(self.name, self.level, msg))
         with open(
-                'log.log',
-                'w',
+                os.path.join(os.getcwd(),'Log\\{}.log'.format(time.strftime("%Y-%m-%d_%H-%M-%S", time.localtime()))),
+                'a',
                 encoding='utf-8',
         ) as f:
-            f.write('[{}]-[{}]: {}'.format(self.name, self.level, msg))
+            f.write('[{}]-[{}]: {}'.format(self.name, self.level, msg)+'\n')
