@@ -6,6 +6,7 @@
 # @Project : Automation-Framework
 import os
 import time
+import datetime
 class Log:
     def __init__(self, name='', type='', level='info'):
         self.name = name
@@ -13,10 +14,10 @@ class Log:
         self.level = level
 
     def log(self, msg):
-        print('[{}]-[{}]: {}'.format(self.name, self.level, msg))
+        print('[{}]-[{}]-[{}]: {}'.format(datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S.%f"),self.name, self.level, msg))
         with open(
                 os.path.join(os.getcwd(),'Log\\{}.log'.format(time.strftime("%Y-%m-%d_%H-%M-%S", time.localtime()))),
                 'a',
                 encoding='utf-8',
         ) as f:
-            f.write('[{}]-[{}]: {}'.format(self.name, self.level, msg)+'\n')
+            f.write('[{}]-[{}]-[{}]: {}'.format(datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S.%f"),self.name, self.level, msg)+'\n')
