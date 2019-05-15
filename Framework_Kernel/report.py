@@ -11,13 +11,16 @@ import os
 log=Log('report')
 
 class Report:
-    def __init__(self, name='', type='HTML', template='1',):
+    def __init__(self, name, script_list, type='HTML', template='1',):
         self.name = name
         self.type = type
         self.template = template
+        self.script_list=script_list
         self.data=self.fdata()
     def generate(self):
         # print('generate html finished')
+        # print(self.script_list)
+
         env = Environment(loader=FileSystemLoader(os.path.join(os.getcwd(),'Framework_Kernel/templates'), encoding='utf-8'))
         information = {'Category': 'HPDM / HPWF / UWF /ThinUpdate/ ',
                        'Version': ' 1.0/ 1.0/ 1.0/ 1.0	',
@@ -25,6 +28,7 @@ class Report:
                        'Duration': ' 00:30:03',
                        'Note': '为了RC的最后一次回归测试',
                        }
+
         ffdata = self.data['fdata']
         passCount = self.data['passCount']
         failCount = self.data['failCount']
@@ -54,10 +58,17 @@ class Report:
         fdata = []
         f = open(file, encoding='utf-8')
         a = yaml.safe_load(f.read())
-        for v in a.values():
+        # print(list(a.values()))
+
+        for v in list(a.values()):
+            print(v[0])
+            # for s in self.script_list:
+            #     v[0]=s.get_name()
             if v[-1] not in test_list:
                 test_list.append(v[-1])
         # print(test_list)
+        for s in self.script_list:
+            print(s.get_name())
 
         for l in test_list:
             fdata.append([l, [], 0, 0, 0, 0])

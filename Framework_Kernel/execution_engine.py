@@ -34,7 +34,8 @@ def execute(deploy_list, task_list):
         # --------需要得到返回值 ------------------
         exeQ.check_status(i)
         exeQ.collect_result(i)
-        r = Report(i.get_name())
+        print(i.get_script_list())
+        r = Report(i.get_name(),i.get_script_list())
         r.generate()
         # exeQ.task_list.remove(i)
         # print('removed {}'.format(i.get_name()))
