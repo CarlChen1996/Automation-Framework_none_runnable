@@ -85,7 +85,7 @@ def execute(assembleQueue, build_list, task_list):
     """
     2019/05/15
     assembly one task then back to refresh assemble queue,
-    so remove loop task list, only assemble tasklist[0], 
+    so below should remove loop task list, only assemble tasklist[0], 
     modify after review **********************************************************************
     """
     for task in assembleQueue.get_task_list()[:]:
@@ -100,7 +100,7 @@ def execute(assembleQueue, build_list, task_list):
         print('task left in assemble queue:', len(assembleQueue.get_task_list()))
         print('------------------------------------')
         # ＝＝＝＝＝＝＝＝＝＝通过判读build server的status随机选择要用的 build server =============
-    # task_list
+    print('all task assemble finished')
 
 
 if __name__ == '__main__':

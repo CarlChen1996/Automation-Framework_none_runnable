@@ -41,9 +41,10 @@ def execute(deploy_list, task_list):
         r = Report(i.get_name(),i.get_script_list())
         r.generate()
         exeQ.task_list.remove(i)
-        log.log('removed {}'.format(i.get_name()))
+        log.log('removed {} from execute queue'.format(i.get_name()))
         print('task left in execute queue: {}'.format(len(exeQ.task_list)))
         print('---------------------------------------------------------------')
+    print('All task execution finished')
 
 
 if __name__ == '__main__':
