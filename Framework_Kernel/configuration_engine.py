@@ -11,22 +11,23 @@ from Framework_Kernel.analyzer import Analyzer
 from Framework_Kernel.validator import HostValidator
 from Framework_Kernel.log import Log
 import os
-from multiprocessing import Process,Pipe
+from multiprocessing import Process, Pipe
+
 log = Log(name='configuration')
 
 
 class ConfigurationEngine(Engine):
     def start(self, build_list, deploy_list):
-        receive_con,send_con = Pipe()
-        configuration_process=Process(target=config_process,args=(send_con,))
+        receive_con, send_con = Pipe()
+        configuration_process = Process(target=config_process, args=(send_con,))
         configuration_process.start()
-        self.status=configuration_process
+        self.status = configuration_process
 
-        receive=receive_con.recv()
+        receive = receive_con.recv()
         for i in receive:
-            if isinstance(i,WindowsBuildHost):
+            if isinstance(i, WindowsBuildHost):
                 build_list.append(i)
-            elif isinstance(i,WindowsDeployHost):
+            elif isinstance(i, WindowsDeployHost):
                 deploy_list.append(i)
 
 
@@ -82,4 +83,3 @@ def config_process(send_con):
         d.Status = "on"
         sends.append(d)
     send_con.send(sends)
-

@@ -14,11 +14,8 @@ from Framework_Kernel.validator import ScriptValidator
 from Framework_Kernel.script import Script
 from Framework_Kernel.log import Log
 from multiprocessing import Process
-from multiprocessing import Pipe
 import time
 import threading
-
-
 log = Log(name='assemble')
 
 
@@ -36,7 +33,6 @@ class AssembleEngine(Engine):
         """
         while 1:
             print('#[thread1_fresh Assemble Queue] ***************begin to refresh queue *****************')
-
             analyzor = Analyzer(['.\\Configuration\\testplan.yml'])
             data = analyzor.load()
             task_data = analyzor.generate(data)
@@ -81,16 +77,15 @@ class AssembleEngine(Engine):
                 print('[thread1_fresh Assemble Queue]---------------insert {} into assembly queue-------'.format(task.get_name()))
                 self.assembleQueue.insert_task(task=task)
                 print(len(self.assembleQueue.get_task_list()))
-
             time.sleep(10)
 
     def new_process(self):
         assembler = Process(target=self.test, name='framework_Assembler', args=(self.pipe, self.build_list))
         assembler.start()
-        # self.status = assembler
+        self.status = assembler
 
     def test(self, pipe, build_list):
-        refreshQ_thread = threading.Thread(target=self.new_thread, name= 'frame_assembler_new_thread', args=())
+        refreshQ_thread = threading.Thread(target=self.new_thread, name='frame_assembler_new_thread', args=())
         refreshQ_thread.start()
         while not False:
             execute(self.assembleQueue, build_list, pipe)

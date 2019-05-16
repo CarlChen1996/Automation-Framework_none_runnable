@@ -1,10 +1,4 @@
 from multiprocessing import Pipe
-from multiprocessing import Process
-from multiprocessing import Pipe
-import threading
-from time import ctime
-import time
-import os
 from Framework_Kernel import configuration_engine
 from Framework_Kernel import assemble_engine
 from Framework_Kernel import execution_engine
@@ -16,10 +10,8 @@ if __name__ == '__main__':
     log = log.Log(name='framework')
     log.log('Begin to start controller')
     print('====================================')
-
     build_list = []
     deploy_list = []
-
     log.log('start configuration engine')
     conf = configuration_engine.ConfigurationEngine()
     conf.start(build_list, deploy_list)

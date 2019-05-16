@@ -5,12 +5,9 @@
 # @File    : ExecutionEngine.py
 # @Project : Automation-Framework
 from multiprocessing import Process
-from multiprocessing import Process
-from multiprocessing import Pipe
 import threading
 from time import ctime
 import time
-import os
 from Framework_Kernel.engine import Engine
 from Framework_Kernel.queue import ExecuteQueue
 '''
@@ -30,9 +27,11 @@ class ExecutionEngine(Engine):
         self.deploy_list = deploy_list
         self.executor = Process(target=self.execute_q, name='framework_executor', args=())
         self.exeQ = ExecuteQueue()
+        self.status = self.executor
         # self.exeQ.task_list=[]
         # -----------execute结束后需要同时删除task list-----------------
         # exeQ.task_list = task_list.copy()
+
     def start(self):
         self.executor.start()
         print('=======================================')
@@ -88,7 +87,6 @@ class ExecutionEngine(Engine):
         log.log('removed {} from execute queue'.format(i.get_name()))
         print('task left in execute queue: {}'.format(len(self.exeQ.task_list)))
         print('---------------------------------------------------------------')
-
 
 
 if __name__ == '__main__':
