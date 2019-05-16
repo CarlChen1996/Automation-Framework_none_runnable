@@ -11,28 +11,35 @@ from Framework_Kernel.analyzer import Analyzer
 from Framework_Kernel.validator import HostValidator
 from Framework_Kernel.log import Log
 import os
-
+from multiprocessing import Process,Pipe
 log = Log(name='configuration')
 
 
 class ConfigurationEngine(Engine):
     def start(self, build_list, deploy_list):
-        log.log('start configurator')
-        config_process(build_list, deploy_list)
+        receive_con,send_con = Pipe()
+        configuration_process=Process(target=config_process,args=(send_con,))
+        configuration_process.start()
+        self.status=configuration_process
+
+        receive=receive_con.recv()
+        for i in receive:
+            if isinstance(i,WindowsBuildHost):
+                build_list.append(i)
+            elif isinstance(i,WindowsDeployHost):
+                deploy_list.append(i)
 
 
-def config_process(build_list, deploy_list):
+def config_process(send_con):
+    log.log("configuration engine PID is {}".format(str(os.getpid())))
     c = Configurator()
     c.config()
-
     env_host = os.path.join((os.path.abspath(r".\Configuration")),
                             "env_host.yml")
     analyze = Analyzer([env_host])
     env_host_res = analyze.load()
     env_host_data = analyze.generate(env_host_res)
-
     build_host_data = env_host_data[0][0]
-
     deploy_host_data = env_host_data[0][1]
     b_ip = build_host_data.get("ip")
     b_hostname = build_host_data.get("hostname")
@@ -67,18 +74,12 @@ def config_process(build_list, deploy_list):
 
     v = HostValidator()
     # 下面要判断OFF的情况--------------------------------------------------------
+    sends = []
     if v.validate(b):
         b.Status = "on"
-        build_list.append(b)
+        sends.append(b)
     if v.validate(d):
         d.Status = "on"
-        deploy_list.append(d)
+        sends.append(d)
+    send_con.send(sends)
 
-
-if __name__ == "__main__":
-    build_list = []
-    deploy_list = []
-    config_process()
-
-    print(build_list)
-    print(deploy_list)
