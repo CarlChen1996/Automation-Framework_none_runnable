@@ -25,10 +25,12 @@ plan_root = os.path.join(root, 'Configuration\\test_plan')
 
 class AssembleEngine(Engine):
     def __init__(self, pipe, build_list):
+        self.assembler = Process(target=self.new_thread, name='framework_Assembler', args=())
         self.pipe = pipe
         self.assembleQueue = AssembleQueue()
         self.tasklist = []
         self.build_list = build_list
+        self.status = self.assembler
 
     def freash_queue(self):
         """
@@ -41,6 +43,7 @@ class AssembleEngine(Engine):
             filelist = []
             for i in templist:
                 if 'PASS' in i.upper() or 'FAIL' in i.upper():
+                    time.sleep(3)
                     continue
                 filelist.append(os.path.join(plan_root, i))
             analyzor = Analyzer(filelist)
@@ -52,13 +55,14 @@ class AssembleEngine(Engine):
                 file_path = list(i.keys())[0]
                 i[file_path]['file_path'] = file_path
                 task_source_list.append(i[file_path])
-            print(task_source_list)
             """
             # task_data: [{filepath1:taskitem1},{filepath2:taskitem2}]
+            # task_source_list: [taskitem1, taskitem2]
             # taskitem: {               name:task1,
             #                           testscripts:[script1, script2,],
             #                           uutlist:[uutinformatio,uutinformation],
-            #                           needbuild:true}
+            #                           needbuild:true
+            #                           file_path:c:\\xxxx\\xxx\\testplan\\xxx.yml}
             # uutinformation: {         hostname: uut1,
             #                           ip:1.1.1.1,
             #                           mac:1234566,
@@ -78,7 +82,7 @@ class AssembleEngine(Engine):
                     task.insert_uut_list(uut)
                 log.log('[thread1]--insert {} to assemble queue list'.format(task.get_name()))
                 self.assembleQueue.insert_task(task=task)
-                # ********************rename task plan name *************************
+                # -------------------rename task plan name -------------------------
                 os.rename(taskitem['file_path'], taskitem['file_path']+'PASS')
             log.log('[thread1] ***************finish refresh queue *****************')
             log.log('[thread1] left task in assemble queue: {}'.format(len(self.assembleQueue.get_task_list())))
@@ -89,25 +93,28 @@ class AssembleEngine(Engine):
             assemble(self.assembleQueue, build_list, pipe)
             time.sleep(1)
 
-    def start(self):
-        assembler = Process(target=self.new_thread, name='framework_Assembler', args=())
-        assembler.start()
-        self.status = assembler
-
     def new_thread(self):
         refreshQ_thread = threading.Thread(target=self.freash_queue, name='thread1', args=())
+        refreshQ_thread.setDaemon(True)
         refreshQ_thread.start()
         process_thread = threading.Thread(target=self.process, name='thread2', args=(self.pipe, self.build_list))
+        process_thread.setDaemon(True)
         process_thread.start()
-        # process_thread.join()
+        process_thread.join()
+
+    def start(self):
+        self.assembler.start()
+
+    def stop(self):
+        self.assembler.kill()
 
 
 def assemble(assembleQueue, build_list, pipe):
     log.log('[thread2] ************************ Begine to assemble... **********************')
     try:
         if len(assembleQueue.get_task_list()) == 0:
-            print('[thread2]************************ no task in list **********************')
-            print('[thread2]************************ wait for new task to assemble **********************')
+            log.log('[thread2]************************ no task in list **********************')
+            log.log('[thread2]************************ wait for new task to assemble **********************')
             time.sleep(10)
             return
         h_validator = HostValidator()
