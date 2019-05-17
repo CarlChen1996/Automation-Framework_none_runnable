@@ -34,9 +34,6 @@ class ExecutionEngine(Engine):
 
     def start(self):
         self.executor.start()
-        print('=======================================')
-        print('       waitting for a new task to execute...')
-        print('=======================================')
 
     def execute_q(self):
         threads_2 = []
@@ -56,7 +53,7 @@ class ExecutionEngine(Engine):
             log.log("[thred_3] receive: {}".format(receive.get_name()))
             self.exeQ.task_list.append(receive)
             log.log('[thred_3] append {} to task_list'.format(receive.get_name()))
-            log.log('[thred_3] task_list now is {}'.format(self.exeQ.task_list))
+            log.log('[thred_3] task_list now is {}'.format(list(map(lambda i: i.get_name(), self.exeQ.task_list))))
             time.sleep(1)
 
     def thred_4(self):
@@ -65,7 +62,7 @@ class ExecutionEngine(Engine):
             log.log('[thred_4] task_list left: {}'.format(len(self.exeQ.task_list)))
             if self.exeQ.task_list:
                 self.execute()
-            log.log('[thred_4] task_list now is : {}'.format(list(map(lambda i:i.get_name(),self.exeQ.task_list))))
+            log.log('[thred_4] task_list now is : {}'.format(list(map(lambda i: i.get_name(), self.exeQ.task_list))))
             time.sleep(5)
 
     def execute(self,):

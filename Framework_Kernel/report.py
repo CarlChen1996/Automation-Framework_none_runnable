@@ -25,8 +25,8 @@ class Report:
 
         env = Environment(loader=FileSystemLoader(os.path.join(os.getcwd(), 'Framework_Kernel/templates'),
                                                   encoding='utf-8'))
-        information = {'Category': 'HPDM / HPWF / UWF /ThinUpdate/ ',
-                       'Version': ' 1.0/ 1.0/ 1.0/ 1.0	',
+        information = {'Category': 'TEST ',
+                       'Version': ' 1.0',
                        'Start Time': ' 2018-5-14 14:58:27',
                        'Duration': ' 00:30:03',
                        'Note': '为了RC的最后一次回归测试',
@@ -56,7 +56,7 @@ class Report:
         log.log('generate {}.html finished'.format(self.name))
 
     def fdata(self):
-        file = os.path.join(os.getcwd(), 'Framework_Kernel\\{}_result.yaml'.format(self.name))
+        file = os.path.join(os.getcwd(), 'Framework_Kernel\\result.yaml')
         passCount = 0
         failCount = 0
         norunCount = 0
@@ -69,11 +69,15 @@ class Report:
 
         for v in list(a.values()):
             # print(v[0])
-            v[0] = self.script_list[list(a.values()).index(v)].get_name()
-            # for s in self.script_list:
-            #     v[0]=s.get_name()
-            if v[-1] not in test_list:
-                test_list.append(v[-1])
+            # print(self.script_list)
+            if list(a.values()).index(v) < len(self.script_list):
+                v[0] = self.script_list[list(a.values()).index(v)].get_name()
+                # for s in self.script_list:
+                #     print(s.get_name())
+                if v[-1] not in test_list:
+                    test_list.append(v[-1])
+            else:
+                break
         # print(test_list)
         # for s in self.script_list:
         #     print(s.get_name())
