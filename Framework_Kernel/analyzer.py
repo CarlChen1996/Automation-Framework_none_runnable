@@ -22,7 +22,7 @@ class Analyzer:
             f = YamlFile(os.path.dirname(i), os.path.basename(i))
             file_handle = f.open()
             res = f.read(file_handle)
-            res_tem_list.append(res)
+            res_tem_list.append({i: res})
             # print("load data {} finished".format(i))
             f.close(file_handle)
             # print("close file {} finished".format(i))
