@@ -10,25 +10,25 @@ if __name__ == '__main__':
     pipe = Pipe()
     log = log.Log(name='framework')
     log.log('Begin to start controller')
-    print('====================================')
+    print('=================Begin to start controller===================')
     build_list = []
     deploy_list = []
     log.log('start configuration engine')
     conf = configuration_engine.ConfigurationEngine()
     conf.start(build_list, deploy_list)
     log.log("configurator  finished")
-    print('====================================')
+    print('==============start assemble engine======================')
     log.log('start assemble engine')
     assemble = assemble_engine.AssembleEngine(pipe[0], build_list)
     assemble.start()
     log.log('assemble finished')
-    print('======================================')
+    print('=================start execution engine=====================')
     log.log('start execution engine')
     exe = execution_engine.ExecutionEngine(deploy_list, pipe[1])
     exe.start()
     log.log('execution finished')
     while True:
-        time.sleep(3)
+        time.sleep(15)
         # log.log("configuration engine current status is {}".format(str(conf.status.is_alive())))
         # if not conf.status.is_alive():
         #     conf.start(build_list, deploy_list)
@@ -38,7 +38,7 @@ if __name__ == '__main__':
         #         log.log("restart config fail")
         log.log("assembly engine current status is {}".format(str(assemble.status.is_alive())))
         if not assemble.status.is_alive():
-            assemble.new_process()
+            assemble.start()
             if assemble.status.is_alive():
                 log.log("restart assembly success")
             else:
