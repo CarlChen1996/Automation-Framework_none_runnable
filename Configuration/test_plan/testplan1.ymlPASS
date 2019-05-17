@@ -1,0 +1,20 @@
+name: task1
+testscripts:
+    - task1script1
+    - task1script2
+    - task1script3
+    - task1script4
+    - task1script5
+    - task1script6
+uutlist:
+    - 
+        hostname: uut1
+        ip: 15.83.250.1
+        mac: 13354k31sf
+        version: win7
+    - 
+        hostname: uut2
+        ip: 15.83.250.1
+        mac: 13354k31sf
+        version: win7
+needbuild: True

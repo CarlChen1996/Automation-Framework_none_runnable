@@ -1,0 +1,22 @@
+[2019-05-17_13-23-43.003107]-[framework]-[info]: Begin to start controller
+[2019-05-17_13-23-43.004141]-[framework]-[info]: start configuration engine
+[2019-05-17_13-23-43.269353]-[configuration]-[info]: configuration engine PID is 31588
+[2019-05-17_13-23-43.269837]-[analyzer]-[info]: Load Data from file 
+[2019-05-17_13-23-43.272318]-[analyzer]-[info]: generate Data
+[2019-05-17_13-23-43.272862]-[configuration]-[info]: Init windows_build_server1
+[2019-05-17_13-23-43.272862]-[configuration]-[info]: Init windows_deploy_server1
+[2019-05-17_13-23-43.273363]-[Validator]-[info]: validate windows_build_server1 finished
+[2019-05-17_13-23-43.273846]-[Validator]-[info]: validate windows_deploy_server1 finished
+[2019-05-17_13-23-43.284507]-[framework]-[info]: configurator  finished
+[2019-05-17_13-23-43.284974]-[framework]-[info]: start assemble engine
+[2019-05-17_13-23-43.293530]-[framework]-[info]: assemble finished
+[2019-05-17_13-23-43.293999]-[framework]-[info]: start execution engine
+[2019-05-17_13-23-43.305028]-[framework]-[info]: execution finished
+[2019-05-17_13-23-43.575744]-[assemble]-[info]: #[thread1] ***************begin to refresh queue *****************
+[2019-05-17_13-23-43.575744]-[assemble]-[info]: [thread2] ************************ Begine to assemble... **********************
+[2019-05-17_13-23-43.576245]-[analyzer]-[info]: Load Data from file 
+[2019-05-17_13-23-43.576746]-[analyzer]-[info]: generate Data
+[2019-05-17_13-23-43.577247]-[assemble]-[info]: [thread1] ***************finish refresh queue *****************
+[2019-05-17_13-23-43.577749]-[assemble]-[info]: [thread1] left task in assemble queue: 0
+[2019-05-17_13-23-44.582504]-[Execution]-[info]: [thred_4] task_list left: 0
+[2019-05-17_13-23-44.583007]-[Execution]-[info]: [thred_4] task_list now is : []

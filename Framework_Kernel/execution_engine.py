@@ -37,9 +37,9 @@ class ExecutionEngine(Engine):
 
     def execute_q(self):
         threads_2 = []
-        t3 = threading.Thread(target=self.thred_3, args=())
+        t3 = threading.Thread(target=self.thread_3, args=())
         threads_2.append(t3)
-        t4 = threading.Thread(target=self.thred_4, args=())
+        t4 = threading.Thread(target=self.thread_4, args=())
         threads_2.append(t4)
         for tt in threads_2:
             tt.setDaemon(True)
@@ -47,22 +47,22 @@ class ExecutionEngine(Engine):
             # t.join()
         tt.join()
 
-    def thred_3(self):
+    def thread_3(self):
         while not False:
             receive = self.pipe.recv()
-            log.log("[thred_3] receive: {}".format(receive.get_name()))
+            log.log("[thread_3] receive: {}".format(receive.get_name()))
             self.exeQ.task_list.append(receive)
-            log.log('[thred_3] append {} to task_list'.format(receive.get_name()))
-            log.log('[thred_3] task_list now is {}'.format(list(map(lambda i: i.get_name(), self.exeQ.task_list))))
+            log.log('[thread_3] append {} to task_list'.format(receive.get_name()))
+            log.log('[thread_3] task_list now is {}'.format(list(map(lambda i: i.get_name(), self.exeQ.task_list))))
             time.sleep(1)
 
-    def thred_4(self):
+    def thread_4(self):
         while True:
             time.sleep(1)
-            log.log('[thred_4] task_list left: {}'.format(len(self.exeQ.task_list)))
+            log.log('[thread_4] task_list left: {}'.format(len(self.exeQ.task_list)))
             if self.exeQ.task_list:
                 self.execute()
-            log.log('[thred_4] task_list now is : {}'.format(list(map(lambda i: i.get_name(), self.exeQ.task_list))))
+            log.log('[thread_4] task_list now is : {}'.format(list(map(lambda i: i.get_name(), self.exeQ.task_list))))
             time.sleep(5)
 
     def execute(self,):
@@ -77,9 +77,9 @@ class ExecutionEngine(Engine):
         r = Report(i.get_name(), i.get_script_list())
         r.generate()
         self.exeQ.task_list.remove(i)
-        log.log("[thred_4] remove {} from task_list".format(i.get_name()))
-        log.log('[thred_4] remove {} from execute queue'.format(i.get_name()))
-        log.log('[thred_4] task left in execute queue: {}'.format(len(self.exeQ.task_list)))
+        log.log("[thread_4] remove {} from task_list".format(i.get_name()))
+        log.log('[thread_4] remove {} from execute queue'.format(i.get_name()))
+        log.log('[thread_4] task left in execute queue: {}'.format(len(self.exeQ.task_list)))
         print('---------------------------------------------------------------')
 
 

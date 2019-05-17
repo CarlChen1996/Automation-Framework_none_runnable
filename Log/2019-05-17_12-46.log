@@ -1,0 +1,64 @@
+[2019-05-17_12-46-00.170060]-[assemble]-[info]: [thread2] ************************ Begine to assemble... **********************
+[2019-05-17_12-46-01.178995]-[Execution]-[info]: [thred_4] task_list left: 1
+[2019-05-17_12-46-01.179496]-[Execute Queue]-[info]: Execute Queue deploy task1 to uut1 with windows_deploy_server1
+[2019-05-17_12-46-01.179496]-[Deploy host]-[info]: deploy package: task1 Pass
+[2019-05-17_12-46-01.179997]-[Execute Queue]-[info]: Execute Queue execute task1 on uut1
+[2019-05-17_12-46-01.180499]-[uut]-[info]: execute task1 on  uut1
+[2019-05-17_12-46-01.181000]-[Execute Queue]-[info]: Execute Queue execute task1 on uut2
+[2019-05-17_12-46-01.181000]-[uut]-[info]: execute task1 on  uut1
+[2019-05-17_12-46-01.192029]-[Execute Queue]-[info]: Execute Queue check status task1 on uut1
+[2019-05-17_12-46-01.192531]-[uut]-[info]: check task1 status on uut1
+[2019-05-17_12-46-01.193034]-[Execute Queue]-[info]: Execute Queue check status task1 on uut2
+[2019-05-17_12-46-01.193534]-[uut]-[info]: check task1 status on uut1
+[2019-05-17_12-46-01.194035]-[Execute Queue]-[info]: Execute Queue collect result task1 from uut1
+[2019-05-17_12-46-01.194536]-[uut]-[info]: collect task1 result from uut1
+[2019-05-17_12-46-01.194536]-[Execute Queue]-[info]: Execute Queue collect result task1 from uut2
+[2019-05-17_12-46-01.195037]-[uut]-[info]: collect task1 result from uut1
+[2019-05-17_12-46-01.231132]-[report]-[info]: generate task1.html finished
+[2019-05-17_12-46-01.231633]-[Execution]-[info]: [thred_4] remove task1 from task_list
+[2019-05-17_12-46-01.232135]-[Execution]-[info]: [thred_4] remove task1 from execute queue
+[2019-05-17_12-46-01.232636]-[Execution]-[info]: [thred_4] task left in execute queue: 0
+[2019-05-17_12-46-01.232636]-[Execution]-[info]: [thred_4] task_list now is : []
+[2019-05-17_12-46-02.839044]-[framework]-[info]: assembly engine current status is True
+[2019-05-17_12-46-02.839563]-[framework]-[info]: execution engine current status is True
+[2019-05-17_12-46-50.636859]-[framework]-[info]: Begin to start controller
+[2019-05-17_12-46-50.637361]-[framework]-[info]: start configuration engine
+[2019-05-17_12-46-50.912932]-[configuration]-[info]: configuration engine PID is 22820
+[2019-05-17_12-46-50.913446]-[analyzer]-[info]: Load Data from file 
+[2019-05-17_12-46-50.915958]-[analyzer]-[info]: generate Data
+[2019-05-17_12-46-50.916447]-[configuration]-[info]: Init windows_build_server1
+[2019-05-17_12-46-50.916447]-[configuration]-[info]: Init windows_deploy_server1
+[2019-05-17_12-46-50.916958]-[Validator]-[info]: validate windows_build_server1 finished
+[2019-05-17_12-46-50.917449]-[Validator]-[info]: validate windows_deploy_server1 finished
+[2019-05-17_12-46-50.917917]-[framework]-[info]: configurator  finished
+[2019-05-17_12-46-50.918419]-[framework]-[info]: start assemble engine
+[2019-05-17_12-46-50.927944]-[framework]-[info]: assemble finished
+[2019-05-17_12-46-50.928445]-[framework]-[info]: start execution engine
+[2019-05-17_12-46-50.937970]-[framework]-[info]: execution finished
+[2019-05-17_12-46-51.234252]-[assemble]-[info]: #[thread1] ***************begin to refresh queue *****************
+[2019-05-17_12-46-51.234252]-[assemble]-[info]: [thread2] ************************ Begine to assemble... **********************
+[2019-05-17_12-46-51.234753]-[analyzer]-[info]: Load Data from file 
+[2019-05-17_12-46-51.235254]-[analyzer]-[info]: generate Data
+[2019-05-17_12-46-51.235759]-[assemble]-[info]: [thread1] ***************finish refresh queue *****************
+[2019-05-17_12-46-51.236758]-[assemble]-[info]: [thread1] left task in assemble queue: 0
+[2019-05-17_12-46-58.719890]-[framework]-[info]: Begin to start controller
+[2019-05-17_12-46-58.720392]-[framework]-[info]: start configuration engine
+[2019-05-17_12-46-58.976820]-[configuration]-[info]: configuration engine PID is 46492
+[2019-05-17_12-46-58.977370]-[analyzer]-[info]: Load Data from file 
+[2019-05-17_12-46-58.979375]-[analyzer]-[info]: generate Data
+[2019-05-17_12-46-58.979879]-[configuration]-[info]: Init windows_build_server1
+[2019-05-17_12-46-58.980381]-[configuration]-[info]: Init windows_deploy_server1
+[2019-05-17_12-46-58.980829]-[Validator]-[info]: validate windows_build_server1 finished
+[2019-05-17_12-46-58.981330]-[Validator]-[info]: validate windows_deploy_server1 finished
+[2019-05-17_12-46-58.981831]-[framework]-[info]: configurator  finished
+[2019-05-17_12-46-58.982332]-[framework]-[info]: start assemble engine
+[2019-05-17_12-46-58.991858]-[framework]-[info]: assemble finished
+[2019-05-17_12-46-58.992860]-[framework]-[info]: start execution engine
+[2019-05-17_12-46-59.001884]-[framework]-[info]: execution finished
+[2019-05-17_12-46-59.258059]-[assemble]-[info]: #[thread1] ***************begin to refresh queue *****************
+[2019-05-17_12-46-59.258059]-[assemble]-[info]: [thread2] ************************ Begine to assemble... **********************
+[2019-05-17_12-46-59.258561]-[analyzer]-[info]: Load Data from file 
+[2019-05-17_12-46-59.261110]-[analyzer]-[info]: generate Data
+[2019-05-17_12-46-59.261569]-[assemble]-[info]: [thread1]--insert task1 to assemble queue list
+[2019-05-17_12-46-59.263098]-[assemble]-[info]: [thread1] ***************finish refresh queue *****************
+[2019-05-17_12-46-59.263574]-[assemble]-[info]: [thread1] left task in assemble queue: 1

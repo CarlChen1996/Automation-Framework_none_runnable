@@ -1,0 +1,81 @@
+[2019-05-17_10-56-02.306979]-[framework]-[info]: Begin to start controller
+[2019-05-17_10-56-02.307481]-[framework]-[info]: start configuration engine
+[2019-05-17_10-56-02.580704]-[configuration]-[info]: configuration engine PID is 23068
+[2019-05-17_10-56-02.581230]-[analyzer]-[info]: Load Data from file 
+[2019-05-17_10-56-02.584214]-[analyzer]-[info]: generate Data
+[2019-05-17_10-56-02.584749]-[configuration]-[info]: Init windows_build_server1
+[2019-05-17_10-56-02.585216]-[configuration]-[info]: Init windows_deploy_server1
+[2019-05-17_10-56-02.585216]-[Validator]-[info]: validate windows_build_server1 finished
+[2019-05-17_10-56-02.585718]-[Validator]-[info]: validate windows_deploy_server1 finished
+[2019-05-17_10-56-02.596277]-[framework]-[info]: configurator  finished
+[2019-05-17_10-56-02.597282]-[framework]-[info]: start assemble engine
+[2019-05-17_10-56-02.607807]-[framework]-[info]: assemble finished
+[2019-05-17_10-56-02.609813]-[framework]-[info]: start execution engine
+[2019-05-17_10-56-02.629365]-[framework]-[info]: execution finished
+[2019-05-17_10-56-03.083605]-[assemble]-[info]: #[thread1] ***************begin to refresh queue *****************
+***********
+[2019-05-17_10-56-03.084606]-[analyzer]-[info]: Load Data from file 
+[2019-05-17_10-56-03.085107]-[analyzer]-[info]: generate Data
+[2019-05-17_10-56-03.085609]-[assemble]-[info]: [thread1] ***************finish refresh queue *****************
+[2019-05-17_10-56-03.086110]-[assemble]-[info]: [thread1] left task in assemble queue: 0
+[2019-05-17_10-56-04.083643]-[Execution]-[info]: [thred_4] task_list left: 0
+[2019-05-17_10-56-22.857340]-[framework]-[info]: Begin to start controller
+[2019-05-17_10-56-22.858343]-[framework]-[info]: start configuration engine
+[2019-05-17_10-56-23.115021]-[configuration]-[info]: configuration engine PID is 53304
+[2019-05-17_10-56-23.115523]-[analyzer]-[info]: Load Data from file 
+[2019-05-17_10-56-23.117527]-[analyzer]-[info]: generate Data
+[2019-05-17_10-56-23.118029]-[configuration]-[info]: Init windows_build_server1
+[2019-05-17_10-56-23.118530]-[configuration]-[info]: Init windows_deploy_server1
+[2019-05-17_10-56-23.118530]-[Validator]-[info]: validate windows_build_server1 finished
+[2019-05-17_10-56-23.119031]-[Validator]-[info]: validate windows_deploy_server1 finished
+[2019-05-17_10-56-23.120034]-[framework]-[info]: configurator  finished
+[2019-05-17_10-56-23.120535]-[framework]-[info]: start assemble engine
+[2019-05-17_10-56-23.130093]-[framework]-[info]: assemble finished
+[2019-05-17_10-56-23.130563]-[framework]-[info]: start execution engine
+[2019-05-17_10-56-23.139586]-[framework]-[info]: execution finished
+[2019-05-17_10-56-23.401278]-[assemble]-[info]: #[thread1] ***************begin to refresh queue *****************
+[2019-05-17_10-56-23.401278]-[assemble]-[info]: [thread2] ************************ Begine to assemble... **********************
+[2019-05-17_10-56-23.401780]-[analyzer]-[info]: Load Data from file 
+[2019-05-17_10-56-23.402282]-[analyzer]-[info]: generate Data
+[2019-05-17_10-56-23.402282]-[assemble]-[info]: [thread1] ***************finish refresh queue *****************
+[2019-05-17_10-56-23.402807]-[assemble]-[info]: [thread1] left task in assemble queue: 0
+[2019-05-17_10-56-24.410620]-[Execution]-[info]: [thred_4] task_list left: 0
+[2019-05-17_10-56-24.411121]-[Execution]-[info]: [thred_4] task_list now is : []
+[2019-05-17_10-56-26.141324]-[framework]-[info]: assembly engine current status is True
+[2019-05-17_10-56-26.141825]-[framework]-[info]: execution engine current status is True
+[2019-05-17_10-56-29.142416]-[framework]-[info]: assembly engine current status is True
+[2019-05-17_10-56-29.142918]-[framework]-[info]: execution engine current status is True
+[2019-05-17_10-56-30.413236]-[Execution]-[info]: [thred_4] task_list left: 0
+[2019-05-17_10-56-30.413737]-[Execution]-[info]: [thred_4] task_list now is : []
+[2019-05-17_10-56-32.143785]-[framework]-[info]: assembly engine current status is True
+[2019-05-17_10-56-32.144254]-[framework]-[info]: execution engine current status is True
+[2019-05-17_10-56-33.404368]-[assemble]-[info]: #[thread1] ***************begin to refresh queue *****************
+[2019-05-17_10-56-33.404869]-[analyzer]-[info]: Load Data from file 
+[2019-05-17_10-56-33.405370]-[analyzer]-[info]: generate Data
+[2019-05-17_10-56-33.405370]-[assemble]-[info]: [thread1] ***************finish refresh queue *****************
+[2019-05-17_10-56-33.406394]-[assemble]-[info]: [thread1] left task in assemble queue: 0
+[2019-05-17_10-56-34.402698]-[assemble]-[info]: [thread2] ************************ Begine to assemble... **********************
+[2019-05-17_10-56-35.145280]-[framework]-[info]: assembly engine current status is True
+[2019-05-17_10-56-35.145280]-[framework]-[info]: execution engine current status is True
+[2019-05-17_10-56-36.415470]-[Execution]-[info]: [thred_4] task_list left: 0
+[2019-05-17_10-56-36.415470]-[Execution]-[info]: [thred_4] task_list now is : []
+[2019-05-17_10-56-38.146209]-[framework]-[info]: assembly engine current status is True
+[2019-05-17_10-56-38.146711]-[framework]-[info]: execution engine current status is True
+[2019-05-17_10-56-41.148249]-[framework]-[info]: assembly engine current status is True
+[2019-05-17_10-56-41.148750]-[framework]-[info]: execution engine current status is True
+[2019-05-17_10-56-42.416876]-[Execution]-[info]: [thred_4] task_list left: 0
+[2019-05-17_10-56-42.417343]-[Execution]-[info]: [thred_4] task_list now is : []
+[2019-05-17_10-56-43.407230]-[assemble]-[info]: #[thread1] ***************begin to refresh queue *****************
+[2019-05-17_10-56-43.408735]-[analyzer]-[info]: Load Data from file 
+[2019-05-17_10-56-43.409237]-[analyzer]-[info]: generate Data
+[2019-05-17_10-56-43.409738]-[assemble]-[info]: [thread1] ***************finish refresh queue *****************
+[2019-05-17_10-56-43.410283]-[assemble]-[info]: [thread1] left task in assemble queue: 0
+[2019-05-17_10-56-44.149219]-[framework]-[info]: assembly engine current status is True
+[2019-05-17_10-56-44.149748]-[framework]-[info]: execution engine current status is True
+[2019-05-17_10-56-45.404235]-[assemble]-[info]: [thread2] ************************ Begine to assemble... **********************
+[2019-05-17_10-56-47.150313]-[framework]-[info]: assembly engine current status is True
+[2019-05-17_10-56-47.150756]-[framework]-[info]: execution engine current status is True
+[2019-05-17_10-56-48.418507]-[Execution]-[info]: [thred_4] task_list left: 0
+[2019-05-17_10-56-48.419008]-[Execution]-[info]: [thred_4] task_list now is : []
+[2019-05-17_10-56-50.151624]-[framework]-[info]: assembly engine current status is True
+[2019-05-17_10-56-50.152125]-[framework]-[info]: execution engine current status is True

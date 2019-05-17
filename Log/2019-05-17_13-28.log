@@ -1,0 +1,78 @@
+[2019-05-17_13-28-43.523202]-[framework]-[info]: Begin to start controller
+[2019-05-17_13-28-43.523705]-[framework]-[info]: start configuration engine
+[2019-05-17_13-28-43.782391]-[configuration]-[info]: configuration engine PID is 7096
+[2019-05-17_13-28-43.782926]-[analyzer]-[info]: Load Data from file 
+[2019-05-17_13-28-43.785400]-[analyzer]-[info]: generate Data
+[2019-05-17_13-28-43.785901]-[configuration]-[info]: Init windows_build_server1
+[2019-05-17_13-28-43.786402]-[configuration]-[info]: Init windows_deploy_server1
+[2019-05-17_13-28-43.786402]-[Validator]-[info]: validate windows_build_server1 finished
+[2019-05-17_13-28-43.786939]-[Validator]-[info]: validate windows_deploy_server1 finished
+[2019-05-17_13-28-43.797584]-[framework]-[info]: configurator  finished
+[2019-05-17_13-28-43.798079]-[framework]-[info]: start assemble engine
+[2019-05-17_13-28-43.806078]-[framework]-[info]: assemble finished
+[2019-05-17_13-28-43.807081]-[framework]-[info]: start execution engine
+[2019-05-17_13-28-43.817107]-[framework]-[info]: execution finished
+[2019-05-17_13-28-44.073286]-[assemble]-[info]: #[thread1] ***************begin to refresh queue *****************
+[2019-05-17_13-28-44.073789]-[assemble]-[info]: [thread2] ************************ Begine to assemble... **********************
+[2019-05-17_13-28-44.074289]-[assemble]-[info]: [thread2]************************ no task in list **********************
+[2019-05-17_13-28-44.074289]-[assemble]-[info]: [thread2]************************ wait for new task to assemble **********************
+[2019-05-17_13-28-45.085133]-[Execution]-[info]: [thred_4] task_list left: 0
+[2019-05-17_13-28-45.085635]-[Execution]-[info]: [thred_4] task_list now is : []
+[2019-05-17_13-28-50.074801]-[analyzer]-[info]: Load Data from file 
+[2019-05-17_13-28-50.078820]-[analyzer]-[info]: generate Data
+[2019-05-17_13-28-50.079279]-[assemble]-[info]: [thread1]--insert task1 to assemble queue list
+[2019-05-17_13-28-50.080281]-[assemble]-[info]: [thread1]--insert task2 to assemble queue list
+[2019-05-17_13-28-50.081785]-[assemble]-[info]: [thread1] ***************finish refresh queue *****************
+[2019-05-17_13-28-50.082314]-[assemble]-[info]: [thread1] left task in assemble queue: 2
+[2019-05-17_13-28-51.086971]-[Execution]-[info]: [thred_4] task_list left: 0
+[2019-05-17_13-28-51.086971]-[Execution]-[info]: [thred_4] task_list now is : []
+[2019-05-17_13-28-55.075677]-[assemble]-[info]: [thread2] ************************ Begine to assemble... **********************
+[2019-05-17_13-28-55.076179]-[Validator]-[info]: validate uut1 finished
+[2019-05-17_13-28-55.076679]-[Validator]-[info]: validate uut2 finished
+[2019-05-17_13-28-55.077181]-[Validator]-[info]: validate task1 scripts finished
+[2019-05-17_13-28-55.077682]-[Assemble Queue]-[info]: Assembly Queue build task1 on windows_build_server1
+[2019-05-17_13-28-55.078183]-[Build host]-[info]: build task1 PASS
+[2019-05-17_13-28-55.078686]-[assemble]-[info]: [thread2]-Send task1 to Thread3 (execution engine)
+[2019-05-17_13-28-55.079186]-[assemble]-[info]: [thread2]-remove task1 from assemble queue list
+[2019-05-17_13-28-55.079688]-[assemble]-[info]: [thread2]task left in assemble queue: 1
+[2019-05-17_13-28-55.080189]-[assemble]-[info]: [thread2] **************task1 assemble finished****************
+[2019-05-17_13-28-55.088210]-[Execution]-[info]: [thred_3] receive: task1
+[2019-05-17_13-28-55.088711]-[Execution]-[info]: [thred_3] append task1 to task_list
+[2019-05-17_13-28-55.089212]-[Execution]-[info]: [thred_3] task_list now is ['task1']
+[2019-05-17_13-28-56.081799]-[assemble]-[info]: [thread2] ************************ Begine to assemble... **********************
+[2019-05-17_13-28-56.082269]-[Validator]-[info]: validate uut1 finished
+[2019-05-17_13-28-56.082269]-[Validator]-[info]: validate task2 scripts finished
+[2019-05-17_13-28-56.082802]-[Assemble Queue]-[info]: Assembly Queue build task2 on windows_build_server1
+[2019-05-17_13-28-56.083273]-[Build host]-[info]: build task2 PASS
+[2019-05-17_13-28-56.083772]-[assemble]-[info]: [thread2]-Send task2 to Thread3 (execution engine)
+[2019-05-17_13-28-56.084273]-[assemble]-[info]: [thread2]-remove task2 from assemble queue list
+[2019-05-17_13-28-56.084273]-[assemble]-[info]: [thread2]task left in assemble queue: 0
+[2019-05-17_13-28-56.084819]-[assemble]-[info]: [thread2] **************task2 assemble finished****************
+[2019-05-17_13-28-56.095992]-[Execution]-[info]: [thred_3] receive: task2
+[2019-05-17_13-28-56.096995]-[Execution]-[info]: [thred_3] append task2 to task_list
+[2019-05-17_13-28-56.098499]-[Execution]-[info]: [thred_3] task_list now is ['task1', 'task2']
+[2019-05-17_13-28-57.086024]-[assemble]-[info]: [thread2] ************************ Begine to assemble... **********************
+[2019-05-17_13-28-57.086024]-[assemble]-[info]: [thread2]************************ no task in list **********************
+[2019-05-17_13-28-57.086525]-[assemble]-[info]: [thread2]************************ wait for new task to assemble **********************
+[2019-05-17_13-28-57.093514]-[Execution]-[info]: [thred_4] task_list left: 2
+[2019-05-17_13-28-57.094517]-[Execute Queue]-[info]: Execute Queue deploy task1 to uut1 with windows_deploy_server1
+[2019-05-17_13-28-57.095520]-[Deploy host]-[info]: deploy package: task1 Pass
+[2019-05-17_13-28-57.096021]-[Execute Queue]-[info]: Execute Queue execute task1 on uut1
+[2019-05-17_13-28-57.096520]-[uut]-[info]: execute task1 on  uut1
+[2019-05-17_13-28-57.096520]-[Execute Queue]-[info]: Execute Queue execute task1 on uut2
+[2019-05-17_13-28-57.097053]-[uut]-[info]: execute task1 on  uut1
+[2019-05-17_13-28-57.097524]-[Execute Queue]-[info]: Execute Queue check status task1 on uut1
+[2019-05-17_13-28-57.098056]-[uut]-[info]: check task1 status on uut1
+[2019-05-17_13-28-57.098056]-[Execute Queue]-[info]: Execute Queue check status task1 on uut2
+[2019-05-17_13-28-57.098558]-[uut]-[info]: check task1 status on uut1
+[2019-05-17_13-28-57.099028]-[Execute Queue]-[info]: Execute Queue collect result task1 from uut1
+[2019-05-17_13-28-57.099530]-[uut]-[info]: collect task1 result from uut1
+[2019-05-17_13-28-57.100030]-[Execute Queue]-[info]: Execute Queue collect result task1 from uut2
+[2019-05-17_13-28-57.100563]-[uut]-[info]: collect task1 result from uut1
+[2019-05-17_13-28-57.137129]-[report]-[info]: generate task1.html finished
+[2019-05-17_13-28-57.137671]-[Execution]-[info]: [thred_4] remove task1 from task_list
+[2019-05-17_13-28-57.138163]-[Execution]-[info]: [thred_4] remove task1 from execute queue
+[2019-05-17_13-28-57.138163]-[Execution]-[info]: [thred_4] task left in execute queue: 1
+[2019-05-17_13-28-57.138664]-[Execution]-[info]: [thred_4] task_list now is : ['task2']
+[2019-05-17_13-28-58.818374]-[framework]-[info]: assembly engine current status is True
+[2019-05-17_13-28-58.818899]-[framework]-[info]: execution engine current status is True

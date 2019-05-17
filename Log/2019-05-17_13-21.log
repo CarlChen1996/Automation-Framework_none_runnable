@@ -1,0 +1,44 @@
+[2019-05-17_13-21-01.038398]-[Execution]-[info]: [thred_4] task_list left: 1
+[2019-05-17_13-21-01.038878]-[Execute Queue]-[info]: Execute Queue deploy task4 to uut4 with windows_deploy_server1
+[2019-05-17_13-21-01.039381]-[Deploy host]-[info]: deploy package: task4 Pass
+[2019-05-17_13-21-01.039848]-[Execute Queue]-[info]: Execute Queue execute task4 on uut4
+[2019-05-17_13-21-01.040350]-[uut]-[info]: execute task4 on  uut4
+[2019-05-17_13-21-01.040350]-[Execute Queue]-[info]: Execute Queue check status task4 on uut4
+[2019-05-17_13-21-01.040875]-[uut]-[info]: check task4 status on uut4
+[2019-05-17_13-21-01.041362]-[Execute Queue]-[info]: Execute Queue collect result task4 from uut4
+[2019-05-17_13-21-01.041854]-[uut]-[info]: collect task4 result from uut4
+[2019-05-17_13-21-01.085748]-[report]-[info]: generate task4.html finished
+[2019-05-17_13-21-01.086278]-[Execution]-[info]: [thred_4] remove task4 from task_list
+[2019-05-17_13-21-01.086749]-[Execution]-[info]: [thred_4] remove task4 from execute queue
+[2019-05-17_13-21-01.087261]-[Execution]-[info]: [thred_4] task left in execute queue: 0
+[2019-05-17_13-21-01.087782]-[Execution]-[info]: [thred_4] task_list now is : []
+[2019-05-17_13-21-02.580494]-[framework]-[info]: assembly engine current status is True
+[2019-05-17_13-21-02.580494]-[framework]-[info]: execution engine current status is True
+[2019-05-17_13-21-05.581694]-[framework]-[info]: assembly engine current status is True
+[2019-05-17_13-21-05.581694]-[framework]-[info]: execution engine current status is True
+[2019-05-17_13-21-06.861569]-[assemble]-[info]: [thread2] ************************ Begine to assemble... **********************
+[2019-05-17_13-21-07.094261]-[Execution]-[info]: [thred_4] task_list left: 0
+[2019-05-17_13-21-07.094762]-[Execution]-[info]: [thred_4] task_list now is : []
+[2019-05-17_13-21-08.582871]-[framework]-[info]: assembly engine current status is True
+[2019-05-17_13-21-08.583332]-[framework]-[info]: execution engine current status is True
+[2019-05-17_13-21-09.865563]-[assemble]-[info]: #[thread1] ***************begin to refresh queue *****************
+[2019-05-17_13-21-09.866064]-[analyzer]-[info]: Load Data from file 
+[2019-05-17_13-21-09.866565]-[analyzer]-[info]: generate Data
+[2019-05-17_13-21-09.867067]-[assemble]-[info]: [thread1] ***************finish refresh queue *****************
+[2019-05-17_13-21-09.867568]-[assemble]-[info]: [thread1] left task in assemble queue: 0
+[2019-05-17_13-21-11.584359]-[framework]-[info]: assembly engine current status is True
+[2019-05-17_13-21-11.584861]-[framework]-[info]: execution engine current status is True
+[2019-05-17_13-21-13.095820]-[Execution]-[info]: [thred_4] task_list left: 0
+[2019-05-17_13-21-13.095820]-[Execution]-[info]: [thred_4] task_list now is : []
+[2019-05-17_13-21-14.585448]-[framework]-[info]: assembly engine current status is True
+[2019-05-17_13-21-14.585950]-[framework]-[info]: execution engine current status is True
+[2019-05-17_13-21-17.586713]-[framework]-[info]: assembly engine current status is True
+[2019-05-17_13-21-17.587214]-[framework]-[info]: execution engine current status is True
+[2019-05-17_13-21-17.869181]-[assemble]-[info]: [thread2] ************************ Begine to assemble... **********************
+[2019-05-17_13-21-19.097707]-[Execution]-[info]: [thred_4] task_list left: 0
+[2019-05-17_13-21-19.098208]-[Execution]-[info]: [thred_4] task_list now is : []
+[2019-05-17_13-21-19.868724]-[assemble]-[info]: #[thread1] ***************begin to refresh queue *****************
+[2019-05-17_13-21-19.869227]-[analyzer]-[info]: Load Data from file 
+[2019-05-17_13-21-19.869727]-[analyzer]-[info]: generate Data
+[2019-05-17_13-21-19.870229]-[assemble]-[info]: [thread1] ***************finish refresh queue *****************
+[2019-05-17_13-21-19.870730]-[assemble]-[info]: [thread1] left task in assemble queue: 0
