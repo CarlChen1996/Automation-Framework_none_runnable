@@ -25,8 +25,8 @@ class ExecutionEngine(Engine):
     def __init__(self, deploy_list, pipe):
         self.pipe = pipe
         self.deploy_list = deploy_list
-        self.executor = Process(target=self.execute_q, name='framework_executor', args=())
         self.exeQ = ExecuteQueue()
+        self.executor = Process(target=self.execute_q, name='framework_executor', args=())
         self.status = self.executor
         # self.exeQ.task_list=[]
         # -----------execute结束后需要同时删除task list-----------------
@@ -35,7 +35,7 @@ class ExecutionEngine(Engine):
     def start(self):
         self.executor.start()
         print('=======================================')
-        print('       waitting for new task ...')
+        print('       waitting for a new task to execute...')
         print('=======================================')
 
     def execute_q(self):
@@ -49,26 +49,23 @@ class ExecutionEngine(Engine):
             tt.start()
             # t.join()
         tt.join()
-        print(" [process1]all thread finish at %s" % ctime())
 
     def thred_3(self):
         while not False:
             receive = self.pipe.recv()
-            print("[thred_3] receive: {}".format(receive.get_name()))
+            log.log("[thred_3] receive: {}".format(receive.get_name()))
             self.exeQ.task_list.append(receive)
-            print('[thred_3] append {} to e_q_list'.format(receive.get_name()))
-            print('[thred_3] e_q_list now is {}'.format(self.exeQ.task_list))
+            log.log('[thred_3] append {} to task_list'.format(receive.get_name()))
+            log.log('[thred_3] task_list now is {}'.format(self.exeQ.task_list))
             time.sleep(1)
 
     def thred_4(self):
         while True:
             time.sleep(1)
-            print('[thred_4] e_q_list left: {}'.format(len(self.exeQ.task_list)))
+            log.log('[thred_4] task_list left: {}'.format(len(self.exeQ.task_list)))
             if self.exeQ.task_list:
                 self.execute()
-
-            print('[thred_4] e_q_list left: {}'.format(len(self.exeQ.task_list)))
-            print('All task execution finished')
+            log.log('[thred_4] task_list now is : {}'.format(list(map(lambda i:i.get_name(),self.exeQ.task_list))))
             time.sleep(5)
 
     def execute(self,):
@@ -83,9 +80,9 @@ class ExecutionEngine(Engine):
         r = Report(i.get_name(), i.get_script_list())
         r.generate()
         self.exeQ.task_list.remove(i)
-        print("[thred_4] remove {} from a_q_list".format(i.get_name()))
-        log.log('removed {} from execute queue'.format(i.get_name()))
-        print('task left in execute queue: {}'.format(len(self.exeQ.task_list)))
+        log.log("[thred_4] remove {} from task_list".format(i.get_name()))
+        log.log('[thred_4] remove {} from execute queue'.format(i.get_name()))
+        log.log('[thred_4] task left in execute queue: {}'.format(len(self.exeQ.task_list)))
         print('---------------------------------------------------------------')
 
 
