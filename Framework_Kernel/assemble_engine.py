@@ -16,7 +16,11 @@ from Framework_Kernel.log import Log
 from multiprocessing import Process
 import time
 import threading
+import os
+
 log = Log(name='assemble')
+root = os.getcwd()
+plan_root = os.path.join(root, 'Configuration/test_plan')
 
 
 class AssembleEngine(Engine):
@@ -26,109 +30,97 @@ class AssembleEngine(Engine):
         self.tasklist = []
         self.build_list = build_list
 
-    def new_thread(self):
+    def freash_queue(self):
         """
         refresh Queue
         :return:
         """
         while 1:
-            print('#[thread1_fresh Assemble Queue] ***************begin to refresh queue *****************')
-            analyzor = Analyzer(['.\\Configuration\\testplan.yml'])
+            log.log('#[thread1] ***************begin to refresh queue *****************')
+            templist = os.listdir(plan_root)
+            filelist = []
+            for i in templist:
+                if 'PASS' in i.upper() or 'FAIL' in i.upper():
+                    continue
+                filelist.append(os.path.join(plan_root, i))
+            analyzor = Analyzer(filelist)
             data = analyzor.load()
             task_data = analyzor.generate(data)
             task_source_list = []
+
             """
-            # ***************convert source data to task source list *****************
-            # tasklist contains task source
-            # tasklist member(taskitem): {
-            #                               name:task1,
-            #                               testscripts:[script1, script2,],
-            #                               uutlist:[{uut1:uutinformation},
-            #                               {uut2:uutinformation}],
-            #                               needbuild:true}
-            # uutinformation: {uut1:{
-            #                           hostname: uut1,
+            # task_data: [filepath1:taskitem1,filepath2:taskitem2]
+            # taskitem: {               name:task1,
+            #                           testscripts:[script1, script2,],
+            #                           uutlist:[uutinformatio,uutinformation],
+            #                           needbuild:true}
+            # uutinformation: {         hostname: uut1,
             #                           ip:1.1.1.1,
             #                           mac:1234566,
             #                           version: win7}}
             # ************************************************************************
             """
-            for task_source in task_data:
-                task_source_list = list(task_source.values())
-            for taskitem in task_source_list:
+            for taskitem in task_data:
                 task = Task(taskitem['name'], taskitem['needbuild'])
                 for script in taskitem['testscripts']:
                     task.insert_script(Script(name=script))
-                """
-                # *************convert uut source data to uut source list ************
-                #
-                """
-                uut_source_list = []
-                for uut_source in taskitem['uutlist']:
-                    uut_source_list.append(list(uut_source.values())[0])
-                for uutitem in uut_source_list:
+                for uutitem in taskitem['uutlist']:
                     # ------需要根据 uut的os 来实例，目前没实现，只考虑windows------------
                     uut = WindowsExecuteHost(ip=uutitem['ip'],
                                              hostname=uutitem['hostname'],
                                              version=uutitem['version'],
                                              mac=uutitem['mac'])
                     task.insert_uut_list(uut)
-                log.log('inset {} to assembly queue list'.format(task.get_name()))
-                print('[thread1_fresh Assemble Queue]---------------insert {} into assembly queue-------'.format(task.get_name()))
+                log.log('[thread1]--insert {} to assemble queue list'.format(task.get_name()))
                 self.assembleQueue.insert_task(task=task)
-                print(len(self.assembleQueue.get_task_list()))
+            log.log('[thread1] ***************finish refresh queue *****************')
+            log.log('[thread1] left task in assemble queue: {}'.format(len(self.assembleQueue.get_task_list())))
             time.sleep(10)
 
-    def new_process(self):
-        assembler = Process(target=self.test, name='framework_Assembler', args=(self.pipe, self.build_list))
+    def process(self, pipe, build_list):
+        while not False:
+            assemble(self.assembleQueue, build_list, pipe)
+            time.sleep(1)
+
+    def start(self):
+        assembler = Process(target=self.new_thread, name='framework_Assembler', args=())
         assembler.start()
         self.status = assembler
 
-    def test(self, pipe, build_list):
-        refreshQ_thread = threading.Thread(target=self.new_thread, name='frame_assembler_new_thread', args=())
+    def new_thread(self):
+        refreshQ_thread = threading.Thread(target=self.freash_queue, name='thread1', args=())
         refreshQ_thread.start()
-        while not False:
-            execute(self.assembleQueue, build_list, pipe)
-            # print('=======================================')
-            # print('       waitting for new task to assemble...')
-            # print('=======================================')
-            # break
-            time.sleep(1)
+        process_thread = threading.Thread(target=self.process, name='thread2', args=(self.pipe, self.build_list))
+        process_thread.start()
+        # process_thread.join()
 
 
-def execute(assembleQueue, build_list, pipe):
-    print('[thread2_assembly_progress]-------------------------------------------')
-    h_validator = HostValidator()
-    s_validator = ScriptValidator()
-    b_host = build_list[0]
-    """
-    2019/05/15
-    assembly one task then back to refresh assemble queue,
-    so below should remove loop task list, only assemble tasklist[0],
-    modify after review **********************************************************************
-    """
+def assemble(assembleQueue, build_list, pipe):
+    log.log('[thread2] ************************ Begine to assemble... **********************')
     try:
         if len(assembleQueue.get_task_list()) == 0:
-            print('[thread2_assembly_progress]************************ no task in list **********************')
-            print('[thread2_assembly_progress]************************ wait for new task to assemble**********************')
+            print('[thread2]************************ no task in list **********************')
+            print('[thread2]************************ wait for new task to assemble **********************')
+            time.sleep(10)
             return
+        h_validator = HostValidator()
+        s_validator = ScriptValidator()
+        b_host = build_list[0]
         task = assembleQueue.get_task_list()[0]
         for uut in task.get_uut_list():
             h_validator.validate(uut)
         s_validator.validate(task)
         assembleQueue.build_task(task, b_host)
-        log.log('insert {} into global task_list'.format(task.get_name()))
-        print('[thread2_assembly_progress]---------Send task in assembly {}--------------'.format(task.get_name()))
         pipe.send(task)
-        log.log('remove {} from assemble queue list'.format(task.get_name()))
+        log.log('[thread2]-Send {} to Thread3 (execution engine)'.format(task.get_name()))
         assembleQueue.remove_task(task)
-        print('[thread2_assembly_progress]task left in assemble queue:', len(assembleQueue.get_task_list()))
-        print('[thread2_assembly_progress]------------------------------------')
+        log.log('[thread2]-remove {} from assemble queue list'.format(task.get_name()))
+        log.log('[thread2]task left in assemble queue: %d'%len(assembleQueue.get_task_list()))
+        log.log('[thread2] **************{} assemble finished****************'.format(task.get_name()))
     except Exception as e:
         print(e)
-        # ＝＝＝＝＝＝＝＝＝＝通过判读build server的status随机选择要用的 build server =============
-    print('[thread2]{} assemble finished'.format(task.get_name()))
+    print('[thread2]--------------------------------------------------------------------------------')
 
 
 if __name__ == '__main__':
-    execute()
+    assemble()

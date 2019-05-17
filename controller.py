@@ -19,7 +19,7 @@ if __name__ == '__main__':
     print('====================================')
     log.log('start assemble engine')
     assemble = assemble_engine.AssembleEngine(pipe[0], build_list)
-    assemble.new_process()
+    assemble.start()
     log.log('assemble finished')
     print('======================================')
     log.log('start execution engine')
