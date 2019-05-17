@@ -38,7 +38,7 @@ class AssembleEngine(Engine):
         :return:
         """
         while 1:
-            log.log('#[thread1] ***************begin to refresh queue *****************')
+            log.log('[thread_1] ***************begin to refresh queue *****************')
             templist = os.listdir(plan_root)
             filelist = []
             for i in templist:
@@ -80,12 +80,12 @@ class AssembleEngine(Engine):
                                              version=uutitem['version'],
                                              mac=uutitem['mac'])
                     task.insert_uut_list(uut)
-                log.log('[thread1]--insert {} to assemble queue list'.format(task.get_name()))
+                log.log('[thread_1]--insert {} to assemble queue list'.format(task.get_name()))
                 self.assembleQueue.insert_task(task=task)
                 # -------------------rename task plan name -------------------------
                 os.rename(taskitem['file_path'], taskitem['file_path']+'PASS')
-            log.log('[thread1] ***************finish refresh queue *****************')
-            log.log('[thread1] left task in assemble queue: {}'.format(len(self.assembleQueue.get_task_list())))
+            log.log('[thread_1] ***************finish refresh queue *****************')
+            log.log('[thread_1] left task in assemble queue: {}'.format(len(self.assembleQueue.get_task_list())))
             time.sleep(10)
 
     def process(self, pipe, build_list):
@@ -94,10 +94,10 @@ class AssembleEngine(Engine):
             time.sleep(1)
 
     def new_thread(self):
-        refreshQ_thread = threading.Thread(target=self.freash_queue, name='thread1', args=())
+        refreshQ_thread = threading.Thread(target=self.freash_queue, name='thread_1', args=())
         refreshQ_thread.setDaemon(True)
         refreshQ_thread.start()
-        process_thread = threading.Thread(target=self.process, name='thread2', args=(self.pipe, self.build_list))
+        process_thread = threading.Thread(target=self.process, name='thread_2', args=(self.pipe, self.build_list))
         process_thread.setDaemon(True)
         process_thread.start()
         process_thread.join()
@@ -110,11 +110,10 @@ class AssembleEngine(Engine):
 
 
 def assemble(assembleQueue, build_list, pipe):
-    log.log('[thread2] ************************ Begine to assemble... **********************')
+    log.log('[thread_2] ************************ Begine to assemble... **********************')
     try:
         if len(assembleQueue.get_task_list()) == 0:
-            log.log('[thread2]************************ no task in list **********************')
-            log.log('[thread2]************************ wait for new task to assemble **********************')
+            log.log('[thread_2]************************ wait for new task to assemble **********************')
             time.sleep(10)
             return
         h_validator = HostValidator()
@@ -126,14 +125,14 @@ def assemble(assembleQueue, build_list, pipe):
         s_validator.validate(task)
         assembleQueue.build_task(task, b_host)
         pipe.send(task)
-        log.log('[thread2]-Send {} to Thread3 (execution engine)'.format(task.get_name()))
+        log.log('[thread_2]-Send {} to Thread3 (execution engine)'.format(task.get_name()))
         assembleQueue.remove_task(task)
-        log.log('[thread2]-remove {} from assemble queue list'.format(task.get_name()))
-        log.log('[thread2]task left in assemble queue: %d'%len(assembleQueue.get_task_list()))
-        log.log('[thread2] **************{} assemble finished****************'.format(task.get_name()))
+        log.log('[thread_2]-remove {} from assemble queue list'.format(task.get_name()))
+        log.log('[thread_2]task left in assemble queue: %d'%len(assembleQueue.get_task_list()))
+        log.log('[thread_2] **************{} assemble finished****************'.format(task.get_name()))
     except Exception as e:
         print(e)
-    print('[thread2]--------------------------------------------------------------------------------')
+    print('[thread_2]--------------------------------------------------------------------------------')
 
 
 if __name__ == '__main__':

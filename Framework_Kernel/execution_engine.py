@@ -62,7 +62,10 @@ class ExecutionEngine(Engine):
             log.log('[thread_4] task_list left: {}'.format(len(self.exeQ.task_list)))
             if self.exeQ.task_list:
                 self.execute()
-            log.log('[thread_4] task_list now is : {}'.format(list(map(lambda i: i.get_name(), self.exeQ.task_list))))
+                time.sleep(3)
+                log.log('[thread_4] task_list now is : {}'.format(list(map(lambda i: i.get_name(), self.exeQ.task_list))))
+            else:
+                log.log('[thread_4]************************ wait for new task to execute **********************')
             time.sleep(5)
 
     def execute(self,):
