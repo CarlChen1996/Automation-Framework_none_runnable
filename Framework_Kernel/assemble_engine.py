@@ -20,7 +20,7 @@ import os
 
 log = Log(name='assemble')
 root = os.getcwd()
-plan_root = os.path.join(root, 'Configuration/test_plan')
+plan_root = os.path.join(root, 'Configuration\\test_plan')
 
 
 class AssembleEngine(Engine):
@@ -46,10 +46,15 @@ class AssembleEngine(Engine):
             analyzor = Analyzer(filelist)
             data = analyzor.load()
             task_data = analyzor.generate(data)
+            # ********* put filepath into taskitem dict: key:file_path, value: file path
             task_source_list = []
-
+            for i in task_data:
+                file_path = list(i.keys())[0]
+                i[file_path]['file_path'] = file_path
+                task_source_list.append(i[file_path])
+            print(task_source_list)
             """
-            # task_data: [filepath1:taskitem1,filepath2:taskitem2]
+            # task_data: [{filepath1:taskitem1},{filepath2:taskitem2}]
             # taskitem: {               name:task1,
             #                           testscripts:[script1, script2,],
             #                           uutlist:[uutinformatio,uutinformation],
@@ -60,7 +65,7 @@ class AssembleEngine(Engine):
             #                           version: win7}}
             # ************************************************************************
             """
-            for taskitem in task_data:
+            for taskitem in task_source_list:
                 task = Task(taskitem['name'], taskitem['needbuild'])
                 for script in taskitem['testscripts']:
                     task.insert_script(Script(name=script))
@@ -73,6 +78,8 @@ class AssembleEngine(Engine):
                     task.insert_uut_list(uut)
                 log.log('[thread1]--insert {} to assemble queue list'.format(task.get_name()))
                 self.assembleQueue.insert_task(task=task)
+                # ********************rename task plan name *************************
+                os.rename(taskitem['file_path'], taskitem['file_path']+'PASS')
             log.log('[thread1] ***************finish refresh queue *****************')
             log.log('[thread1] left task in assemble queue: {}'.format(len(self.assembleQueue.get_task_list())))
             time.sleep(10)

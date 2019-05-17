@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-# @Time   : 2019/5/13 14:00
-# @Author  : Bamboo.pan
-# @Email   : Bamboo.pan@hp.com
-# @File    : test.py
+# @Time   : 2019/5/13 14:00
+# @Author  : Bamboo.pan
+# @Email   : Bamboo.pan@hp.com
+# @File    : test.py
 # @Project : demo
 from Framework_Kernel.engine import Engine
 from Framework_Kernel.configurator import Configurator
@@ -40,8 +40,8 @@ def config_process(send_con):
     analyze = Analyzer([env_host])
     env_host_res = analyze.load()
     env_host_data = analyze.generate(env_host_res)
-    build_host_data = env_host_data[0][0]
-    deploy_host_data = env_host_data[0][1]
+    build_host_data = env_host_data[0].get(env_host)[0]
+    deploy_host_data = env_host_data[0].get(env_host)[1]
     b_ip = build_host_data.get("ip")
     b_hostname = build_host_data.get("hostname")
     b_version = build_host_data.get("version")
