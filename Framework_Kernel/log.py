@@ -14,11 +14,13 @@ class Log:
         self.name = name
         self.type = type
         self.level = level
-
     def log(self, msg):
+        self.log_path = os.path.join(os.getcwd(), 'Log\\{}\\'.format(time.strftime("%Y-%m-%d_%H", time.localtime())))
+        if not os.path.exists(self.log_path):
+            os.makedirs(self.log_path)
         print('[{}]-[{}]-[{}]: {}'.format(datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S.%f"), self.name, self.level, msg))
         with open(
-                os.path.join(os.getcwd(), 'Log\\{}.log'.format(time.strftime("%Y-%m-%d_%H-%M", time.localtime()))),
+                self.log_path+'{}.log'.format(self.name),
                 'a',
                 encoding='utf-8',
         ) as f:

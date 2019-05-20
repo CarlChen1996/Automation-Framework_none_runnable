@@ -5,7 +5,7 @@
 # @File    : Configurator.py
 # @Project : demo
 from Framework_Kernel.log import Log
-log = Log('Configurator')
+log = Log('configurator')
 
 
 class Configurator:

@@ -6,7 +6,6 @@
 # @Project : Automation-Framework
 from multiprocessing import Process
 import threading
-from time import ctime
 import time
 from Framework_Kernel.engine import Engine
 from Framework_Kernel.queue import ExecuteQueue
@@ -17,7 +16,7 @@ from Framework_Kernel.host import WindowsDeployHost, WindowsExecuteHost
 from Framework_Kernel.report import Report
 from Framework_Kernel.log import Log
 
-log = Log('Execution')
+log = Log('execution')
 
 
 class ExecutionEngine(Engine):
