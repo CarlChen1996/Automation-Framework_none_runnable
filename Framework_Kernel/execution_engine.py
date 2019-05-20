@@ -16,7 +16,7 @@ from Framework_Kernel.host import WindowsDeployHost, WindowsExecuteHost
 from Framework_Kernel.report import Report
 from Framework_Kernel.log import Log
 
-log = Log('Execution')
+log = Log('execution')
 
 
 class ExecutionEngine(Engine):

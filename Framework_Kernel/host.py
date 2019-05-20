@@ -47,7 +47,7 @@ class LinuxHost(Host):
 
 class Build:
     def __init__(self):
-        self.log = Log('Build host')
+        self.log = Log('build_host')
 
     def get_scripts(self, task):
         for script in task.get_script_list():
@@ -64,7 +64,7 @@ class Build:
 
 class Deploy:
     def __init__(self):
-        self.log = Log('Deploy host')
+        self.log = Log('deploy_host')
 
     def deploy(self, task):
         self.log.log('deploy package: ' + task.get_name() + ' Pass')

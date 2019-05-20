@@ -32,39 +32,39 @@ class Queue:
 
 class AssembleQueue(Queue):
     def __init__(self):
-        self.log = Log('Assemble Queue')
+        self.log = Log('assemble_queue')
         self.task_list = []
 
     def build_task(self, task, host):
-        self.log.log('Assembly Queue build {} on {}'.format(
+        self.log.log('assemble_queue build {} on {}'.format(
             task.get_name(), host.hostname))
         task.build(host)
 
 
 class ExecuteQueue(Queue):
     def __init__(self):
-        self.log = Log("Execute Queue")
+        self.log = Log("execute_queue")
         self.task_list = []
 
     def deploy(self, task, host):
-        self.log.log('Execute Queue deploy {} to {} with {}'.format(
+        self.log.log('execute_queue deploy {} to {} with {}'.format(
             task.get_name(), task.get_uut_list()[0].hostname, host.hostname))
         task.deploy(host)
 
     def execute(self, task):
         for host in task.get_uut_list():
-            self.log.log('Execute Queue execute {} on {}'.format(
+            self.log.log('execute_queue execute {} on {}'.format(
                 task.get_name(), host.hostname))
             task.execute(host)
 
     def check_status(self, task):
         for host in task.get_uut_list():
-            self.log.log('Execute Queue check status {} on {}'.format(
+            self.log.log('execute_queue check status {} on {}'.format(
                 task.get_name(), host.hostname))
             task.check_status(host)
 
     def collect_result(self, task):
         for host in task.get_uut_list():
-            self.log.log('Execute Queue collect result {} from {}'.format(
+            self.log.log('execute_queue collect result {} from {}'.format(
                 task.get_name(), host.hostname))
             task.collect_result(host)
