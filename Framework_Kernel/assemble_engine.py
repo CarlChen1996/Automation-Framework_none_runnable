@@ -128,7 +128,7 @@ def assemble(assembleQueue, build_list, pipe):
         log.log('[thread_2]-Send {} to Thread3 (execution engine)'.format(task.get_name()))
         assembleQueue.remove_task(task)
         log.log('[thread_2]-remove {} from assemble queue list'.format(task.get_name()))
-        log.log('[thread_2]task left in assemble queue: %d'%len(assembleQueue.get_task_list()))
+        log.log('[thread_2]task left in assemble queue: %d' % len(assembleQueue.get_task_list()))
         log.log('[thread_2] **************{} assemble finished****************'.format(task.get_name()))
     except Exception as e:
         print(e)
