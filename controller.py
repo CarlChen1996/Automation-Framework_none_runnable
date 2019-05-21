@@ -29,7 +29,7 @@ def readinput(timeout):
 
 
 def operation():
-    global status_flag, assemble, exe, pipe, deploy_list, build_list, lock
+    global status_flag, assemble, exe, pipe, deploy_list, build_list, lock,conf
 
     while True:
         log.log("current assemble status is {}".format(assemble.status.is_alive()))
@@ -87,6 +87,16 @@ def operation():
                 exe = execution_engine.ExecutionEngine(deploy_list, pipe[1])
                 exe.start()
                 status_flag[1] = True
+            elif ans == "07":
+                log.log("restart config")
+                assemble.status.terminate()
+                exe.status.terminate()
+                conf = configuration_engine.ConfigurationEngine()
+                conf.start(build_list, deploy_list)
+                assemble = assemble_engine.AssembleEngine(pipe[0], build_list)
+                assemble.start()
+                exe = execution_engine.ExecutionEngine(deploy_list, pipe[1])
+                exe.start()
             else:
                 log.log("unknow input,please retry")
 
