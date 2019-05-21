@@ -17,7 +17,9 @@ log = Log(name='configuration')
 
 
 class ConfigurationEngine(Engine):
-    def start(self, build_list, deploy_list):
+    def start(self, build_list=None, deploy_list=None):
+        build_list.clear()
+        deploy_list.clear()
         receive_con, send_con = Pipe()
         configuration_process = Process(target=config_process, args=(send_con,))
         configuration_process.start()

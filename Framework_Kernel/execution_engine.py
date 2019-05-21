@@ -34,6 +34,9 @@ class ExecutionEngine(Engine):
     def start(self):
         self.executor.start()
 
+    def stop(self):
+        self.executor.terminate()
+
     def execute_q(self):
         threads_2 = []
         t3 = threading.Thread(target=self.thread_3, args=())

@@ -106,7 +106,7 @@ class AssembleEngine(Engine):
         self.assembler.start()
 
     def stop(self):
-        self.assembler.kill()
+        self.assembler.terminate()
 
 
 def assemble(assembleQueue, build_list, pipe):

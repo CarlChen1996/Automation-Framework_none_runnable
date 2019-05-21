@@ -43,6 +43,7 @@ def operation():
         log.log("04:start execute")
         log.log("05:restart assembly")
         log.log("06:restart execute")
+        log.log("07:restart all")
         ans = readinput(10)
         if ans:
             if ans == "01":
@@ -88,7 +89,7 @@ def operation():
                 exe.start()
                 status_flag[1] = True
             elif ans == "07":
-                log.log("restart config")
+                log.log("restart all")
                 assemble.status.terminate()
                 exe.status.terminate()
                 conf = configuration_engine.ConfigurationEngine()
@@ -98,7 +99,7 @@ def operation():
                 exe = execution_engine.ExecutionEngine(deploy_list, pipe[1])
                 exe.start()
             else:
-                log.log("unknow input,please retry")
+                log.log("unknown input,please retry")
 
 
 if __name__ == '__main__':
