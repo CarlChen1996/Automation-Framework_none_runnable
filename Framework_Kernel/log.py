@@ -14,6 +14,7 @@ class Log:
         self.name = name
         self.type = type
         self.level = level
+
     def log(self, msg):
         self.log_path = os.path.join(os.getcwd(), 'Log\\{}\\'.format(time.strftime("%Y-%m-%d_%H", time.localtime())))
         if not os.path.exists(self.log_path):
