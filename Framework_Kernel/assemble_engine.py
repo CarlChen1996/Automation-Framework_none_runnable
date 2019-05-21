@@ -25,12 +25,10 @@ plan_root = os.path.join(root, 'Configuration\\test_plan')
 
 class AssembleEngine(Engine):
     def __init__(self, pipe, build_list):
-        self.assembler = Process(target=self.new_thread, name='framework_Assembler', args=())
         self.pipe = pipe
         self.assembleQueue = AssembleQueue()
         self.tasklist = []
         self.build_list = build_list
-        self.status = self.assembler
 
     def freash_queue(self):
         """
@@ -103,6 +101,8 @@ class AssembleEngine(Engine):
         process_thread.join()
 
     def start(self):
+        self.assembler = Process(target=self.new_thread, name='framework_Assembler', args=())
+        self.status = self.assembler
         self.assembler.start()
 
     def stop(self):
