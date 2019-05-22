@@ -102,6 +102,7 @@ class AssembleEngine(Engine):
 
     def start(self):
         self.assembler = Process(target=self.new_thread, name='framework_Assembler', args=())
+        self.assembler.daemon=True
         self.status = self.assembler
         self.assembler.start()
 
