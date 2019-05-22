@@ -30,8 +30,8 @@ def readinput(timeout):
 
 def operation():
     global assemble, exe, pipe, deploy_list, build_list, conf
-    flags=[False,False]
-    config_flag=False
+    flags = [False, False]
+    config_flag = False
     log.log("please select operation")
     log.log("00:start config")
     log.log("01:start assembly")
@@ -58,7 +58,7 @@ def operation():
                 if flags[1]:
                     exe.stop()
                 conf.start(build_list, deploy_list)
-                config_flag=True
+                config_flag = True
                 flags[0] = True
                 flags[1] = True
                 assemble.start()
@@ -114,8 +114,10 @@ def operation():
                     if flags[0] & flags[1]:
                         log.log("start daemon")
                         while True:
-                            log.log("[daemon]assembly engine pid {} is {}".format(assemble.status.pid,
-                                                                          str(assemble.status.is_alive())))
+                            log.log(
+                                "[daemon]assembly engine pid {} is {}".format(
+                                    assemble.status.pid,
+                                    str(assemble.status.is_alive())))
                             if not assemble.status.is_alive():
                                 assemble.start()
                                 if assemble.status.is_alive():
@@ -123,8 +125,9 @@ def operation():
                                 else:
                                     log.log("restart assembly fail")
 
-                            log.log("[daemon]execution engine pid {}  is {}".format(exe.status.pid,
-                                                                                    str(exe.status.is_alive())))
+                            log.log("[daemon]execution engine pid {}  is {}".
+                                    format(exe.status.pid,
+                                           str(exe.status.is_alive())))
                             if not exe.status.is_alive():
                                 exe.start()
                                 if exe.status.is_alive():
@@ -148,7 +151,9 @@ def operation():
                                 log.log("09:daemon")
                                 break
                     else:
-                        log.log("[daemon]assembly and execution must be alive before daemon")
+                        log.log(
+                            "[daemon]assembly and execution must be alive before daemon"
+                        )
 
             else:
                 log.log("config has not been run")
@@ -164,7 +169,9 @@ if __name__ == '__main__':
     conf = configuration_engine.ConfigurationEngine()
     assemble = assemble_engine.AssembleEngine(pipe[0], build_list)
     exe = execution_engine.ExecutionEngine(deploy_list, pipe[1])
-    log.log("++++++++++++++++++++++++ Select mode+++++++++++++++++++++++++++++++++")
+    log.log(
+        "++++++++++++++++++++++++ Select mode+++++++++++++++++++++++++++++++++"
+    )
     log.log("+++++++++++++++++++++++ 01:manual +++++++++++++++++++++++")
     log.log("+++++++++++++++++++++++ 02:auto,default +++++++++++++++++++++++")
     choice = readinput(100)
@@ -187,8 +194,8 @@ if __name__ == '__main__':
 
         while True:
             time.sleep(5)
-            log.log("assembly engine pid {} current status is {}".format(assemble.status.pid,
-                                                                         str(assemble.status.is_alive())))
+            log.log("assembly engine pid {} current status is {}".format(
+                assemble.status.pid, str(assemble.status.is_alive())))
             if not assemble.status.is_alive():
                 assemble.start()
                 if assemble.status.is_alive():
@@ -196,8 +203,8 @@ if __name__ == '__main__':
                 else:
                     log.log("restart assembly fail")
 
-            log.log("execution engine pid {} current status is {}".format(exe.status.pid,
-                                                                          str(exe.status.is_alive())))
+            log.log("execution engine pid {} current status is {}".format(
+                exe.status.pid, str(exe.status.is_alive())))
             if not exe.status.is_alive():
                 exe.start()
                 if exe.status.is_alive():
@@ -206,7 +213,3 @@ if __name__ == '__main__':
                     log.log("restart execution fail")
     else:
         log.log("nothing select ,exit")
-
-
-
-

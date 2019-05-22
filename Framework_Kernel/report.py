@@ -12,7 +12,13 @@ log = Log('report')
 
 
 class Report:
-    def __init__(self, name, script_list, type='HTML', template='1',):
+    def __init__(
+            self,
+            name,
+            script_list,
+            type='HTML',
+            template='1',
+    ):
         self.name = name
         self.type = type
         self.template = template
@@ -23,14 +29,15 @@ class Report:
         # print('generate html finished')
         # print(self.script_list)
 
-        env = Environment(loader=FileSystemLoader(os.path.join(os.getcwd(), 'Framework_Kernel/templates'),
-                                                  encoding='utf-8'))
-        information = {'Category': 'TEST ',
-                       'Version': ' 1.0',
-                       'Start Time': ' 2018-5-14 14:58:27',
-                       'Duration': ' 00:30:03',
-                       'Note': '为了RC的最后一次回归测试',
-                       }
+        env = Environment(loader=FileSystemLoader(os.path.join(
+            os.getcwd(), 'Framework_Kernel/templates'), encoding='utf-8'))
+        information = {
+            'Category': 'TEST ',
+            'Version': ' 1.0',
+            'Start Time': ' 2018-5-14 14:58:27',
+            'Duration': ' 00:30:03',
+            'Note': '为了RC的最后一次回归测试',
+        }
 
         ffdata = self.data['fdata']
         passCount = self.data['passCount']
@@ -38,20 +45,41 @@ class Report:
         norunCount = self.data['norunCount']
         count = self.data['count']
         # total=[PassingRate,Pass,Fail,NoRun,Count]
-        total = {'Passing rate': '%.2f' % (100 * passCount / count),
-                 'Pass': passCount,
-                 'Fail': failCount,
-                 'NoRun': norunCount,
-                 'Count': count}
+        total = {
+            'Passing rate': '%.2f' % (100 * passCount / count),
+            'Pass': passCount,
+            'Fail': failCount,
+            'NoRun': norunCount,
+            'Count': count
+        }
 
-        data = [{'value': total['Pass'], 'name': 'Pass', 'itemStyle': {'color': '#5cb85c'}},
-                {'value': total['Fail'], 'name': 'Fail', 'itemStyle': {'color': '#d9534f'}},
-                # {'value': total['NoRun'], 'name': 'No Run', 'itemStyle': {'color': 'grey'}},
-                ]
+        data = [
+            {
+                'value': total['Pass'],
+                'name': 'Pass',
+                'itemStyle': {
+                    'color': '#5cb85c'
+                }
+            },
+            {
+                'value': total['Fail'],
+                'name': 'Fail',
+                'itemStyle': {
+                    'color': '#d9534f'
+                }
+            },
+            # {'value': total['NoRun'], 'name': 'No Run', 'itemStyle': {'color': 'grey'}},
+        ]
         template = env.get_template('tmp.html')
-        html = template.render(information=information, fdata=ffdata, data=data, total=total, task_name=self.name,
+        html = template.render(information=information,
+                               fdata=ffdata,
+                               data=data,
+                               total=total,
+                               task_name=self.name,
                                encoding='utf-8')  # unicode string
-        with open(os.path.join(os.getcwd(), 'Report\\'+self.name+'.html'), 'w', encoding='utf-8') as f:
+        with open(os.path.join(os.getcwd(), 'Report\\' + self.name + '.html'),
+                  'w',
+                  encoding='utf-8') as f:
             f.write(html)
         log.log('generate {}.html finished'.format(self.name))
 

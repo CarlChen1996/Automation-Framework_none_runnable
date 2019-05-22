@@ -33,7 +33,7 @@ class ExecutionEngine(Engine):
     def start(self):
         self.executor = Process(target=self.execute_q, name='framework_executor', args=())
         self.status = self.executor
-        self.executor.daemon=True
+        self.executor.daemon = True
         self.executor.start()
 
     def stop(self):
