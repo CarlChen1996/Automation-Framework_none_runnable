@@ -21,8 +21,8 @@ def run_with_manual_mode():
     while True:
         if manual_mode_first_selection == "01":  # start config engine
             log.log("start config")
-            conf.start(build_list, deploy_list)
-            log.log("config pid is {}".format(conf.status.pid))
+            instance_config_engine.start(build_server_list, uut_list)
+            log.log("config pid is {}".format(instance_config_engine.status.pid))
             is_framework_configured = True
             break
         elif manual_mode_first_selection == "99":
@@ -48,19 +48,19 @@ def run_with_manual_mode():
         log.log(run_mode)
         if manual_mode_second_selection == "01":    # start assemble
             log.log("start assembly")
-            thread_start_assemble = threading.Thread(target=assemble.start())
+            thread_start_assemble = threading.Thread(target=instance_assemble_engine.start())
             thread_start_assemble.start
-            log.log("assemble pid is {}".format(assemble.status.pid))
+            log.log("assemble pid is {}".format(instance_assemble_engine.status.pid))
         elif manual_mode_second_selection == "02":
             log.log("start execution")
-            exe.start()
-            log.log("execute pid is {}".format(exe.status.pid))
+            instance_execution_engine.start()
+            log.log("execute pid is {}".format(instance_execution_engine.status.pid))
         elif manual_mode_second_selection == "03":
             log.log("stop assembly")
-            assemble.stop()
+            instance_assemble_engine.stop()
         elif manual_mode_second_selection == "04":
             log.log("stop execute")
-            exe.stop()
+            instance_execution_engine.stop()
         elif manual_mode_second_selection == "99":
             log.log(
                 "User select to stop or no selection within a certain time, program exit"
@@ -71,20 +71,19 @@ def run_with_manual_mode():
             manual_mode_second_selection = get_keyboard_input(60)
 
 
-def run_with_auto_mode():
-    global assemble, exe, pipe, deploy_list, build_list, conf
+def run_with_auto_mode():   
     log.log("Framework will be initialized automatically")
     log.log('start configuration engine')
-    conf.start(build_list, deploy_list)
+    instance_config_engine.start(build_server_list, uut_list)
     log.log("configurator  finished")
     print('==============start assemble engine======================')
     log.log('start assemble engine')
-    assemble.start()
+    instance_assemble_engine.start()
     log.log('assemble finished')
     print(
         '=================start execution engine=====================')
     log.log('start execution engine')
-    exe.start()
+    instance_execution_engine.start()
     log.log('execution finished')
     watch_assemble_thread = threading.Thread(
         target=keep_assemble_alive, name="watch_assemble_thread", args=())
@@ -98,10 +97,10 @@ def keep_assemble_alive():
     while True:
         time.sleep(5)
         log.log("[watch_assemble_thread] assemble engine pid {} current status is {}"
-                .format(assemble.status.pid, str(assemble.status.is_alive())))
-        if not assemble.status.is_alive():
-            assemble.start()
-            if assemble.status.is_alive():
+                .format(instance_assemble_engine.status.pid, str(instance_assemble_engine.status.is_alive())))
+        if not instance_assemble_engine.status.is_alive():
+            instance_assemble_engine.start()
+            if instance_assemble_engine.status.is_alive():
                 log.log(
                     "[watch_assemble_thread] start assemble engine successfully"
                 )
@@ -113,10 +112,10 @@ def keep_executor_alive():
     while True:
         time.sleep(5)
         log.log("[watch_executor_thread] execution engine pid {} current status is {}"
-                .format(exe.status.pid, str(exe.status.is_alive())))
-        if not exe.status.is_alive():
-            exe.start()
-            if exe.status.is_alive():
+                .format(instance_execution_engine.status.pid, str(instance_execution_engine.status.is_alive())))
+        if not instance_execution_engine.status.is_alive():
+            instance_execution_engine.start()
+            if instance_execution_engine.status.is_alive():
                 log.log(
                     "[watch_executor_thread] start execution engine successfully"
                 )
@@ -128,11 +127,11 @@ if __name__ == '__main__':
     pipe = Pipe()
     log = log.Log(name='framework')
     log.log('Begin to start controller')
-    build_list = []
-    deploy_list = []
-    conf = configuration_engine.ConfigurationEngine()
-    assemble = assemble_engine.AssembleEngine(pipe[0], build_list)
-    exe = execution_engine.ExecutionEngine(deploy_list, pipe[1])
+    build_server_list = []
+    uut_list = []
+    instance_config_engine = configuration_engine.ConfigurationEngine()
+    instance_assemble_engine = assemble_engine.AssembleEngine(pipe[0], build_server_list)
+    instance_execution_engine = execution_engine.ExecutionEngine(uut_list, pipe[1])
     log.log(
         "++++++++++++++++++++++++++ Select mode+++++++++++++++++++++++++++++++"
     )
