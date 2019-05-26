@@ -3,213 +3,158 @@ from Framework_Kernel import configuration_engine
 from Framework_Kernel import assemble_engine
 from Framework_Kernel import execution_engine
 from Framework_Kernel import log
-import time
+from Common_Library.functions import get_keyboard_input
 import threading
-import msvcrt
+import time
 
 
-def readinput(timeout):
-    start_time = time.time()
-    input = ''
+def run_with_manual_mode():
+    is_framework_configured = False
+    log.log("This is the manual operation mode, framework must be configured before continue")
+    log.log(
+        "++++++++++++++++++++++++++ manual mode first selection+++++++++++++++++++++++++++++++"
+    )
+    log.log("+++++++++++++++++++++++ 01:start config +++++++++++++++++++++++")
+    log.log("+++++++++++++++++++++++ 99:exit +++++++++++++++++++++++++")
+    manual_mode_first_selection = get_keyboard_input(60)
+    log.log(run_mode)
     while True:
-        if msvcrt.kbhit():
-            byte_arr = msvcrt.getche()
-            if ord(byte_arr) == 13:  # enter_key
-                break
-            elif ord(byte_arr) >= 32:  # space_char
-                input += "".join(map(chr, byte_arr))
-        if len(input) == 0 and (time.time() - start_time) > timeout:
-            # print("timing out, nothing input.")
+        if manual_mode_first_selection == "01":  # start config engine
+            log.log("start config")
+            conf.start(build_list, deploy_list)
+            log.log("config pid is {}".format(conf.status.pid))
+            is_framework_configured = True
             break
-    # print('')
-    if len(input) > 0:
-        return input
-    else:
-        return None
+        elif manual_mode_first_selection == "99":
+            log.log(
+                "User select to stop or no selection within a certain time, program exit"
+            )
+            break
+        else:
+            log.log("Unknow run mode, please select the valid run mode from the list")
+            manual_mode_first_selection = get_keyboard_input(60)
+
+    while is_framework_configured:
+        log.log("Framework has been configured, please continue with the operation")
+        log.log(
+            "++++++++++++++++++++++++++ manual mode second selection+++++++++++++++++++++++++++++++"
+        )
+        log.log("+++++++++++++++++++++++ 01:start assembly +++++++++++++++++++++++")
+        log.log("+++++++++++++++++++++++ 02:start execution +++++++++++++++++++++++")
+        log.log("+++++++++++++++++++++++ 03:stop assembly +++++++++++++++++++++++")
+        log.log("+++++++++++++++++++++++ 04:stop execution +++++++++++++++++++++++")
+        log.log("+++++++++++++++++++++++ 99:exit - this will stop all engines  +++++++++++++++++++++++")
+        manual_mode_second_selection = get_keyboard_input(600)
+        log.log(run_mode)
+        if manual_mode_second_selection == "01":    # start assemble
+            log.log("start assembly")
+            thread_start_assemble = threading.Thread(target=assemble.start())
+            thread_start_assemble.start
+            log.log("assemble pid is {}".format(assemble.status.pid))
+        elif manual_mode_second_selection == "02":
+            log.log("start execution")
+            exe.start()
+            log.log("execute pid is {}".format(exe.status.pid))
+        elif manual_mode_second_selection == "03":
+            log.log("stop assembly")
+            assemble.stop()
+        elif manual_mode_second_selection == "04":
+            log.log("stop execute")
+            exe.stop()
+        elif manual_mode_second_selection == "99":
+            log.log(
+                "User select to stop or no selection within a certain time, program exit"
+            )
+            break
+        else:
+            log.log("Unknow run mode, please select the valid mode from the list")
+            manual_mode_second_selection = get_keyboard_input(60)
 
 
-def operation():
+def run_with_auto_mode():
     global assemble, exe, pipe, deploy_list, build_list, conf
-    flags = [False, False]
-    config_flag = False
-    log.log("please select operation")
-    log.log("00:start config")
-    log.log("01:start assembly")
-    log.log("02:start execute")
-    log.log("03:stop assembly")
-    log.log("04:stop execute")
-    log.log("05:restart assembly")
-    log.log("06:restart execute")
-    log.log("07:restart all")
-    log.log("08:stop all")
-    log.log("09:daemon")
+    log.log("Framework will be initialized automatically")
+    log.log('start configuration engine')
+    conf.start(build_list, deploy_list)
+    log.log("configurator  finished")
+    print('==============start assemble engine======================')
+    log.log('start assemble engine')
+    assemble.start()
+    log.log('assemble finished')
+    print(
+        '=================start execution engine=====================')
+    log.log('start execution engine')
+    exe.start()
+    log.log('execution finished')
+    watch_assemble_thread = threading.Thread(
+        target=keep_assemble_alive, name="watch_assemble_thread", args=())
+    watch_assemble_thread.start()
+    watch_executor_thread = threading.Thread(
+        target=keep_executor_alive, name="watch_executor_thread", args=())
+    watch_executor_thread.start()
+
+
+def keep_assemble_alive():
     while True:
-        ans = readinput(10)
-        if ans:
-            if ans == "00":
-                log.log("start config")
-                conf.start(build_list, deploy_list)
-                config_flag = True
-                log.log("config pid is {}".format(conf.status.pid))
-            if ans == "07":
-                log.log("restart all")
-                if flags[0]:
-                    assemble.stop()
-                if flags[1]:
-                    exe.stop()
-                conf.start(build_list, deploy_list)
-                config_flag = True
-                flags[0] = True
-                flags[1] = True
-                assemble.start()
-                exe.start()
-                log.log("config pid is {}".format(conf.status.pid))
-                log.log("assemble pid is {}".format(assemble.status.pid))
-                log.log("execute pid is {}".format(exe.status.pid))
-            elif config_flag:
-                if ans == "01":
-                    log.log("start assembly")
-                    assemble.start()
-                    flags[0] = True
-                    log.log("assemble pid is {}".format(assemble.status.pid))
-                elif ans == "02":
-                    log.log("start execute")
-                    exe.start()
-                    flags[1] = True
-                    log.log("execute pid is {}".format(exe.status.pid))
-                elif ans == "03":
-                    if flags[0]:
-                        log.log("stop assembly")
-                        assemble.stop()
-                    else:
-                        log.log("assemble process not run and can not stop")
-                elif ans == "04":
-                    if flags[1]:
-                        log.log("stop execute")
-                        exe.stop()
-                    else:
-                        log.log("execute process not run and can not stop")
-
-                elif ans == "05":
-                    if flags[0]:
-                        assemble.stop()
-                    log.log("restart assembly")
-                    assemble.start()
-                    flags[0] = True
-                    log.log("assemble pid is {}".format(assemble.status.pid))
-                elif ans == "06":
-                    if flags[1]:
-                        exe.stop()
-                    log.log("restart execute")
-                    exe.start()
-                    flags[1] = True
-                    log.log("execute pid is {}".format(exe.status.pid))
-                elif ans == "08":
-                    if flags[1]:
-                        exe.stop()
-                    if flags[0]:
-                        assemble.stop()
-                    log.log("stop all")
-                elif ans == "09":
-                    if flags[0] & flags[1]:
-                        log.log("start daemon")
-                        while True:
-                            log.log(
-                                "[daemon]assembly engine pid {} is {}".format(
-                                    assemble.status.pid,
-                                    str(assemble.status.is_alive())))
-                            if not assemble.status.is_alive():
-                                assemble.start()
-                                if assemble.status.is_alive():
-                                    log.log("restart assembly success")
-                                else:
-                                    log.log("restart assembly fail")
-
-                            log.log("[daemon]execution engine pid {}  is {}".
-                                    format(exe.status.pid,
-                                           str(exe.status.is_alive())))
-                            if not exe.status.is_alive():
-                                exe.start()
-                                if exe.status.is_alive():
-                                    log.log("restart execution success")
-                                else:
-                                    log.log("restart execution fail")
-                            log.log("input break to exit daemon")
-                            s = readinput(5)
-                            if s == "break":
-                                log.log("exit daemon")
-                                log.log("please select operation")
-                                log.log("00:start config")
-                                log.log("01:start assembly")
-                                log.log("02:start execute")
-                                log.log("03:stop assembly")
-                                log.log("04:stop execute")
-                                log.log("05:restart assembly")
-                                log.log("06:restart execute")
-                                log.log("07:restart all")
-                                log.log("08:stop all")
-                                log.log("09:daemon")
-                                break
-                    else:
-                        log.log(
-                            "[daemon]assembly and execution must be alive before daemon"
-                        )
-
+        time.sleep(5)
+        log.log("[watch_assemble_thread] assemble engine pid {} current status is {}"
+                .format(assemble.status.pid, str(assemble.status.is_alive())))
+        if not assemble.status.is_alive():
+            assemble.start()
+            if assemble.status.is_alive():
+                log.log(
+                    "[watch_assemble_thread] start assemble engine successfully"
+                )
             else:
-                log.log("config has not been run")
+                log.log("[watch_assemble_thread] can't start assemble engine")
+
+
+def keep_executor_alive():
+    while True:
+        time.sleep(5)
+        log.log("[watch_executor_thread] execution engine pid {} current status is {}"
+                .format(exe.status.pid, str(exe.status.is_alive())))
+        if not exe.status.is_alive():
+            exe.start()
+            if exe.status.is_alive():
+                log.log(
+                    "[watch_executor_thread] start execution engine successfully"
+                )
+            else:
+                log.log("[watch_executor_thread] can't start execution engine")
 
 
 if __name__ == '__main__':
     pipe = Pipe()
     log = log.Log(name='framework')
     log.log('Begin to start controller')
-    print('=================Begin to start controller===================')
     build_list = []
     deploy_list = []
     conf = configuration_engine.ConfigurationEngine()
     assemble = assemble_engine.AssembleEngine(pipe[0], build_list)
     exe = execution_engine.ExecutionEngine(deploy_list, pipe[1])
     log.log(
-        "++++++++++++++++++++++++ Select mode+++++++++++++++++++++++++++++++++"
+        "++++++++++++++++++++++++++ Select mode+++++++++++++++++++++++++++++++"
     )
     log.log("+++++++++++++++++++++++ 01:manual +++++++++++++++++++++++")
-    log.log("+++++++++++++++++++++++ 02:auto,default +++++++++++++++++++++++")
-    choice = readinput(100)
-
-    if choice == "01":
-        watch_thread = threading.Thread(target=operation)
-        watch_thread.start()
-    elif choice == "02":
-        log.log('start configuration engine')
-        conf.start(build_list, deploy_list)
-        log.log("configurator  finished")
-        print('==============start assemble engine======================')
-        log.log('start assemble engine')
-        assemble.start()
-        log.log('assemble finished')
-        print('=================start execution engine=====================')
-        log.log('start execution engine')
-        exe.start()
-        log.log('execution finished')
-
-        while True:
-            time.sleep(5)
-            log.log("assembly engine pid {} current status is {}".format(
-                assemble.status.pid, str(assemble.status.is_alive())))
-            if not assemble.status.is_alive():
-                assemble.start()
-                if assemble.status.is_alive():
-                    log.log("restart assembly success")
-                else:
-                    log.log("restart assembly fail")
-
-            log.log("execution engine pid {} current status is {}".format(
-                exe.status.pid, str(exe.status.is_alive())))
-            if not exe.status.is_alive():
-                exe.start()
-                if exe.status.is_alive():
-                    log.log("restart execution success")
-                else:
-                    log.log("restart execution fail")
-    else:
-        log.log("nothing select ,exit")
+    log.log("+++++++++++++++++++++++ 02:auto,default +++++++++++++++++")
+    log.log("+++++++++++++++++++++++ 99:exit +++++++++++++++++++++++++")
+    run_mode = get_keyboard_input(60)
+    log.log(run_mode)
+    while True:
+        if run_mode == "01":  # manual mode
+            temp_thread = threading.Thread(target=run_with_manual_mode)
+            temp_thread.start()
+            break
+        elif run_mode == "02":  # auto mode, default
+            temp_thread = threading.Thread(target=run_with_auto_mode)
+            temp_thread.start()
+            break
+        elif run_mode == "99":
+            log.log(
+                "User select to stop or no selection within a certain time, program exit"
+            )
+            break
+        else:
+            log.log("Unknow run mode, please select the valid run mode from the list")
+            run_mode = get_keyboard_input(60)
