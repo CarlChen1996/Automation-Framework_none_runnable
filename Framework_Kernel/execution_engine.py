@@ -24,11 +24,11 @@ class ExecutionEngine(Engine):
     def __init__(self, deploy_list, pipe):
         self.pipe = pipe
         self.deploy_list = deploy_list
-        self.exeQ = ExecuteQueue()
+        self.execution_queue = ExecuteQueue()
 
-        # self.exeQ.task_list=[]
+        # self.execution_queue.task_list=[]
         # -----------execute结束后需要同时删除task list-----------------
-        # exeQ.task_list = task_list.copy()
+        # execution_queue.task_list = task_list.copy()
 
     def start(self):
         self.executor = Process(target=self.execute_q, name='framework_executor', args=())
@@ -55,38 +55,38 @@ class ExecutionEngine(Engine):
         while not False:
             receive = self.pipe.recv()
             log.log("[thread_3] receive: {}".format(receive.get_name()))
-            self.exeQ.task_list.append(receive)
+            self.execution_queue.task_list.append(receive)
             log.log('[thread_3] append {} to task_list'.format(receive.get_name()))
-            log.log('[thread_3] task_list now is {}'.format(list(map(lambda i: i.get_name(), self.exeQ.task_list))))
+            log.log('[thread_3] task_list now is {}'.format(list(map(lambda i: i.get_name(), self.execution_queue.task_list))))
             time.sleep(1)
 
     def thread_4(self):
         while True:
             time.sleep(1)
-            log.log('[thread_4] task_list left: {}'.format(len(self.exeQ.task_list)))
-            if self.exeQ.task_list:
+            log.log('[thread_4] task_list left: {}'.format(len(self.execution_queue.task_list)))
+            if self.execution_queue.task_list:
                 self.execute()
                 time.sleep(3)
-                log.log('[thread_4] task_list now is : {}'.format(list(map(lambda i: i.get_name(), self.exeQ.task_list))))
+                log.log('[thread_4] task_list now is : {}'.format(list(map(lambda i: i.get_name(), self.execution_queue.task_list))))
             else:
                 log.log('[thread_4]************************ wait for new task to execute **********************')
             time.sleep(5)
 
     def execute(self,):
         d = self.deploy_list[0]
-        i = self.exeQ.task_list[0]
+        i = self.execution_queue.task_list[0]
         # ----------循环里面添加 刷新list的方法 ---------------------
-        self.exeQ.deploy(i, d)
-        self.exeQ.execute(i)
+        self.execution_queue.deploy(i, d)
+        self.execution_queue.execute(i)
         # --------需要得到返回值 ------------------
-        self.exeQ.check_status(i)
-        self.exeQ.collect_result(i)
+        self.execution_queue.check_status(i)
+        self.execution_queue.collect_result(i)
         r = Report(i.get_name(), i.get_script_list())
         r.generate()
-        self.exeQ.task_list.remove(i)
+        self.execution_queue.task_list.remove(i)
         log.log("[thread_4] remove {} from task_list".format(i.get_name()))
         log.log('[thread_4] remove {} from execute queue'.format(i.get_name()))
-        log.log('[thread_4] task left in execute queue: {}'.format(len(self.exeQ.task_list)))
+        log.log('[thread_4] task left in execute queue: {}'.format(len(self.execution_queue.task_list)))
         print('---------------------------------------------------------------')
 
 
