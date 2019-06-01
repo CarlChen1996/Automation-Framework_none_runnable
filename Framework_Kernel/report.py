@@ -85,34 +85,27 @@ class Report:
 
     def fdata(self):
         file = os.path.join(os.getcwd(), 'Framework_Kernel\\result.yaml')
-        passCount = 0
-        failCount = 0
-        norunCount = 0
+        passed_case_number = 0
+        failed_case_number = 0
+        norun_case_number = 0
         data_dict = {}
-        test_list = []
+        test_project_list = []
         fdata = []
         f = open(file, encoding='utf-8')
         a = yaml.safe_load(f.read())
-        # print(list(a.values()))
 
         for v in list(a.values()):
-            # print(v[0])
-            # print(self.script_list)
             if list(a.values()).index(v) < len(self.script_list):
+                # v[0] should be the case name
                 v[0] = self.script_list[list(a.values()).index(v)].get_name()
-                # for s in self.script_list:
-                #     print(s.get_name())
-                if v[-1] not in test_list:
-                    test_list.append(v[-1])
+                if v[-1] not in test_project_list:
+                    test_project_list.append(v[-1])
             else:
                 break
-        # print(test_list)
-        # for s in self.script_list:
-        #     print(s.get_name())
 
-        for l in test_list:
+        for l in test_project_list:
+            # project, case[], pass, fail, norun, total
             fdata.append([l, [], 0, 0, 0, 0])
-        # print(fdata)
 
         for v in a.values():
             for l in fdata:
@@ -121,20 +114,20 @@ class Report:
                     fdata[index][1].append(v)
                     if v[-2] == 'Pass':
                         fdata[index][2] += 1
-                        passCount += 1
+                        passed_case_number += 1
                     if v[-2] == 'Fail':
                         fdata[index][3] += 1
-                        failCount += 1
+                        failed_case_number += 1
                     if v[-2] == 'Norun':
                         fdata[index][4] += 1
-                        norunCount += 1
+                        norun_case_number += 1
                     fdata[index][5] += 1
-        count = passCount + failCount + norunCount
+        total_case_number = passed_case_number + failed_case_number + norun_case_number
         data_dict['fdata'] = fdata
-        data_dict['passCount'] = passCount
-        data_dict['failCount'] = failCount
-        data_dict['norunCount'] = norunCount
-        data_dict['count'] = count
+        data_dict['passCount'] = passed_case_number
+        data_dict['failCount'] = failed_case_number
+        data_dict['norunCount'] = norun_case_number
+        data_dict['count'] = total_case_number
         return data_dict
 
 
@@ -147,12 +140,12 @@ class Email:
              sender='',
              subject='',
              content='',
-             attanchments=''):
+             attachments=''):
         self.receiver = receiver
         self.sender = sender
         self.sender = subject
         self.sender = content
-        self.sender = attanchments
+        self.sender = attachments
         print('send email')
 
 
