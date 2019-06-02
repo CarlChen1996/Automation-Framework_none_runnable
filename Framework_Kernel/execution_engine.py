@@ -31,7 +31,7 @@ class ExecutionEngine(Engine):
         # execution_queue.task_list = task_list.copy()
 
     def start(self):
-        self.executor = Process(target=self.execute_q, name='framework_executor', args=())
+        self.executor = Process(target=self.launch, name='framework_executor', args=())
         self.status = self.executor
         self.executor.daemon = True
         self.executor.start()
@@ -39,40 +39,40 @@ class ExecutionEngine(Engine):
     def stop(self):
         self.executor.terminate()
 
-    def execute_q(self):
-        threads_2 = []
-        t3 = threading.Thread(target=self.thread_3, args=())
-        threads_2.append(t3)
-        t4 = threading.Thread(target=self.thread_4, args=())
-        threads_2.append(t4)
-        for tt in threads_2:
-            tt.setDaemon(True)
-            tt.start()
+    def launch(self):
+        thread_list = []
+        thread_queue_monitor = threading.Thread(target=self.add_task_to_queue, args=())
+        thread_list.append(thread_queue_monitor)
+        thread_executor = threading.Thread(target=self.execute, args=())
+        thread_list.append(thread_executor)
+        for thread in thread_list:
+            thread.setDaemon(True)
+            thread.start()
             # t.join()
-        tt.join()
+        thread.join()
 
-    def thread_3(self):
+    def add_task_to_queue(self):
         while not False:
             receive = self.pipe.recv()
-            log.log("[thread_3] receive: {}".format(receive.get_name()))
+            log.log("[thread_queue_monitor] receive: {}".format(receive.get_name()))
             self.execution_queue.task_list.append(receive)
-            log.log('[thread_3] append {} to task_list'.format(receive.get_name()))
-            log.log('[thread_3] task_list now is {}'.format(list(map(lambda i: i.get_name(), self.execution_queue.task_list))))
+            log.log('[thread_queue_monitor] append {} to task_list'.format(receive.get_name()))
+            log.log('[thread_queue_monitor] task_list now is {}'.format(list(map(lambda i: i.get_name(), self.execution_queue.task_list))))
             time.sleep(1)
 
-    def thread_4(self):
+    def execute(self):
         while True:
             time.sleep(1)
-            log.log('[thread_4] task_list left: {}'.format(len(self.execution_queue.task_list)))
+            log.log('[thread_executor] task_list left: {}'.format(len(self.execution_queue.task_list)))
             if self.execution_queue.task_list:
-                self.execute()
+                self.run()
                 time.sleep(3)
-                log.log('[thread_4] task_list now is : {}'.format(list(map(lambda i: i.get_name(), self.execution_queue.task_list))))
+                log.log('[thread_executor] task_list now is : {}'.format(list(map(lambda i: i.get_name(), self.execution_queue.task_list))))
             else:
-                log.log('[thread_4]************************ wait for new task to execute **********************')
+                log.log('[thread_executor]************************ wait for new task to execute **********************')
             time.sleep(5)
 
-    def execute(self,):
+    def run(self,):
         d = self.deploy_list[0]
         i = self.execution_queue.task_list[0]
         # ----------循环里面添加 刷新list的方法 ---------------------
@@ -84,9 +84,9 @@ class ExecutionEngine(Engine):
         r = Report(i.get_name(), i.get_script_list())
         r.generate()
         self.execution_queue.task_list.remove(i)
-        log.log("[thread_4] remove {} from task_list".format(i.get_name()))
-        log.log('[thread_4] remove {} from execute queue'.format(i.get_name()))
-        log.log('[thread_4] task left in execute queue: {}'.format(len(self.execution_queue.task_list)))
+        log.log("[thread_executor] remove {} from task_list".format(i.get_name()))
+        log.log('[thread_executor] remove {} from execute queue'.format(i.get_name()))
+        log.log('[thread_executor] task left in execute queue: {}'.format(len(self.execution_queue.task_list)))
         print('---------------------------------------------------------------')
 
 

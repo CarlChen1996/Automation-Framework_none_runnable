@@ -71,7 +71,7 @@ def run_with_manual_mode():
             manual_mode_second_selection = get_keyboard_input(60)
 
 
-def run_with_auto_mode():   
+def run_with_auto_mode():
     log.log("Framework will be initialized automatically")
     log.log('start configuration engine')
     instance_config_engine.start(build_server_list, uut_list)
