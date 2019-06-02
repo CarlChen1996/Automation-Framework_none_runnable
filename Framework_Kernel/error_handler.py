@@ -19,7 +19,7 @@ class ErrorHandler:
     def reset_framework(self):
         pass
 
-    def rest_engine(self, engine):
+    def reset(self, engine):
         pass
 
     def continue_work(self):
