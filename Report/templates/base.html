@@ -232,7 +232,7 @@ function html_escape(s) {
 <div class='heading' style="width:50%;">
 {% endblock %}
     <div style="margin-top:-20px">
-        <h1>{{task_name}}</h1>
+        <h1>Test Report</h1>
         <div style="font-size:16px">
         <p class='attribute'><strong>Category : </strong>{{information['Category']}}</p>
         <p class='attribute'><strong>Version : </strong>{{information['Version']}}</p>
@@ -279,50 +279,50 @@ function html_escape(s) {
     <td class="text-center">Count:{{t[5]}}</td>
 </tr>
     {% for c in t[1] %}
-        {%if c[2]=='Fail'%}
+        {%if c[3]=='Fail'%}
 <tr id='ft{{fdata.index(t)+1}}_{{t[1].index(c)+1}}' class='none' style="background-color:#f2dede">
     <td>{{fdata.index(t)+1}}.{{t[1].index(c)+1}}</td>
-    <td class='failCase'><div class='testcase'>{{c[0]}}</div></td>
+    <td class='failCase'><div class='testcase'>{{c[1]}}</div></td>
     <td align='center'>
-    <button id='btn_ft{{fdata.index(t)+1}}_{{t[1].index(c)+1}}' type="button"  class="btn btn-danger btn-xs" onclick="changeStyle({{fdata.index(t)+1}}{{t[1].index(c)+1}})">{{c[2]}}</button>
+    <button id='btn_ft{{fdata.index(t)+1}}_{{t[1].index(c)+1}}' type="button"  class="btn btn-danger btn-xs" onclick="changeStyle({{fdata.index(t)+1}}{{t[1].index(c)+1}})">{{c[3]}}</button>
     </td>
     <td class="text-center"></td>
     <td class="text-center"></td>
     <td class="text-center"></td>
 </tr>
-        {%elif c[2]=='Pass'%}
+        {%elif c[3]=='Pass'%}
 <tr id='pt{{fdata.index(t)+1}}_{{l}}' class='hiddenRow' style="height:32.8px;background-color:#dff0d8">
     <td>{{fdata.index(t)+1}}.{{t[1].index(c)+1}}</td>
-    <td class='passCase'><div class='testcase'>{{c[0]}}</div></td>
-    <td align='center'><span class="btn btn-success btn-xs" >{{c[2]}}</span></td>
+    <td class='passCase'><div class='testcase'>{{c[1]}}</div></td>
+    <td align='center'><span class="btn btn-success btn-xs" >{{c[3]}}</span></td>
     <td class="text-center"></td>
     <td class="text-center"></td>
     <td class="text-center"></td>
 </tr>
         {%endif%}
-    {%if c[2]=='Fail'%}
+    {%if c[3]=='Fail'%}
 <tbody id="{{fdata.index(t)+1}}{{t[1].index(c)+1}}"  class="steps" align="left">
-    {% for s in c[1]%}
+    {% for s in c[2]%}
     {%if s[1]=='fail'%}
     <tr id='ft' class='none' style="font-size:12px;background-color:#f2dede">
-    <td>{{fdata.index(t)+1}}.{{t[1].index(c)+1}}.{{c[1].index(s)+1}}</td>
+    <td>{{fdata.index(t)+1}}.{{t[1].index(c)+1}}.{{c[2].index(s)+1}}</td>
     <td class='failCase'><div class="teststep">{{s[0]}}</div></td>
     <td align='right'>
         <span class="label label-danger danger">{{s[1]}}</span>
     </td>
-    <td class="text-center">{% if s[2][:3]=='img' %}<a style="display:block;" target="_blank" href="expect_{{s[2]}}">{{s[2][4:]}}</a>{% else %}{{s[2]}}{% endif %}</td>
-    <td class="text-center">{% if s[3][:3]=='img' %}<a style="display:block;" target="_blank" href="actual_{{s[3]}}">{{s[3][4:]}}</a>{% else %}{{s[3]}}{% endif %}</td>
+    <td class="text-center">{% if s[2][:3]=='img' %}<a style="display:block;" target="_blank" href="{{t[0]}}/expect_{{s[2]}}">{{s[2][4:]}}</a>{% else %}{{s[2]}}{% endif %}</td>
+    <td class="text-center">{% if s[3][:3]=='img' %}<a style="display:block;" target="_blank" href="{{t[0]}}/actual_{{s[3]}}">{{s[3][4:]}}</a>{% else %}{{s[3]}}{% endif %}</td>
     <td class="text-center">{{s[4]}}</td>
     </tr>
     {%elif s[1]=='pass'%}
     <tr id='ft2' class='none' style="font-size:12px;background-color:#dff0d8">
-    <td>{{fdata.index(t)+1}}.{{t[1].index(c)+1}}.{{c[1].index(s)+1}}</td>
+    <td>{{fdata.index(t)+1}}.{{t[1].index(c)+1}}.{{c[2].index(s)+1}}</td>
     <td class='passCase'><div class='teststep'>{{s[0]}}</div></td>
     <td align='right'>
         <span class="label label-success success" >{{s[1]}}</span>
     </td>
-    <td class="text-center">{% if s[2][:3]=='img' %}<a style="display:block;" target="_blank" href="expect_{{s[2]}}">{{s[2][4:]}}</a>{% else %}{{s[2]}}{% endif %}</td>
-    <td class="text-center">{% if s[3][:3]=='img' %}<a style="display:block;" target="_blank" href="actual_{{s[3]}}">{{s[3][4:]}}</a>{% else %}{{s[3]}}{% endif %}</td>
+    <td class="text-center">{% if s[2][:3]=='img' %}<a style="display:block;" target="_blank" href="{{t[0]}}/expect_{{s[2]}}">{{s[2][4:]}}</a>{% else %}{{s[2]}}{% endif %}</td>
+    <td class="text-center">{% if s[3][:3]=='img' %}<a style="display:block;" target="_blank" href="{{t[0]}}/actual_{{s[3]}}">{{s[3][4:]}}</a>{% else %}{{s[3]}}{% endif %}</td>
     <td class="text-center">{{s[4]}}</td>
     </tr>
     {%endif%}

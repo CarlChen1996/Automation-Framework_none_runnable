@@ -81,7 +81,7 @@ class ExecutionEngine(Engine):
         # --------需要得到返回值 ------------------
         self.execution_queue.check_status(i)
         self.execution_queue.collect_result(i)
-        r = Report(i.get_name(), i.get_script_list())
+        r = Report(i.get_name(), i.get_uut_list())
         r.generate()
         self.execution_queue.task_list.remove(i)
         log.log("[thread_executor] remove {} from task_list".format(i.get_name()))
