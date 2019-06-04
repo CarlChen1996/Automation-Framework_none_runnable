@@ -29,8 +29,7 @@ class Report:
         # print('generate html finished')
         # print(self.script_list)
 
-        env = Environment(loader=FileSystemLoader(os.path.join(
-            os.getcwd(), 'Framework_Kernel/templates'), encoding='utf-8'))
+        env = Environment(loader=FileSystemLoader(os.path.join(os.path.dirname(os.getcwd()),'Report\\templates'), encoding='utf-8'))
         information = {
             'Category': 'TEST ',
             'Version': ' 1.0',
@@ -77,14 +76,15 @@ class Report:
                                total=total,
                                task_name=self.name,
                                encoding='utf-8')  # unicode string
-        with open(os.path.join(os.getcwd(), 'Report\\' + self.name + '.html'),
+        filepath = os.path.join(os.path.dirname(os.getcwd()), 'Report\\' + self.name + '.html')
+        with open(filepath,
                   'w',
                   encoding='utf-8') as f:
             f.write(html)
         log.log('generate {}.html finished'.format(self.name))
 
     def fdata(self):
-        file = os.path.join(os.getcwd(), 'Framework_Kernel\\result.yaml')
+        file = os.path.join(os.path.dirname(os.getcwd()),'Report\\result.yaml')
         passed_case_number = 0
         failed_case_number = 0
         norun_case_number = 0
@@ -94,20 +94,25 @@ class Report:
         f = open(file, encoding='utf-8')
         a = yaml.safe_load(f.read())
 
-        for v in list(a.values()):
-            if list(a.values()).index(v) < len(self.script_list):
-                # v[0] should be the case name
-                v[0] = self.script_list[list(a.values()).index(v)].get_name()
-                if v[-1] not in test_project_list:
-                    test_project_list.append(v[-1])
-            else:
-                break
+        for v in a.values():
+            if v[-1] not in test_project_list:
+                test_project_list.append(v[-1])
+
+        # for v in list(a.values()):
+        #     if list(a.values()).index(v) < len(self.script_list):
+        #         # v[0] should be the case name
+        #         v[0] = self.script_list[list(a.values()).index(v)].get_name()
+        #         if v[-1] not in test_project_list:
+        #             test_project_list.append(v[-1])
+            # else:
+            #     break
 
         for l in test_project_list:
             # project, case[], pass, fail, norun, total
             fdata.append([l, [], 0, 0, 0, 0])
-
+        # print(test_project_list)
         for v in a.values():
+            # print(v)
             for l in fdata:
                 if v[-1] == l[0]:
                     index = fdata.index(l)
@@ -150,6 +155,7 @@ class Email:
 
 
 if __name__ == '__main__':
-    r = Report(name='task1')
-    fdata = r.fdata()
-    r.generate(fdata)
+    r = Report(name='task1', script_list=[])
+    r.fdata()
+    r.generate()
+    # r.generate()
