@@ -54,6 +54,8 @@ class ExecutionEngine(Engine):
     def add_task_to_queue(self):
         while not False:
             receive = self.pipe.recv()
+            print('[Execution] received: {}'.format(receive.get_name()))
+            self.pipe.send(receive.get_name())
             log.log("[thread_queue_monitor] receive: {}".format(receive.get_name()))
             self.execution_queue.task_list.append(receive)
             log.log('[thread_queue_monitor] append {} to task_list'.format(receive.get_name()))
