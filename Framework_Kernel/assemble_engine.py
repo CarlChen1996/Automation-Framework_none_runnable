@@ -94,16 +94,8 @@ class AssembleEngine(Engine):
                     task.get_name()))
                 self.assembleQueue.insert_task(task=task)
                 # -------------------rename task plan name -------------------------
-                for i in range(10):
-                    if os.path.exists(taskitem['file_path'] + 'PASS') or \
-                            os.path.exists(os.path.exists(taskitem['file_path'] + 'PASS(%d)'%i)):
-                        i += 1
-                        continue
-                    else:
-                        if i == 0:
-                            os.rename(taskitem['file_path'], taskitem['file_path'] + 'PASS')
-                        else:
-                            os.rename(taskitem['file_path'], taskitem['file_path'] + 'PASS(%d)'%i)
+                os.rename(taskitem['file_path'], taskitem['file_path'] + 'PASS')
+                print('rename finished', taskitem['file_path'] + 'PASS')
             log.log(
                 '[thread_1] ***************finish refresh queue *****************'
             )
