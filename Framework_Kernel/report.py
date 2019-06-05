@@ -15,21 +15,21 @@ class Report:
     def __init__(
             self,
             name,
-            script_list,
+            uut_list,
             type='HTML',
             template='1',
     ):
         self.name = name
         self.type = type
         self.template = template
-        self.script_list = script_list
+        self.uut_list = uut_list
         self.data = self.fdata()
 
     def generate(self):
         # print('generate html finished')
         # print(self.script_list)
 
-        env = Environment(loader=FileSystemLoader(os.path.join(os.path.dirname(os.getcwd()),'Report\\templates'), encoding='utf-8'))
+        env = Environment(loader=FileSystemLoader(os.path.join(os.getcwd(),'Report\\templates'), encoding='utf-8'))
         information = {
             'Category': 'TEST ',
             'Version': ' 1.0',
@@ -76,7 +76,7 @@ class Report:
                                total=total,
                                task_name=self.name,
                                encoding='utf-8')  # unicode string
-        filepath = os.path.join(os.path.dirname(os.getcwd()), 'Report\\' + self.name + '.html')
+        filepath = os.path.join(os.getcwd(), 'Report\\' + self.name + '\\'+self.name+'.html')
         with open(filepath,
                   'w',
                   encoding='utf-8') as f:
@@ -84,7 +84,8 @@ class Report:
         log.log('generate {}.html finished'.format(self.name))
 
     def fdata(self):
-        file = os.path.join(os.path.dirname(os.getcwd()),'Report\\result.yaml')
+        self.result()
+        file = os.path.join(os.getcwd(), 'Report\\{}\\result.yaml'.format(self.name))
         passed_case_number = 0
         failed_case_number = 0
         norun_case_number = 0
@@ -94,36 +95,27 @@ class Report:
         f = open(file, encoding='utf-8')
         a = yaml.safe_load(f.read())
 
-        for v in a.values():
-            if v[-1] not in test_project_list:
-                test_project_list.append(v[-1])
-
-        # for v in list(a.values()):
-        #     if list(a.values()).index(v) < len(self.script_list):
-        #         # v[0] should be the case name
-        #         v[0] = self.script_list[list(a.values()).index(v)].get_name()
-        #         if v[-1] not in test_project_list:
-        #             test_project_list.append(v[-1])
-            # else:
-            #     break
+        for v in a:
+            if v[0] not in test_project_list:
+                test_project_list.append(v[0])
 
         for l in test_project_list:
             # project, case[], pass, fail, norun, total
             fdata.append([l, [], 0, 0, 0, 0])
         # print(test_project_list)
-        for v in a.values():
+        for v in a:
             # print(v)
-            for l in fdata:
-                if v[-1] == l[0]:
-                    index = fdata.index(l)
+            for k in fdata:
+                if v[0] == k[0]:
+                    index = fdata.index(k)
                     fdata[index][1].append(v)
-                    if v[-2] == 'Pass':
+                    if v[-1] == 'Pass':
                         fdata[index][2] += 1
                         passed_case_number += 1
-                    if v[-2] == 'Fail':
+                    if v[-1] == 'Fail':
                         fdata[index][3] += 1
                         failed_case_number += 1
-                    if v[-2] == 'Norun':
+                    if v[-1] == 'Norun':
                         fdata[index][4] += 1
                         norun_case_number += 1
                     fdata[index][5] += 1
@@ -134,6 +126,18 @@ class Report:
         data_dict['norunCount'] = norun_case_number
         data_dict['count'] = total_case_number
         return data_dict
+
+    def result(self):
+        result = []
+        for i in self.uut_list:
+            with open(os.path.join(os.getcwd(),
+                                   'Report\\{}\\{}\\{}.yaml'.format(self.name, i.hostname, i.hostname)), encoding='utf-8') as f:
+                a = yaml.safe_load(f.read())
+                result.extend(a)
+        with open(os.path.join(os.getcwd(),
+                               'Report\\{}\\result.yaml'.format(self.name)), 'w', encoding='utf-8') as g:
+            yaml.dump(result, g)
+            # print(g)
 
 
 class Email:
@@ -152,10 +156,9 @@ class Email:
         self.sender = content
         self.sender = attachments
         print('send email')
-
-
+        os.path.dirname(os.getcwd())
 if __name__ == '__main__':
-    r = Report(name='task1', script_list=[])
-    r.fdata()
+    # if debug in this module should change os.getcwd() to os.path.dirname(os.getcwd())
+    uut_list = [{'hostname':'uut_1'}, {'hostname':'uut_2'}]
+    r = Report(name='task_1',uut_list=uut_list)
     r.generate()
-    # r.generate()

@@ -1,11 +1,11 @@
-name: task3
+name: task_1
 testscripts:
   - task3script1
   - task3script2
   - task3script3
 uutlist:
   -
-    hostname: uut1
+    hostname: uut_1
     ip: 15.83.250.1
     mac: 13354k31sf
     version: win7
