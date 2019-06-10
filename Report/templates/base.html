@@ -233,6 +233,7 @@ function html_escape(s) {
 {% endblock %}
     <div style="margin-top:-20px">
         <h1>Test Report</h1>
+        {% block test_info %}
         <div style="font-size:16px">
         <p class='attribute'><strong>Category : </strong>{{information['Category']}}</p>
         <p class='attribute'><strong>Version : </strong>{{information['Version']}}</p>
@@ -240,6 +241,7 @@ function html_escape(s) {
         <p class='attribute'><strong>Duration : </strong>{{information['Duration']}}</p>
         </div><br>
         <p class='attribute' style="height:20px;font-size:14px"><strong>Note : </strong>{{information['Note']}}</p><br>
+        {% endblock %}
         <p class='attribute' style="font-size:12px">
             <strong>Status : </strong> ALL {{total['Count']}} Pass {{total['Pass']}} Failure {{total['Fail']}}, Passing rate: {{total['Passing rate']}}%</p>
     </div>
@@ -269,9 +271,9 @@ function html_escape(s) {
     <td>Note</td>
 
 </tr>
-{% for t in fdata %}
+{% for t in final_data %}
 <tr class='failClass warning' style="font-size: 16px;">
-    <td>{{fdata.index(t)+1}}</td>
+    <td>{{final_data.index(t)+1}}</td>
     <td style="font-size:15px">{{t[0]}}</td>
     <td class="text-center">Pass:{{t[2]}}</td>
     <td class="text-center">Fail:{{t[3]}}</td>
@@ -280,19 +282,19 @@ function html_escape(s) {
 </tr>
     {% for c in t[1] %}
         {%if c[3]=='Fail'%}
-<tr id='ft{{fdata.index(t)+1}}_{{t[1].index(c)+1}}' class='none' style="background-color:#f2dede">
-    <td>{{fdata.index(t)+1}}.{{t[1].index(c)+1}}</td>
+<tr id='ft{{final_data.index(t)+1}}_{{t[1].index(c)+1}}' class='none' style="background-color:#f2dede">
+    <td>{{final_data.index(t)+1}}.{{t[1].index(c)+1}}</td>
     <td class='failCase'><div class='testcase'>{{c[1]}}</div></td>
     <td align='center'>
-    <button id='btn_ft{{fdata.index(t)+1}}_{{t[1].index(c)+1}}' type="button"  class="btn btn-danger btn-xs" onclick="changeStyle({{fdata.index(t)+1}}{{t[1].index(c)+1}})">{{c[3]}}</button>
+    <button id='btn_ft{{final_data.index(t)+1}}_{{t[1].index(c)+1}}' type="button"  class="btn btn-danger btn-xs" onclick="changeStyle({{final_data.index(t)+1}}{{t[1].index(c)+1}})">{{c[3]}}</button>
     </td>
     <td class="text-center"></td>
     <td class="text-center"></td>
     <td class="text-center"></td>
 </tr>
         {%elif c[3]=='Pass'%}
-<tr id='pt{{fdata.index(t)+1}}_{{l}}' class='hiddenRow' style="height:32.8px;background-color:#dff0d8">
-    <td>{{fdata.index(t)+1}}.{{t[1].index(c)+1}}</td>
+<tr id='pt{{final_data.index(t)+1}}_{{l}}' class='hiddenRow' style="height:32.8px;background-color:#dff0d8">
+    <td>{{final_data.index(t)+1}}.{{t[1].index(c)+1}}</td>
     <td class='passCase'><div class='testcase'>{{c[1]}}</div></td>
     <td align='center'><span class="btn btn-success btn-xs" >{{c[3]}}</span></td>
     <td class="text-center"></td>
@@ -301,11 +303,11 @@ function html_escape(s) {
 </tr>
         {%endif%}
     {%if c[3]=='Fail'%}
-<tbody id="{{fdata.index(t)+1}}{{t[1].index(c)+1}}"  class="steps" align="left">
+<tbody id="{{final_data.index(t)+1}}{{t[1].index(c)+1}}"  class="steps" align="left">
     {% for s in c[2]%}
     {%if s[1]=='fail'%}
     <tr id='ft' class='none' style="font-size:12px;background-color:#f2dede">
-    <td>{{fdata.index(t)+1}}.{{t[1].index(c)+1}}.{{c[2].index(s)+1}}</td>
+    <td>{{final_data.index(t)+1}}.{{t[1].index(c)+1}}.{{c[2].index(s)+1}}</td>
     <td class='failCase'><div class="teststep">{{s[0]}}</div></td>
     <td align='right'>
         <span class="label label-danger danger">{{s[1]}}</span>
@@ -316,7 +318,7 @@ function html_escape(s) {
     </tr>
     {%elif s[1]=='pass'%}
     <tr id='ft2' class='none' style="font-size:12px;background-color:#dff0d8">
-    <td>{{fdata.index(t)+1}}.{{t[1].index(c)+1}}.{{c[2].index(s)+1}}</td>
+    <td>{{final_data.index(t)+1}}.{{t[1].index(c)+1}}.{{c[2].index(s)+1}}</td>
     <td class='passCase'><div class='teststep'>{{s[0]}}</div></td>
     <td align='right'>
         <span class="label label-success success" >{{s[1]}}</span>

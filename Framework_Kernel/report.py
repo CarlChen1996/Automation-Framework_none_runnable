@@ -23,7 +23,7 @@ class Report:
         self.type = type
         self.template = template
         self.uut_list = uut_list
-        self.data = self.fdata()
+        self.data = self.final_data()
 
     def generate(self):
         # print('generate html finished')
@@ -38,7 +38,7 @@ class Report:
             'Note': '为了RC的最后一次回归测试',
         }
 
-        ffdata = self.data['fdata']
+        report_data = self.data['final_data']
         passCount = self.data['passCount']
         failCount = self.data['failCount']
         norunCount = self.data['norunCount']
@@ -71,7 +71,7 @@ class Report:
         ]
         template = env.get_template('tmp.html')
         html = template.render(information=information,
-                               fdata=ffdata,
+                               final_data=report_data,
                                data=data,
                                total=total,
                                task_name=self.name,
@@ -83,7 +83,7 @@ class Report:
             f.write(html)
         log.log('generate {}.html finished'.format(self.name))
 
-    def fdata(self):
+    def final_data(self):
         self.result()
         file = os.path.join(os.getcwd(), 'Report\\{}\\result.yaml'.format(self.name))
         passed_case_number = 0
@@ -91,7 +91,7 @@ class Report:
         norun_case_number = 0
         data_dict = {}
         test_project_list = []
-        fdata = []
+        final_data = []
         f = open(file, encoding='utf-8')
         a = yaml.safe_load(f.read())
 
@@ -101,26 +101,26 @@ class Report:
 
         for l in test_project_list:
             # project, case[], pass, fail, norun, total
-            fdata.append([l, [], 0, 0, 0, 0])
+            final_data.append([l, [], 0, 0, 0, 0])
         # print(test_project_list)
         for v in a:
             # print(v)
-            for k in fdata:
+            for k in final_data:
                 if v[0] == k[0]:
-                    index = fdata.index(k)
-                    fdata[index][1].append(v)
+                    index = final_data.index(k)
+                    final_data[index][1].append(v)
                     if v[-1] == 'Pass':
-                        fdata[index][2] += 1
+                        final_data[index][2] += 1
                         passed_case_number += 1
                     if v[-1] == 'Fail':
-                        fdata[index][3] += 1
+                        final_data[index][3] += 1
                         failed_case_number += 1
                     if v[-1] == 'Norun':
-                        fdata[index][4] += 1
+                        final_data[index][4] += 1
                         norun_case_number += 1
-                    fdata[index][5] += 1
+                    final_data[index][5] += 1
         total_case_number = passed_case_number + failed_case_number + norun_case_number
-        data_dict['fdata'] = fdata
+        data_dict['final_data'] = final_data
         data_dict['passCount'] = passed_case_number
         data_dict['failCount'] = failed_case_number
         data_dict['norunCount'] = norun_case_number

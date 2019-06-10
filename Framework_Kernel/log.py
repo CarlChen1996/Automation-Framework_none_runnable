@@ -17,7 +17,7 @@ class Log:
 
     def log(self, msg):
         self.log_path = os.path.join(
-            os.path.dirname(os.getcwd()),
+            os.getcwd(),
             'Log\\{}\\'.format(time.strftime("%Y-%m-%d_%H", time.localtime())))
         if not os.path.exists(self.log_path):
             os.makedirs(self.log_path)
