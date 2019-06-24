@@ -37,7 +37,7 @@ class AssembleQueue(Queue):
 
     def build_task(self, task, host):
         self.log.log('assemble_queue build {} on {}'.format(
-            task.get_name(), host.hostname))
+            task.get_name(), host.get_hostname()))
         task.build(host)
 
 
@@ -48,23 +48,23 @@ class ExecuteQueue(Queue):
 
     def deploy(self, task, host):
         self.log.log('execute_queue deploy {} to {} with {}'.format(
-            task.get_name(), task.get_uut_list()[0].hostname, host.hostname))
+            task.get_name(), task.get_uut_list()[0].get_hostname(), host.get_hostname()))
         task.deploy(host)
 
     def execute(self, task):
         for host in task.get_uut_list():
             self.log.log('execute_queue execute {} on {}'.format(
-                task.get_name(), host.hostname))
+                task.get_name(), host.get_hostname()))
             task.execute(host)
 
     def check_status(self, task):
         for host in task.get_uut_list():
             self.log.log('execute_queue check status {} on {}'.format(
-                task.get_name(), host.hostname))
+                task.get_name(), host.get_hostname()))
             task.check_status(host)
 
     def collect_result(self, task):
         for host in task.get_uut_list():
             self.log.log('execute_queue collect result {} from {}'.format(
-                task.get_name(), host.hostname))
+                task.get_name(), host.get_hostname()))
             task.collect_result(host)

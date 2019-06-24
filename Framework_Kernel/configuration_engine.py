@@ -57,14 +57,13 @@ def config_process(send_con):
                          hostname=b_hostname,
                          version=b_version,
                          mac=b_mac)
-    log.log('Init {}'.format(b.hostname))
+    log.log('Init {}'.format(b.get_hostname()))
     d = WindowsDeployHost(ip=d_ip,
                           hostname=d_hostname,
                           version=d_version,
                           mac=d_mac)
-    log.log('Init {}'.format(d.hostname))
+    log.log('Init {}'.format(d.get_hostname()))
     # b = WindowsBuildHost(
-    #                       ip="192.168.1.1",
     #                       hostname="windows_Build_server1",
     #                       version="1.0",
     #                       mac='27832784292')
@@ -79,9 +78,9 @@ def config_process(send_con):
     # 下面要判断OFF的情况--------------------------------------------------------
     sends = []
     if v.validate(b):
-        b.Status = "on"
+        b.status = "on"
         sends.append(b)
     if v.validate(d):
-        d.Status = "on"
+        b.status = "on"
         sends.append(d)
     send_con.send(sends)

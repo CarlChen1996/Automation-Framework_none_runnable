@@ -8,7 +8,7 @@ import sys
 from Framework_Kernel.log import Log
 
 
-class Host():
+class Host:
     def __init__(self,
                  ip,
                  mac,
@@ -18,13 +18,13 @@ class Host():
                  password='',
                  domain='',
                  status='off'):
-        self.ip = ip
-        self.hostname = hostname
-        self.version = version
-        self.mac = mac
-        self.username = username
-        self.password = password
-        self.domain = domain
+        self.__ip = ip
+        self.__hostname = hostname
+        self.__version = version
+        self.__mac = mac
+        self.__username = username
+        self.__password = password
+        self.__domain = domain
         self.status = status
 
     def start(self):
@@ -36,6 +36,36 @@ class Host():
     def shutdown(self):
         print(sys._getframe().f_code.co_name + "  finished")
 
+    def get_ip(self):
+        return self.__ip
+
+    def get_hostname(self):
+        return self.__hostname
+
+    def get_version(self):
+        return self.__version
+
+    def get_mac(self):
+        return self.__mac
+
+    def get_username(self):
+        return self.__username
+
+    def get_password(self):
+        return self.__password
+
+    def get_domain(self):
+        return self.__domain
+
+    # def get_status(self):
+    #     return self.__status
+    #
+    # def set_status(self, status):
+    #     if status == "on" or status == "off":
+    #         self.__status = status
+    #     else:
+    #         print("status format input error, confirm your input is 'on' or 'off'")
+    #     return False
 
 class WindowsHost(Host):
     pass
@@ -77,17 +107,17 @@ class Execute:
     def execute_task(self, task):
         self.log.log('execute {} on  {}'.format(
             task.get_name(),
-            task.get_uut_list()[0].hostname))
+            task.get_uut_list()[0].get_hostname()))
 
     def check_status(self, task):
         self.log.log('check {} status on {}'.format(
             task.get_name(),
-            task.get_uut_list()[0].hostname))
+            task.get_uut_list()[0].get_hostname()))
 
     def collect_result(self, task):
         self.log.log('collect {} result from {}'.format(
             task.get_name(),
-            task.get_uut_list()[0].hostname))
+            task.get_uut_list()[0].get_hostname()))
 
 
 class WindowsBuildHost(WindowsHost, Build):

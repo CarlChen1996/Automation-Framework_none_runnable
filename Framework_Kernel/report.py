@@ -187,7 +187,7 @@ class Report:
         result = []
         for i in self.uut_list:
             with open(os.path.join(os.getcwd(),
-                                   'Report\\{}\\{}\\{}.yaml'.format(self.name, i.hostname, i.hostname)), encoding='utf-8') as f:
+                                   'Report\\{}\\{}\\{}.yaml'.format(self.name, i.get_hostname(), i.get_hostname())), encoding='utf-8') as f:
                 a = yaml.safe_load(f.read())
                 result.extend(a)
         with open(os.path.join(os.getcwd(),
