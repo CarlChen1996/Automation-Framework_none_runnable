@@ -237,13 +237,13 @@ return s;
             table2.removeAttribute("hidden");
             table.setAttribute("hidden",true);
             tag = "True"
-            button.innerHTML="Order by UUT"
+            button.innerHTML="Group by UUT"
         }
         else{
             table2.setAttribute("hidden",true);
             table.removeAttribute("hidden");
             tag="False"
-            button.innerHTML="Order by Case"
+            button.innerHTML="Group by Case"
         }
     }
 </script>
@@ -265,7 +265,7 @@ return s;
 <a class="btn btn-success" href='javascript:showCase(2)'>Passed {{total['Pass']}}</a>
 <a class="btn btn-info" href='javascript:showCase(3)'>ALL {{total['Count']}}</a>
 </p>
-<a class="btn btn-info" style="background-color:#fcf8e3; margin-top:40px;"  href='javascript:table_hidden()'><font id="hidden_button" color="black">Order by Case</font></a>
+<a class="btn btn-info" style="background-color:#fcf8e3; margin-top:40px;"  href='javascript:table_hidden()'><font id="hidden_button" color="black">Group by Case</font></a>
 {% block table1 %}
 {% endblock %}
 {% block table2 %}

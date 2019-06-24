@@ -23,8 +23,10 @@ class Report:
         self.type = type
         self.template = template
         self.uut_list = uut_list
+        self.result()
         self.data = self.final_data()
         self.data_2 = self.final_data_2()
+
     def generate(self):
         # print('generate html finished')
         # print(self.script_list)
@@ -87,7 +89,7 @@ class Report:
         log.log('generate {}.html finished'.format(self.name))
 
     def final_data(self):
-        self.result()
+
         file = os.path.join(os.getcwd(), 'Report\\{}\\result.yaml'.format(self.name))
         passed_case_number = 0
         failed_case_number = 0
