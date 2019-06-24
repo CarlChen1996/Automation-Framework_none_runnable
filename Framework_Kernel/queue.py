@@ -9,31 +9,31 @@ from Framework_Kernel.log import Log
 
 class Queue:
     def __init__(self):
-        self.__task_list = []
+        self.task_list = []
 
     def insert_task(self, index=0, task=''):
         if index == 0:
-            self.__task_list.append(task)
+            self.task_list.append(task)
         else:
-            self.__task_list.insert(index, task)
+            self.task_list.insert(index, task)
 
     def remove_task(self, task):
-        self.__task_list.remove(task)
+        self.task_list.remove(task)
 
     def set_order(self, index, task):
         pass
 
     def clear(self):
-        self.__task_list = []
+        self.task_list = []
 
     def get_task_list(self):
-        return self.__task_list
+        return self.task_list
 
 
 class AssembleQueue(Queue):
     def __init__(self):
         self.log = Log('assemble_queue')
-        self.__task_list = []
+        self.task_list = []
 
     def build_task(self, task, host):
         self.log.log('assemble_queue build {} on {}'.format(
