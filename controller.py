@@ -21,7 +21,7 @@ def run_with_manual_mode():
     while True:
         if manual_mode_first_selection == "01":  # start config engine
             log.log("start config")
-            instance_config_engine.start(build_server_list, uut_list)
+            instance_config_engine.start(build_server_list, deploy_list)
             log.log("config pid is {}".format(instance_config_engine.status.pid))
             is_framework_configured = True
             break
@@ -49,7 +49,7 @@ def run_with_manual_mode():
         if manual_mode_second_selection == "01":    # start assemble
             log.log("start assembly")
             thread_start_assemble = threading.Thread(target=instance_assemble_engine.start())
-            thread_start_assemble.start
+            thread_start_assemble.start()
             log.log("assemble pid is {}".format(instance_assemble_engine.status.pid))
         elif manual_mode_second_selection == "02":
             log.log("start execution")
@@ -68,13 +68,12 @@ def run_with_manual_mode():
             break
         else:
             log.log("Unknow run mode, please select the valid mode from the list")
-            manual_mode_second_selection = get_keyboard_input(60)
 
 
 def run_with_auto_mode():
     log.log("Framework will be initialized automatically")
     log.log('start configuration engine')
-    instance_config_engine.start(build_server_list, uut_list)
+    instance_config_engine.start(build_server_list, deploy_list)
     log.log("configurator  finished")
     print('==============start assemble engine======================')
     log.log('start assemble engine')
@@ -128,10 +127,10 @@ if __name__ == '__main__':
     log = log.Log(name='framework')
     log.log('Begin to start controller')
     build_server_list = []
-    uut_list = []
+    deploy_list = []
     instance_config_engine = configuration_engine.ConfigurationEngine()
     instance_assemble_engine = assemble_engine.AssembleEngine(pipe[0], build_server_list)
-    instance_execution_engine = execution_engine.ExecutionEngine(uut_list, pipe[1])
+    instance_execution_engine = execution_engine.ExecutionEngine(deploy_list, pipe[1])
     log.log(
         "++++++++++++++++++++++++++ Select mode+++++++++++++++++++++++++++++++"
     )

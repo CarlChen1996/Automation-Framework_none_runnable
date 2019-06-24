@@ -25,15 +25,15 @@ plan_root = os.path.join(root, 'Configuration\\test_plan')
 
 class AssembleEngine(Engine):
     def __init__(self, pipe, build_list):
-        self.pipe = pipe
-        self.assembleQueue = AssembleQueue()
+        self.__pipe = pipe
+        self.__assembleQueue = AssembleQueue()
         self.tasklist = []
-        self.build_list = build_list
-
-    def start(self):
-        self.assembler = Process(target=self.start_thread,
+        self.__build_list = build_list
+        self.assembler = Process(target=self.__start_thread,
                                  name='framework_Assembler',
                                  args=())
+
+    def start(self):
         self.assembler.daemon = True
         self.status = self.assembler
         self.assembler.start()
@@ -41,7 +41,7 @@ class AssembleEngine(Engine):
     def stop(self):
         self.assembler.terminate()
 
-    def fresh_queue_testplan(self):
+    def __fresh_queue_testplan(self):
         """
         refresh Queue from test plan in test folder
         :return: None
@@ -92,7 +92,7 @@ class AssembleEngine(Engine):
                     task.insert_uut_list(uut)
                 log.log('[thread_1]--insert {} to assemble queue list'.format(
                     task.get_name()))
-                self.assembleQueue.insert_task(task=task)
+                self.__assembleQueue.insert_task(task=task)
                 # -------------------rename task plan name -------------------------
                 os.rename(taskitem['file_path'], taskitem['file_path'] + 'PASS')
                 print('rename finished', taskitem['file_path'] + 'PASS')
@@ -100,24 +100,24 @@ class AssembleEngine(Engine):
                 '[thread_1] ***************finish refresh queue *****************'
             )
             log.log('[thread_1] left task in assemble queue: {}'.format(
-                len(self.assembleQueue.get_task_list())))
+                len(self.__assembleQueue.get_task_list())))
             time.sleep(3)
 
     def fresh_queue_execution(self):
         while True:
             print('[fresh_queue_execution]-------begin to refresh----fresh_queue_execution----------------')
-            print(self.assembleQueue.get_task_list())
-            for task in self.assembleQueue.get_task_list()[:]:
+            print(self.__assembleQueue.get_task_list())
+            for task in self.__assembleQueue.get_task_list()[:]:
                 print(task.get_state(), '*************************')
                 if task.get_state().upper() == "ASSEMBLE FINISHED":
-                    self.pipe.send(task)
+                    self.__pipe.send(task)
                     log.log('[thread_fresh]-Send {} to execution engine'.format(task.get_name()))
-                    send_status = self.pipe.recv()
+                    send_status = self.__pipe.recv()
                     if send_status == task.get_name():
-                        self.assembleQueue.remove_task(task)
+                        self.__assembleQueue.remove_task(task)
                         print('[thread fresh] {} is removed from assmebleQueue'.format(task.get_name()))
                         log.log('[thread_2]task left in assemble queue: %d' %
-                                len(self.assembleQueue.get_task_list()))
+                                len(self.__assembleQueue.get_task_list()))
                     else:
                         print('[thread fresh queue via execution]-----send task and received task is not the same one- ----------')
                 else:
@@ -127,11 +127,11 @@ class AssembleEngine(Engine):
 
     def assemble(self, build_list):
         while not False:
-            assemble_function(self.assembleQueue, build_list)
+            assemble_function(self.__assembleQueue, build_list)
             time.sleep(1)
 
-    def start_thread(self):
-        refreshQ_thread = threading.Thread(target=self.fresh_queue_testplan,
+    def __start_thread(self):
+        refreshQ_thread = threading.Thread(target=self.__fresh_queue_testplan,
                                            name='thread_1',
                                            args=())
         refreshQ_thread.setDaemon(True)
@@ -139,7 +139,7 @@ class AssembleEngine(Engine):
         refreshQ_execute = threading.Thread(target=self.fresh_queue_execution)
         refreshQ_execute.setDaemon(True)
         refreshQ_execute.start()
-        assembler_thread = threading.Thread(target=self.assemble, name='thread_2', args=(self.build_list, ))
+        assembler_thread = threading.Thread(target=self.assemble, name='thread_2', args=(self.__build_list, ))
         assembler_thread.setDaemon(True)
         assembler_thread.start()
         assembler_thread.join()
@@ -169,7 +169,3 @@ def assemble_function(assembleQueue, build_list):
     print(
         '[thread_2]--------------------------------------------------------------------------------'
     )
-
-
-if __name__ == '__main__':
-    assemble_function()
