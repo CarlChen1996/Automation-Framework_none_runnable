@@ -8,53 +8,53 @@
 
 class Task:
     def __init__(self, name, need_build=True):
-        self._script_list = []
-        self._exe_list = []
-        self._uut_list = []
-        self._id = 0
-        self._name = name
-        self._status = ''
-        self._state = ''
-        self._need_build = need_build
+        self.__script_list = []
+        self.__exe_list = []
+        self.__uut_list = []
+        self.__id = 0
+        self.__name = name
+        self.__status = ''
+        self.__state = ''
+        self.__need_build = need_build
 
     # ------Below is set/get function for member-----------
     def insert_script(self, script):
         # set scripts
-        self._script_list.append(script)
+        self.__script_list.append(script)
 
     def get_script_list(self):
         # get scripts
-        return self._script_list
+        return self.__script_list
 
     def insert_exe_list(self, file):
-        self._exe_list.append(file)
+        self.__exe_list.append(file)
 
     def get_exe_list(self):
-        return self._exe_list
+        return self.__exe_list
 
     def insert_uut_list(self, uut):
-        self._uut_list.append(uut)
+        self.__uut_list.append(uut)
 
     def get_uut_list(self):
-        return self._uut_list
+        return self.__uut_list
 
     def get_id(self):
-        return self._id
+        return self.__id
 
     def get_name(self):
-        return self._name
+        return self.__name
 
     def get_status(self):
-        return self._status
+        return self.__status
 
     def set_status(self, status):
-        self._status == status
+        self.__status = status
 
     def get_state(self):
-        return self._state
+        return self.__state
 
     def set_state(self, state):
-        self._state = state
+        self.__state = state
 
     # ---------Below is funtion for task-------------
     def build(self, host):
@@ -82,9 +82,9 @@ class Task:
         pass
 
     def validate_host(self, validator):
-        for host in self._uut_list:
+        for host in self.__uut_list:
             validator.validate(host)
 
     def validate_scripts(self, validator):
-        for script in self._script_list:
+        for script in self.__script_list:
             validator.validate(script)

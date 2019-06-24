@@ -8,14 +8,14 @@
 
 class Script:
     def __init__(self, name, status='NoRun'):
-        self.name = name
-        self.status = status
+        self.__name = name
+        self.__status = status
 
     def get_status(self):
-        return self.status
+        return self.__status
 
     def set_status(self, status):
-        self.status = status
+        self.__status = status
 
     def get_name(self):
-        return self.name
+        return self.__name

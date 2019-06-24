@@ -29,17 +29,17 @@ class AssembleEngine(Engine):
         self.__assembleQueue = AssembleQueue()
         self.tasklist = []
         self.__build_list = build_list
-        self.assembler = Process(target=self.__start_thread,
+        self.__assembler = Process(target=self.__start_thread,
                                  name='framework_Assembler',
                                  args=())
 
     def start(self):
-        self.assembler.daemon = True
-        self.status = self.assembler
-        self.assembler.start()
+        self.__assembler.daemon = True
+        self.status = self.__assembler
+        self.__assembler.start()
 
     def stop(self):
-        self.assembler.terminate()
+        self.__assembler.terminate()
 
     def __fresh_queue_testplan(self):
         """
@@ -90,20 +90,20 @@ class AssembleEngine(Engine):
                                              version=uutitem['version'],
                                              mac=uutitem['mac'])
                     task.insert_uut_list(uut)
-                log.log('[thread_1]--insert {} to assemble queue list'.format(
+                log.log('[Thread_fresh_testplan]--insert {} to assemble queue list'.format(
                     task.get_name()))
                 self.__assembleQueue.insert_task(task=task)
                 # -------------------rename task plan name -------------------------
                 os.rename(taskitem['file_path'], taskitem['file_path'] + 'PASS')
                 print('rename finished', taskitem['file_path'] + 'PASS')
             log.log(
-                '[thread_1] ***************finish refresh queue *****************'
+                '[Thread_fresh_testplan] ***************finish refresh queue *****************'
             )
-            log.log('[thread_1] left task in assemble queue: {}'.format(
+            log.log('[Thread_fresh_testplan] left task in assemble queue: {}'.format(
                 len(self.__assembleQueue.get_task_list())))
             time.sleep(3)
 
-    def fresh_queue_execution(self):
+    def __fresh_queue_execution(self):
         while True:
             print('[fresh_queue_execution]-------begin to refresh----fresh_queue_execution----------------')
             print(self.__assembleQueue.get_task_list())
@@ -111,35 +111,37 @@ class AssembleEngine(Engine):
                 print(task.get_state(), '*************************')
                 if task.get_state().upper() == "ASSEMBLE FINISHED":
                     self.__pipe.send(task)
-                    log.log('[thread_fresh]-Send {} to execution engine'.format(task.get_name()))
+                    log.log('[fresh_queue_execution]-Send {} to execution engine'.format(task.get_name()))
                     send_status = self.__pipe.recv()
                     if send_status == task.get_name():
                         self.__assembleQueue.remove_task(task)
-                        print('[thread fresh] {} is removed from assmebleQueue'.format(task.get_name()))
-                        log.log('[thread_2]task left in assemble queue: %d' %
+                        print('[fresh_queue_execution] {} is removed from assmebleQueue'.format(task.get_name()))
+                        log.log('[fresh_queue_execution]task left in assemble queue: %d' %
                                 len(self.__assembleQueue.get_task_list()))
                     else:
-                        print('[thread fresh queue via execution]-----send task and received task is not the same one- ----------')
+                        print('[fresh_queue_execution]-----send task and received task is not the same one- ----------')
                 else:
                     time.sleep(1)
                     continue
             time.sleep(3)
 
-    def assemble(self, build_list):
+    def __assemble(self):
         while not False:
-            assemble_function(self.__assembleQueue, build_list)
+            assemble_function(self.__assembleQueue, self.__build_list)
             time.sleep(1)
 
     def __start_thread(self):
         refreshQ_thread = threading.Thread(target=self.__fresh_queue_testplan,
-                                           name='thread_1',
+                                           name='fresh_queue_testplan',
                                            args=())
         refreshQ_thread.setDaemon(True)
         refreshQ_thread.start()
-        refreshQ_execute = threading.Thread(target=self.fresh_queue_execution)
+        refreshQ_execute = threading.Thread(target=self.__fresh_queue_execution)
         refreshQ_execute.setDaemon(True)
         refreshQ_execute.start()
-        assembler_thread = threading.Thread(target=self.assemble, name='thread_2', args=(self.__build_list, ))
+        assembler_thread = threading.Thread(target=self.__assemble,
+                                            name='thread_assemble_task',
+                                            args=())
         assembler_thread.setDaemon(True)
         assembler_thread.start()
         assembler_thread.join()
@@ -147,7 +149,7 @@ class AssembleEngine(Engine):
 
 def assemble_function(assembleQueue, build_list):
     log.log(
-        '[thread_2] ************************ Begine to assemble... **********************'
+        '[thread_assemble_task] ************************ Begine to assemble... **********************'
     )
     h_validator = HostValidator()
     s_validator = ScriptValidator()
@@ -162,10 +164,10 @@ def assemble_function(assembleQueue, build_list):
                 assembleQueue.build_task(task, b_host)
                 task.set_state('Assemble Finished')
                 log.log(
-                    '[thread_2] **************{} assemble finished****************'.
+                    '[thread_assemble_task] **************{} assemble finished****************'.
                     format(task.get_name()))
     except Exception as e:
         print(e)
     print(
-        '[thread_2]--------------------------------------------------------------------------------'
+        '[thread_assemble_task]--------------------------------------------------------------------------------'
     )
