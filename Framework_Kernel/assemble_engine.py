@@ -41,7 +41,7 @@ class AssembleEngine(Engine):
     def stop(self):
         self.__assembler.terminate()
 
-    def fresh_queue_testplan(self):
+    def __fresh_queue_testplan(self):
         """
         refresh Queue from test plan in test folder
         :return: None
@@ -103,7 +103,7 @@ class AssembleEngine(Engine):
                 len(self.__assembleQueue.get_task_list())))
             time.sleep(3)
 
-    def fresh_queue_execution(self):
+    def __fresh_queue_execution(self):
         while True:
             print('[fresh_queue_execution]-------begin to refresh----fresh_queue_execution----------------')
             print(self.__assembleQueue.get_task_list())
@@ -125,21 +125,21 @@ class AssembleEngine(Engine):
                     continue
             time.sleep(3)
 
-    def assemble(self):
+    def __assemble(self):
         while not False:
             assemble_function(self.__assembleQueue, self.__build_list)
             time.sleep(1)
 
     def start_thread(self):
-        refreshQ_thread = threading.Thread(target=self.fresh_queue_testplan,
+        refreshQ_thread = threading.Thread(target=self.__fresh_queue_testplan,
                                            name='fresh_queue_testplan',
                                            args=())
         refreshQ_thread.setDaemon(True)
         refreshQ_thread.start()
-        refreshQ_execute = threading.Thread(target=self.fresh_queue_execution)
+        refreshQ_execute = threading.Thread(target=self.__fresh_queue_execution)
         refreshQ_execute.setDaemon(True)
         refreshQ_execute.start()
-        assembler_thread = threading.Thread(target=self.assemble,
+        assembler_thread = threading.Thread(target=self.__assemble,
                                             name='thread_assemble_task',
                                             args=())
         assembler_thread.setDaemon(True)
