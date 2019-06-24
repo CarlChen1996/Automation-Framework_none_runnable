@@ -38,96 +38,96 @@ table       { font-size: 100%; }
 </head>
 <body >
 <div id="container" style="float:right;height: 200%;width:50%"></div>
-       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/echarts.min.js"></script>
-       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts-gl/echarts-gl.min.js"></script>
-       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts-stat/ecStat.min.js"></script>
-       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/extension/dataTool.min.js"></script>
-       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/map/js/china.js"></script>
-       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/map/js/world.js"></script>
-       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/extension/bmap.min.js"></script>
-       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/simplex.js"></script>
-       <script type="text/javascript">
+<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/echarts.min.js"></script>
+<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts-gl/echarts-gl.min.js"></script>
+<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts-stat/ecStat.min.js"></script>
+<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/extension/dataTool.min.js"></script>
+<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/map/js/china.js"></script>
+<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/map/js/world.js"></script>
+<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/extension/bmap.min.js"></script>
+<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/simplex.js"></script>
+<script type="text/javascript">
 var dom = document.getElementById("container");
 var myChart = echarts.init(dom);
 var app = {};
 option = null;
 option = {
-    backgroundColor: '#ffffff',
+backgroundColor: '#ffffff',
 
-    title: {
-        text: 'Summary',
-        left: 'center',
-        top: 0,
-        textStyle: {
-            color: 'black'
-        }
-    },
+title: {
+text: 'Summary',
+left: 'center',
+top: 0,
+textStyle: {
+    color: 'black'
+}
+},
 
-    tooltip : {
-        trigger: 'item',
-        formatter: "{a} <br/>{b} : {c} ({d}%)"
-    },
+tooltip : {
+trigger: 'item',
+formatter: "{a} <br/>{b} : {c} ({d}%)"
+},
 
-    <!--visualMap: {-->
-        <!--show: false,-->
-        <!--min: 0,-->
-        <!--max: 200,-->
-        <!--inRange: {-->
-            <!--colorLightness: [0, 1]-->
-        <!--}-->
-    <!--},-->
-    series : [
-        {
-            name:'Test Case',
-            type:'pie',
-            radius : '70%',
-            center: ['50%', '50%'],
-            data:{{ data|tojson }}.sort(function (a, b) { return a.value - b.value; }),
-            <!--roseType: 'radius',-->
-            label: {
-                normal: {
-                    textStyle: {
-                        color: 'rgba(0, 0, 0, 1)'
-                    }
-                }
-            },
-            labelLine: {
-                normal: {
-                    lineStyle: {
-                        color: 'rgba(0, 0, 0, 1)'
-                    },
-                    smooth: 0.2,
-                    length: 10,
-                    length2: 20
-                }
-            },
-            itemStyle: {
-                normal: {
-                    <!--color: '#000000',-->
-                    shadowBlur: 20,
-                    shadowColor: 'rgba(0, 0, 0, 0.5)'
-                }
-            },
-
-            animationType: 'scale',
-            animationEasing: 'elasticOut',
-            animationDelay: function (idx) {
-                return Math.random() * 200;
+<!--visualMap: {-->
+<!--show: false,-->
+<!--min: 0,-->
+<!--max: 200,-->
+<!--inRange: {-->
+    <!--colorLightness: [0, 1]-->
+<!--}-->
+<!--},-->
+series : [
+{
+    name:'Test Case',
+    type:'pie',
+    radius : '70%',
+    center: ['50%', '50%'],
+    data:{{ data|tojson }}.sort(function (a, b) { return a.value - b.value; }),
+    <!--roseType: 'radius',-->
+    label: {
+        normal: {
+            textStyle: {
+                color: 'rgba(0, 0, 0, 1)'
             }
         }
-    ]
+    },
+    labelLine: {
+        normal: {
+            lineStyle: {
+                color: 'rgba(0, 0, 0, 1)'
+            },
+            smooth: 0.2,
+            length: 10,
+            length2: 20
+        }
+    },
+    itemStyle: {
+        normal: {
+            <!--color: '#000000',-->
+            shadowBlur: 20,
+            shadowColor: 'rgba(0, 0, 0, 0.5)'
+        }
+    },
+
+    animationType: 'scale',
+    animationEasing: 'elasticOut',
+    animationDelay: function (idx) {
+        return Math.random() * 200;
+    }
+}
+]
 };;
 if (option && typeof option === "object") {
-    myChart.setOption(option, true);
+myChart.setOption(option, true);
 }
 myChart.on('click', function (params) {
-    if(params.name=='Pass'){
-    showCase(2)}
-    else if(params.name=='Fail'){
-    showCase(1)}
+if(params.name=='Pass'){
+showCase(2)}
+else if(params.name=='Fail'){
+showCase(1)}
 });
-       </script>
-       <script language="javascript" type="text/javascript">
+</script>
+<script language="javascript" type="text/javascript">
 output_list = Array();
 
 /*level 调整增加只显示通过用例的分类 --Findyou
@@ -140,107 +140,119 @@ output_list = Array();
 
 function changeStyle(ctid){
 
-        if(document.getElementById(ctid).style.display=='none'){
-          document.getElementById(ctid).style.display=''
-        }else{
-          document.getElementById(ctid).style.display='none'
-        }
-      }
+if(document.getElementById(ctid).style.display=='none'){
+  document.getElementById(ctid).style.display=''
+}else{
+  document.getElementById(ctid).style.display='none'
+}
+}
 
 function showCase(level) {
-    trs = document.getElementsByTagName("tr");
-    for (var i = 0; i < trs.length; i++) {
-        tr = trs[i];
-        id = tr.id;
-        if (id.substr(0,2) == 'ft') {
-            if (level == 2 || level == 0 ) {
-                tr.className = 'hiddenRow';
-            }
-            else {
-                tr.className = '';
-            }
-        }
-        if (id.substr(0,2) == 'pt') {
-            if (level < 2) {
-                tr.className = 'hiddenRow';
-            }
-            else {
-                tr.className = '';
-            }
-        }
+trs = document.getElementsByTagName("tr");
+for (var i = 0; i < trs.length; i++) {
+tr = trs[i];
+id = tr.id;
+if (id.substr(0,2) == 'ft') {
+    if (level == 2 || level == 0 ) {
+        tr.className = 'hiddenRow';
     }
+    else {
+        tr.className = '';
+    }
+}
+if (id.substr(0,2) == 'pt') {
+    if (level < 2) {
+        tr.className = 'hiddenRow';
+    }
+    else {
+        tr.className = '';
+    }
+}
+}
 
-    //加入【详细】切换文字变化 --Findyou
-    detail_class=document.getElementsByClassName('detail');
-	//console.log(detail_class.length)
-	if (level == 3) {
-		for (var i = 0; i < detail_class.length; i++){
-			detail_class[i].innerHTML="outline"
-		}
-	}
-	else{
-			for (var i = 0; i < detail_class.length; i++){
-			detail_class[i].innerHTML="detail"
-		}
-	}
+//加入【详细】切换文字变化 --Findyou
+detail_class=document.getElementsByClassName('detail');
+//console.log(detail_class.length)
+if (level == 3) {
+for (var i = 0; i < detail_class.length; i++){
+    detail_class[i].innerHTML="outline"
+}
+}
+else{
+    for (var i = 0; i < detail_class.length; i++){
+    detail_class[i].innerHTML="detail"
+}
+}
 
 }
 
 <!--function showClassDetail(cid, count) {-->
 
-    <!--var id_list = Array(count);-->
-    <!--var toHide = 1;-->
-    <!--for (var i = 0; i < count; i++) {-->
-        <!--//ID修改 点 为 下划线 -Findyou-->
-        <!--tid0 = 't' + cid.substr(1) + '_' + (i+1);-->
-        <!--tid = 'f' + tid0;-->
-        <!--tr = document.getElementById(tid);-->
-        <!--if (!tr) {-->
-            <!--tid = 'p' + tid0;-->
-            <!--tr = document.getElementById(tid);-->
-        <!--}-->
-        <!--id_list[i] = tid;-->
-        <!--if (tr.className) {-->
-            <!--toHide = 0;-->
-        <!--}-->
-    <!--}-->
-    <!--for (var i = 0; i < count; i++) {-->
-        <!--tid = id_list[i];-->
-        <!--//修改点击无法收起的BUG，加入【详细】切换文字变化 &#45;&#45;Findyou-->
-        <!--if (toHide) {-->
-            <!--document.getElementById(tid).className = 'hiddenRow';-->
-            <!--document.getElementById(cid).innerText = "detail"-->
-        <!--}-->
-        <!--else {-->
-            <!--document.getElementById(tid).className = '';-->
-            <!--document.getElementById(cid).innerText = "outline"-->
-        <!--}-->
-    <!--}-->
+<!--var id_list = Array(count);-->
+<!--var toHide = 1;-->
+<!--for (var i = 0; i < count; i++) {-->
+<!--//ID修改 点 为 下划线 -Findyou-->
+<!--tid0 = 't' + cid.substr(1) + '_' + (i+1);-->
+<!--tid = 'f' + tid0;-->
+<!--tr = document.getElementById(tid);-->
+<!--if (!tr) {-->
+    <!--tid = 'p' + tid0;-->
+    <!--tr = document.getElementById(tid);-->
+<!--}-->
+<!--id_list[i] = tid;-->
+<!--if (tr.className) {-->
+    <!--toHide = 0;-->
+<!--}-->
+<!--}-->
+<!--for (var i = 0; i < count; i++) {-->
+<!--tid = id_list[i];-->
+<!--//修改点击无法收起的BUG，加入【详细】切换文字变化 &#45;&#45;Findyou-->
+<!--if (toHide) {-->
+    <!--document.getElementById(tid).className = 'hiddenRow';-->
+    <!--document.getElementById(cid).innerText = "detail"-->
+<!--}-->
+<!--else {-->
+    <!--document.getElementById(tid).className = '';-->
+    <!--document.getElementById(cid).innerText = "outline"-->
+<!--}-->
+<!--}-->
 <!--}-->
 
 
 
 function html_escape(s) {
-    s = s.replace(/&/g,'&amp;');
-    s = s.replace(/</g,'&lt;');
-    s = s.replace(/>/g,'&gt;');
-    return s;
+s = s.replace(/&/g,'&amp;');
+s = s.replace(/</g,'&lt;');
+s = s.replace(/>/g,'&gt;');
+return s;
 }
 </script>
-
+<script type="text/javascript">
+    var tag = "False"
+    function table_hidden(){
+        var table=document.getElementById("result_table");
+        var table2=document.getElementById("result_table_2");
+        var button=document.getElementById("hidden_button");
+        if (tag == "False"){
+            table2.removeAttribute("hidden");
+            table.setAttribute("hidden",true);
+            tag = "True"
+            button.innerHTML="Order by UUT"
+        }
+        else{
+            table2.setAttribute("hidden",true);
+            table.removeAttribute("hidden");
+            tag="False"
+            button.innerHTML="Order by Case"
+        }
+    }
+</script>
 {% block heading_style %}
 <div class='heading' style="width:50%;">
 {% endblock %}
     <div style="margin-top:-20px">
         <h1>Test Report</h1>
         {% block test_info %}
-        <div style="font-size:16px">
-        <p class='attribute'><strong>Category : </strong>{{information['Category']}}</p>
-        <p class='attribute'><strong>Version : </strong>{{information['Version']}}</p>
-        <p class='attribute'><strong>Start Time : </strong>{{information['Start Time']}}</p>
-        <p class='attribute'><strong>Duration : </strong>{{information['Duration']}}</p>
-        </div><br>
-        <p class='attribute' style="height:20px;font-size:14px"><strong>Note : </strong>{{information['Note']}}</p><br>
         {% endblock %}
         <p class='attribute' style="font-size:12px">
             <strong>Status : </strong> ALL {{total['Count']}} Pass {{total['Pass']}} Failure {{total['Fail']}}, Passing rate: {{total['Passing rate']}}%</p>
@@ -253,99 +265,11 @@ function html_escape(s) {
 <a class="btn btn-success" href='javascript:showCase(2)'>Passed {{total['Pass']}}</a>
 <a class="btn btn-info" href='javascript:showCase(3)'>ALL {{total['Count']}}</a>
 </p>
-<table id='result_table' class="table table-condensed table-bordered table-hover">
-<colgroup>
-<col span="1" align='left' width="5%"/>
-<col span="1" align='left' width="15%"/>
-<col span="1" align='left' width="10%"/>
-<col span="1" align='left' width="30%"/>
-<col span="1" align='left' width="30%"/>
-<col span="1" align='left' width="10%"/>
-</colgroup>
-<tr id='header_row' class="text-center" style="background-color:#d9edf7;font-weight: bold;font-size: 14px;">
-    <td>#</td>
-    <td>Test Group/Test case</td>
-    <td>Status</td>
-    <td>Expect</td>
-    <td>Actual</td>
-    <td>Note</td>
-
-</tr>
-{% for t in final_data %}
-<tr class='failClass warning' style="font-size: 16px;">
-    <td>{{final_data.index(t)+1}}</td>
-    <td style="font-size:15px">{{t[0]}}</td>
-    <td class="text-center">Pass:{{t[2]}}</td>
-    <td class="text-center">Fail:{{t[3]}}</td>
-    <td class="text-center">NoRun:{{t[4]}}</td>
-    <td class="text-center">Count:{{t[5]}}</td>
-</tr>
-    {% for c in t[1] %}
-        {%if c['result']=='Fail'%}
-<tr id='ft{{final_data.index(t)+1}}_{{t[1].index(c)+1}}' class='none' style="background-color:#f2dede">
-    <td>{{final_data.index(t)+1}}.{{t[1].index(c)+1}}</td>
-    <td class='failCase'><div class='testcase'>{{c['case_name']}}</div></td>
-    <td align='center'>
-    <button id='btn_ft{{final_data.index(t)+1}}_{{t[1].index(c)+1}}' type="button"  class="btn btn-danger btn-xs" onclick="changeStyle({{final_data.index(t)+1}}{{t[1].index(c)+1}})">{{c['result']}}</button>
-    </td>
-    <td class="text-center"></td>
-    <td class="text-center"></td>
-    <td class="text-center"></td>
-</tr>
-        {%elif c['result']=='Pass'%}
-<tr id='pt{{final_data.index(t)+1}}_{{l}}' class='hiddenRow' style="height:32.8px;background-color:#dff0d8">
-    <td>{{final_data.index(t)+1}}.{{t[1].index(c)+1}}</td>
-    <td class='passCase'><div class='testcase'>{{c['case_name']}}</div></td>
-    <td align='center'><span class="btn btn-success btn-xs" >{{c['result']}}</span></td>
-    <td class="text-center"></td>
-    <td class="text-center"></td>
-    <td class="text-center"></td>
-</tr>
-        {%endif%}
-    {%if c['result']=='Fail'%}
-<tbody id="{{final_data.index(t)+1}}{{t[1].index(c)+1}}"  class="steps" align="left">
-    {% for s in c['steps']%}
-    {%if s['result']=='fail'%}
-    <tr id='ft' class='none' style="font-size:12px;background-color:#f2dede">
-    <td>{{final_data.index(t)+1}}.{{t[1].index(c)+1}}.{{c['steps'].index(s)+1}}</td>
-    <td class='failCase'><div class="teststep">{{s['step_name']}}</div></td>
-    <td align='right'>
-        <span class="label label-danger danger">{{s['result']}}</span>
-    </td>
-    <td class="text-center">{% if s['expect'][:3]=='img' %}<a style="display:block;" target="_blank" href="{{t[0]}}/expect_{{s['expect']}}">{{s['expect'][4:]}}</a>{% else %}{{s['expect']}}{% endif %}</td>
-    <td class="text-center">{% if s['actual'][:3]=='img' %}<a style="display:block;" target="_blank" href="{{t[0]}}/actual_{{s['actual']}}">{{s['actual'][4:]}}</a>{% else %}{{s['actual']}}{% endif %}</td>
-    <td class="text-center">{{s['note']}}</td>
-    </tr>
-    {%elif s['result']=='pass'%}
-    <tr id='ft2' class='none' style="font-size:12px;background-color:#dff0d8">
-    <td>{{final_data.index(t)+1}}.{{t[1].index(c)+1}}.{{c['steps'].index(s)+1}}</td>
-    <td class='passCase'><div class='teststep'>{{s['step_name']}}</div></td>
-    <td align='right'>
-        <span class="label label-success success" >{{s['result']}}</span>
-    </td>
-    <td class="text-center">{% if s['expect'][:3]=='img' %}<a style="display:block;" target="_blank" href="{{t[0]}}/expect_{{s['expect']}}">{{s['expect'][4:]}}</a>{% else %}{{s['expect']}}{% endif %}</td>
-    <td class="text-center">{% if s['actual'][:3]=='img' %}<a style="display:block;" target="_blank" href="{{t[0]}}/actual_{{s['actual']}}">{{s['actual'][4:]}}</a>{% else %}{{s['actual']}}{% endif %}</td>
-    <td class="text-center">{{s['note']}}</td>
-    </tr>
-    {%endif%}
-
-        {%endfor%}
-</tbody>
-{%endif%}
-    {%endfor%}
-{% endfor %}
-
-
-<tr id='total_row' class="text-center active" style="font-weight: bold;font-size: 15px;">
-    <td>Total</td>
-    <td>Passing rate: {{total['Passing rate']}}%</td>
-    <td>Pass:{{total['Pass']}}</td>
-    <td>Fail:{{total['Fail']}}</td>
-    <td>NoRun:{{total['NoRun']}}</td>
-    <td>Count:{{total['Count']}}</td>
-
-</tr>
-</table>
+<a class="btn btn-info" style="background-color:#fcf8e3; margin-top:40px;"  href='javascript:table_hidden()'><font id="hidden_button" color="black">Order by Case</font></a>
+{% block table1 %}
+{% endblock %}
+{% block table2 %}
+{% endblock %}
 <div style="font-size:10px">
     <p>Script Version: 1.0</p>
     <p>Frameword Version: 1.0</p>
