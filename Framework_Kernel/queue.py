@@ -44,7 +44,7 @@ class AssembleQueue(Queue):
 class ExecuteQueue(Queue):
     def __init__(self):
         self.log = Log("execute_queue")
-        self.__task_list = []
+        self.task_list = []
 
     def deploy(self, task, host):
         self.log.log('execute_queue deploy {} to {} with {}'.format(
