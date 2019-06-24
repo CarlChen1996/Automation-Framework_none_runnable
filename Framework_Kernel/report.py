@@ -50,6 +50,7 @@ class Report:
             'Fail': failCount,
             'NoRun': norunCount,
             'Count': count
+
         }
 
         data = [
@@ -90,32 +91,32 @@ class Report:
         failed_case_number = 0
         norun_case_number = 0
         data_dict = {}
-        test_project_list = []
+        test_uut_list = []
         final_data = []
         f = open(file, encoding='utf-8')
         a = yaml.safe_load(f.read())
 
         for v in a:
-            if v[0] not in test_project_list:
-                test_project_list.append(v[0])
+            if v['uut_name'] not in test_uut_list:
+                test_uut_list.append(v['uut_name'])
 
-        for l in test_project_list:
+        for uut_name in test_uut_list:
             # project, case[], pass, fail, norun, total
-            final_data.append([l, [], 0, 0, 0, 0])
-        # print(test_project_list)
+            final_data.append([uut_name, [], 0, 0, 0, 0])
+        # print(test_uut_list)
         for v in a:
             # print(v)
             for k in final_data:
-                if v[0] == k[0]:
+                if v['uut_name'] == k[0]:
                     index = final_data.index(k)
                     final_data[index][1].append(v)
-                    if v[-1] == 'Pass':
+                    if v['result'] == 'Pass':
                         final_data[index][2] += 1
                         passed_case_number += 1
-                    if v[-1] == 'Fail':
+                    if v['result'] == 'Fail':
                         final_data[index][3] += 1
                         failed_case_number += 1
-                    if v[-1] == 'Norun':
+                    if v['result'] == 'Norun':
                         final_data[index][4] += 1
                         norun_case_number += 1
                     final_data[index][5] += 1
@@ -125,6 +126,9 @@ class Report:
         data_dict['failCount'] = failed_case_number
         data_dict['norunCount'] = norun_case_number
         data_dict['count'] = total_case_number
+        print('-------------------------????????????---')
+        print(data_dict)
+        print('-------------------------????????????---')
         return data_dict
 
     def result(self):
@@ -158,7 +162,7 @@ class Email:
         print('send email')
         os.path.dirname(os.getcwd())
 if __name__ == '__main__':
-    # if debug in this module should change os.getcwd() to os.path.dirname(os.getcwd())
+    # debug in this module should change os.getcwd() to os.path.dirname(os.getcwd())
     uut_list = [{'hostname':'uut_1'}, {'hostname':'uut_2'}]
     r = Report(name='task_1',uut_list=uut_list)
     r.generate()
