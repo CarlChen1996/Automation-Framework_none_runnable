@@ -10,7 +10,7 @@ log = Log('configurator')
 
 class Configurator:
     def __init__(self, object_list=None):
-        self.object_list = object_list
+        self.__object_list = object_list
         pass
 
     def config(self):

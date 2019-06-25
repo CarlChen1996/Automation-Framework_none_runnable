@@ -65,7 +65,7 @@ class ExecutionEngine(Engine):
             time.sleep(1)
             log.log('[thread_executor] task_list left: {}'.format(len(self.__execution_queue.get_task_list())))
             if self.__execution_queue.get_task_list():
-                self.run()
+                self.__run()
                 time.sleep(3)
                 log.log('[thread_executor] task_list now is : {}'.
                         format(list(map(lambda i: i.get_name(), self.__execution_queue.get_task_list()))))
@@ -73,7 +73,7 @@ class ExecutionEngine(Engine):
                 log.log('[thread_executor]************************ wait for new task to execute **********************')
             time.sleep(5)
 
-    def run(self):
+    def __run(self):
         d = self.__deploy_list[0]
         i = self.__execution_queue.get_task_list()[0]
         # ----------循环里面添加 刷新list的方法 ---------------------
