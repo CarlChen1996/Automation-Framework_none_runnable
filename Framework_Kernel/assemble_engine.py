@@ -41,6 +41,22 @@ class AssembleEngine(Engine):
     def stop(self):
         self.__assembler.terminate()
 
+    def start_thread(self):
+        refreshQ_thread = threading.Thread(target=self.__fresh_queue_testplan,
+                                           name='fresh_queue_testplan',
+                                           args=())
+        refreshQ_thread.setDaemon(True)
+        refreshQ_thread.start()
+        refreshQ_execute = threading.Thread(target=self.__fresh_queue_execution)
+        refreshQ_execute.setDaemon(True)
+        refreshQ_execute.start()
+        assembler_thread = threading.Thread(target=self.__assemble,
+                                            name='thread_assemble_task',
+                                            args=())
+        assembler_thread.setDaemon(True)
+        assembler_thread.start()
+        assembler_thread.join()
+
     def __fresh_queue_testplan(self):
         """
         refresh Queue from test plan in test folder
@@ -126,48 +142,28 @@ class AssembleEngine(Engine):
             time.sleep(3)
 
     def __assemble(self):
-        while not False:
-            assemble_function(self.__assembleQueue, self.__build_list)
+        while True:
+            log.log(
+                '[thread_assemble_task] ************************ Begine to assemble... **********************'
+            )
+            h_validator = HostValidator()
+            s_validator = ScriptValidator()
+            try:
+                for task in self.__assembleQueue.get_task_list():
+                    if task.get_state().upper() == 'WAIT ASSEMBLE':
+                        task.set_state('ASSEMBLING')
+                        b_host = self.__build_list[0]
+                        for uut in task.get_uut_list():
+                            h_validator.validate(uut)
+                        s_validator.validate(task)
+                        self.__assembleQueue.build_task(task, b_host)
+                        task.set_state('Assemble Finished')
+                        log.log(
+                            '[thread_assemble_task] **************{} assemble finished****************'.
+                                format(task.get_name()))
+            except Exception as e:
+                print(e)
+            print(
+                '[thread_assemble_task]--------------------------------------------------------------------------------'
+            )
             time.sleep(1)
-
-    def start_thread(self):
-        refreshQ_thread = threading.Thread(target=self.__fresh_queue_testplan,
-                                           name='fresh_queue_testplan',
-                                           args=())
-        refreshQ_thread.setDaemon(True)
-        refreshQ_thread.start()
-        refreshQ_execute = threading.Thread(target=self.__fresh_queue_execution)
-        refreshQ_execute.setDaemon(True)
-        refreshQ_execute.start()
-        assembler_thread = threading.Thread(target=self.__assemble,
-                                            name='thread_assemble_task',
-                                            args=())
-        assembler_thread.setDaemon(True)
-        assembler_thread.start()
-        assembler_thread.join()
-
-
-def assemble_function(assembleQueue, build_list):
-    log.log(
-        '[thread_assemble_task] ************************ Begine to assemble... **********************'
-    )
-    h_validator = HostValidator()
-    s_validator = ScriptValidator()
-    try:
-        for task in assembleQueue.get_task_list():
-            if task.get_state().upper() == 'WAIT ASSEMBLE':
-                task.set_state('ASSEMBLING')
-                b_host = build_list[0]
-                for uut in task.get_uut_list():
-                    h_validator.validate(uut)
-                s_validator.validate(task)
-                assembleQueue.build_task(task, b_host)
-                task.set_state('Assemble Finished')
-                log.log(
-                    '[thread_assemble_task] **************{} assemble finished****************'.
-                    format(task.get_name()))
-    except Exception as e:
-        print(e)
-    print(
-        '[thread_assemble_task]--------------------------------------------------------------------------------'
-    )

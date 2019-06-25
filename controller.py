@@ -4,6 +4,7 @@ from Framework_Kernel import assemble_engine
 from Framework_Kernel import execution_engine
 from Framework_Kernel import log
 from Common_Library.functions import get_keyboard_input
+from multiprocessing import Process
 import threading
 import time
 
@@ -31,7 +32,7 @@ def run_with_manual_mode():
             )
             break
         else:
-            log.log("Unknow run mode, please select the valid run mode from the list")
+            log.log("Unknown run mode, please select the valid run mode from the list")
             manual_mode_first_selection = get_keyboard_input(60)
 
     while is_framework_configured:
@@ -67,7 +68,7 @@ def run_with_manual_mode():
             )
             break
         else:
-            log.log("Unknow run mode, please select the valid mode from the list")
+            log.log("Unknown run mode, please select the valid mode from the list")
 
 
 def run_with_auto_mode():
@@ -95,8 +96,8 @@ def run_with_auto_mode():
 def keep_assemble_alive():
     while True:
         time.sleep(5)
-        log.log("[watch_assemble_thread] assemble engine pid {} current status is {}"
-                .format(instance_assemble_engine.status.pid, str(instance_assemble_engine.status.is_alive())))
+        if not isinstance(instance_assemble_engine.status, Process):
+            instance_assemble_engine.start()
         if not instance_assemble_engine.status.is_alive():
             instance_assemble_engine.start()
             if instance_assemble_engine.status.is_alive():
@@ -105,13 +106,15 @@ def keep_assemble_alive():
                 )
             else:
                 log.log("[watch_assemble_thread] can't start assemble engine")
+        log.log("[watch_assemble_thread] assemble engine pid {} current status is {}"
+                .format(instance_assemble_engine.status.pid, str(instance_assemble_engine.status.is_alive())))
 
 
 def keep_executor_alive():
     while True:
         time.sleep(5)
-        log.log("[watch_executor_thread] execution engine pid {} current status is {}"
-                .format(instance_execution_engine.status.pid, str(instance_execution_engine.status.is_alive())))
+        if not isinstance(instance_execution_engine.status, Process):
+            instance_execution_engine.start()
         if not instance_execution_engine.status.is_alive():
             instance_execution_engine.start()
             if instance_execution_engine.status.is_alive():
@@ -120,6 +123,8 @@ def keep_executor_alive():
                 )
             else:
                 log.log("[watch_executor_thread] can't start execution engine")
+        log.log("[watch_executor_thread] execution engine pid {} current status is {}"
+                .format(instance_execution_engine.status.pid, str(instance_execution_engine.status.is_alive())))
 
 
 if __name__ == '__main__':
@@ -154,5 +159,5 @@ if __name__ == '__main__':
             )
             break
         else:
-            log.log("Unknow run mode, please select the valid run mode from the list")
+            log.log("Unknown run mode, please select the valid run mode from the list")
             run_mode = get_keyboard_input(60)

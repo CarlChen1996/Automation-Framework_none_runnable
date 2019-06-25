@@ -25,7 +25,7 @@ class ExecutionEngine(Engine):
         self.__pipe = pipe
         self.__deploy_list = deploy_list
         self.__execution_queue = ExecuteQueue()
-        self.__executor = Process(target=self.launch, name='framework_executor', args=())
+        self.__executor = Process(target=self.start_thread, name='framework_executor', args=())
 
         # self.execution_queue.task_list=[]
         # -----------execute结束后需要同时删除task list-----------------
@@ -39,7 +39,7 @@ class ExecutionEngine(Engine):
     def stop(self):
         self.__executor.terminate()
 
-    def launch(self):
+    def start_thread(self):
         thread_queue_monitor = threading.Thread(target=self.__add_task_to_queue, args=())
         thread_queue_monitor.setDaemon(True)
         thread_queue_monitor.start()
@@ -49,7 +49,7 @@ class ExecutionEngine(Engine):
         thread_executor.join()
 
     def __add_task_to_queue(self):
-        while not False:
+        while True:
             receive = self.__pipe.recv()
             print('[Execution] received: {}'.format(receive.get_name()))
             self.__pipe.send(receive.get_name())
@@ -65,7 +65,7 @@ class ExecutionEngine(Engine):
             time.sleep(1)
             log.log('[thread_executor] task_list left: {}'.format(len(self.__execution_queue.get_task_list())))
             if self.__execution_queue.get_task_list():
-                self.__run()
+                self.__deploy()
                 time.sleep(3)
                 log.log('[thread_executor] task_list now is : {}'.
                         format(list(map(lambda i: i.get_name(), self.__execution_queue.get_task_list()))))
@@ -73,7 +73,7 @@ class ExecutionEngine(Engine):
                 log.log('[thread_executor]************************ wait for new task to execute **********************')
             time.sleep(5)
 
-    def __run(self):
+    def __deploy(self):
         d = self.__deploy_list[0]
         i = self.__execution_queue.get_task_list()[0]
         # ----------循环里面添加 刷新list的方法 ---------------------
