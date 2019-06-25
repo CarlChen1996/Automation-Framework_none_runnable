@@ -19,19 +19,19 @@ class Report:
             type='HTML',
             template='1',
     ):
-        self.name = name
-        self.type = type
-        self.template = template
-        self.uut_list = uut_list
-        self.result()
-        self.data = self.final_data()
-        self.data_2 = self.final_data_2()
+        self.__name = name
+        self.__type = type
+        self.__template = template
+        self.__uut_list = uut_list
+        self.__result()
+        self.__data = self.__final_data()
+        self.__data_2 = self.__final_data_2()
 
     def generate(self):
         # print('generate html finished')
         # print(self.script_list)
 
-        env = Environment(loader=FileSystemLoader(os.path.join(os.getcwd(),'Report\\templates'), encoding='utf-8'))
+        env = Environment(loader=FileSystemLoader(os.path.join(os.getcwd(), 'Report\\templates'), encoding='utf-8'))
         information = {
             'Category': 'TEST ',
             'Version': ' 1.0',
@@ -40,12 +40,12 @@ class Report:
             'Note': '为了RC的最后一次回归测试',
         }
 
-        report_data = self.data['final_data']
-        report_data_2 = self.data_2['final_data_2']
-        passCount = self.data['passCount']
-        failCount = self.data['failCount']
-        norunCount = self.data['norunCount']
-        count = self.data['count']
+        report_data = self.__data['final_data']
+        report_data_2 = self.__data_2['final_data_2']
+        passCount = self.__data['passCount']
+        failCount = self.__data['failCount']
+        norunCount = self.__data['norunCount']
+        count = self.__data['count']
         # total=[PassingRate,Pass,Fail,NoRun,Count]
         total = {
             'Passing rate': '%.2f' % (100 * passCount / count),
@@ -79,18 +79,18 @@ class Report:
                                final_data_2=report_data_2,
                                data=data,
                                total=total,
-                               task_name=self.name,
+                               task_name=self.__name,
                                encoding='utf-8')  # unicode string
-        filepath = os.path.join(os.getcwd(), 'Report\\' + self.name + '\\'+self.name+'.html')
+        filepath = os.path.join(os.getcwd(), 'Report\\' + self.__name + '\\'+self.__name+'.html')
         with open(filepath,
                   'w',
                   encoding='utf-8') as f:
             f.write(html)
-        log.log('generate {}.html finished'.format(self.name))
+        log.log('generate {}.html finished'.format(self.__name))
 
-    def final_data(self):
+    def __final_data(self):
 
-        file = os.path.join(os.getcwd(), 'Report\\{}\\result.yaml'.format(self.name))
+        file = os.path.join(os.getcwd(), 'Report\\{}\\result.yaml'.format(self.__name))
         passed_case_number = 0
         failed_case_number = 0
         norun_case_number = 0
@@ -136,8 +136,8 @@ class Report:
         # print('-------------------------????????????---')
         return data_dict
 
-    def final_data_2(self):
-        file = os.path.join(os.getcwd(), 'Report\\{}\\result.yaml'.format(self.name))
+    def __final_data_2(self):
+        file = os.path.join(os.getcwd(), 'Report\\{}\\result.yaml'.format(self.__name))
         passed_case_number = 0
         failed_case_number = 0
         norun_case_number = 0
@@ -183,15 +183,15 @@ class Report:
         # print('-------------------------????????????---')
         return data_dict_2
 
-    def result(self):
+    def __result(self):
         result = []
-        for i in self.uut_list:
+        for i in self.__uut_list:
             with open(os.path.join(os.getcwd(),
-                                   'Report\\{}\\{}\\{}.yaml'.format(self.name, i.get_hostname(), i.get_hostname())), encoding='utf-8') as f:
+                                   'Report\\{}\\{}\\{}.yaml'.format(self.__name, i.get_hostname(), i.get_hostname())), encoding='utf-8') as f:
                 a = yaml.safe_load(f.read())
                 result.extend(a)
         with open(os.path.join(os.getcwd(),
-                               'Report\\{}\\result.yaml'.format(self.name)), 'w', encoding='utf-8') as g:
+                               'Report\\{}\\result.yaml'.format(self.__name)), 'w', encoding='utf-8') as g:
             yaml.dump(result, g)
             # print(g)
 
@@ -213,6 +213,8 @@ class Email:
         self.sender = attachments
         print('send email')
         os.path.dirname(os.getcwd())
+
+
 if __name__ == '__main__':
     # debug in this module should change os.getcwd() to os.path.dirname(os.getcwd())
     uut_list = [{'hostname':'uut_1'}, {'hostname':'uut_2'}]

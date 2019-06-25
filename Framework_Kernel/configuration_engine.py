@@ -21,7 +21,7 @@ class ConfigurationEngine(Engine):
         build_list.clear()
         deploy_list.clear()
         receive_con, send_con = Pipe()
-        configuration_process = Process(target=config_process, args=(send_con,))
+        configuration_process = Process(target=self.start_thread, args=(send_con,))
         configuration_process.start()
         self.status = configuration_process
 
@@ -32,55 +32,54 @@ class ConfigurationEngine(Engine):
             elif isinstance(i, WindowsDeployHost):
                 deploy_list.append(i)
 
+    def start_thread(self, send_con):
+        log.log("configuration engine PID is {}".format(str(os.getpid())))
+        c = Configurator()
+        c.config()
+        env_host = os.path.join((os.path.abspath(r".\Configuration")),
+                                "env_host.yml")
+        analyze = Analyzer([env_host])
+        env_host_res = analyze.load()
+        env_host_data = analyze.generate(env_host_res)
+        build_host_data = env_host_data[0].get(env_host)[0]
+        deploy_host_data = env_host_data[0].get(env_host)[1]
+        b_ip = build_host_data.get("ip")
+        b_hostname = build_host_data.get("hostname")
+        b_version = build_host_data.get("version")
+        b_mac = build_host_data.get("mac")
 
-def config_process(send_con):
-    log.log("configuration engine PID is {}".format(str(os.getpid())))
-    c = Configurator()
-    c.config()
-    env_host = os.path.join((os.path.abspath(r".\Configuration")),
-                            "env_host.yml")
-    analyze = Analyzer([env_host])
-    env_host_res = analyze.load()
-    env_host_data = analyze.generate(env_host_res)
-    build_host_data = env_host_data[0].get(env_host)[0]
-    deploy_host_data = env_host_data[0].get(env_host)[1]
-    b_ip = build_host_data.get("ip")
-    b_hostname = build_host_data.get("hostname")
-    b_version = build_host_data.get("version")
-    b_mac = build_host_data.get("mac")
+        d_ip = deploy_host_data.get("ip")
+        d_hostname = deploy_host_data.get("hostname")
+        d_version = deploy_host_data.get("version")
+        d_mac = deploy_host_data.get("mac")
+        b = WindowsBuildHost(ip=b_ip,
+                             hostname=b_hostname,
+                             version=b_version,
+                             mac=b_mac)
+        log.log('Init {}'.format(b.get_hostname()))
+        d = WindowsDeployHost(ip=d_ip,
+                              hostname=d_hostname,
+                              version=d_version,
+                              mac=d_mac)
+        log.log('Init {}'.format(d.get_hostname()))
+        # b = WindowsBuildHost(
+        #                       hostname="windows_Build_server1",
+        #                       version="1.0",
+        #                       mac='27832784292')
 
-    d_ip = deploy_host_data.get("ip")
-    d_hostname = deploy_host_data.get("hostname")
-    d_version = deploy_host_data.get("version")
-    d_mac = deploy_host_data.get("mac")
-    b = WindowsBuildHost(ip=b_ip,
-                         hostname=b_hostname,
-                         version=b_version,
-                         mac=b_mac)
-    log.log('Init {}'.format(b.get_hostname()))
-    d = WindowsDeployHost(ip=d_ip,
-                          hostname=d_hostname,
-                          version=d_version,
-                          mac=d_mac)
-    log.log('Init {}'.format(d.get_hostname()))
-    # b = WindowsBuildHost(
-    #                       hostname="windows_Build_server1",
-    #                       version="1.0",
-    #                       mac='27832784292')
+        # d = WindowsDeployHost(
+        #                       ip="192.168.1.2",
+        #                       hostname="windows_Deploy_server1",
+        #                       version="1.1",
+        #                       mac='98765432')
 
-    # d = WindowsDeployHost(
-    #                       ip="192.168.1.2",
-    #                       hostname="windows_Deploy_server1",
-    #                       version="1.1",
-    #                       mac='98765432')
-
-    v = HostValidator()
-    # 下面要判断OFF的情况--------------------------------------------------------
-    sends = []
-    if v.validate(b):
-        b.status = "on"
-        sends.append(b)
-    if v.validate(d):
-        b.status = "on"
-        sends.append(d)
-    send_con.send(sends)
+        v = HostValidator()
+        # 下面要判断OFF的情况--------------------------------------------------------
+        sends = []
+        if v.validate(b):
+            b.status = "on"
+            sends.append(b)
+        if v.validate(d):
+            b.status = "on"
+            sends.append(d)
+        send_con.send(sends)

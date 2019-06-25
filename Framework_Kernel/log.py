@@ -11,9 +11,9 @@ import datetime
 
 class Log:
     def __init__(self, name='', type='', level='info'):
-        self.name = name
-        self.type = type
-        self.level = level
+        self.__name = name
+        self.__type = type
+        self.__level = level
 
     def log(self, msg):
         self.log_path = os.path.join(
@@ -23,12 +23,12 @@ class Log:
             os.makedirs(self.log_path)
         print('[{}]-[{}]-[{}]: {}'.format(
             datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S.%f"),
-            self.name, self.level, msg))
+            self.__name, self.__level, msg))
         with open(
-                self.log_path + '{}.log'.format(self.name),
+                self.log_path + '{}.log'.format(self.__name),
                 'a',
                 encoding='utf-8',
         ) as f:
             f.write('[{}]-[{}]-[{}]: {}'.format(
                 datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S.%f"),
-                self.name, self.level, msg) + '\n')
+                self.__name, self.__level, msg) + '\n')

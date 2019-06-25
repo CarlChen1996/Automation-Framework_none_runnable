@@ -67,6 +67,7 @@ class Host:
     #         print("status format input error, confirm your input is 'on' or 'off'")
     #     return False
 
+
 class WindowsHost(Host):
     pass
 
@@ -175,7 +176,7 @@ class LinuxBuild(LinuxHost, Build):
     pass
 
 
-class Linux_Execute(LinuxHost, Execute):
+class LinuxExecute(LinuxHost, Execute):
     pass
 
 
