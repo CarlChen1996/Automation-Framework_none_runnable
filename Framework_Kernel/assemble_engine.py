@@ -29,11 +29,11 @@ class AssembleEngine(Engine):
         self.__assembleQueue = AssembleQueue()
         self.tasklist = []
         self.__build_list = build_list
-        self.__assembler = Process(target=self.start_thread,
-                                 name='framework_Assembler',
-                                 args=())
 
     def start(self):
+        self.__assembler = Process(target=self.start_thread,
+                                   name='framework_Assembler',
+                                   args=())
         self.__assembler.daemon = True
         self.status = self.__assembler
         self.__assembler.start()
