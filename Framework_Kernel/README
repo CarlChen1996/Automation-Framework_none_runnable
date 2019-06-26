@@ -1,1 +1,168 @@
 # The folder is used to store those programs related to core framework, such as: Host, Validator, Analyzer, etc.
+
+# Code outline
+    Controller.py
+        run_with_manual_mode()
+        run_with_auto_mode()
+        keep_assemble_alive()
+        keep_executor_alive()
+        
+        
+    Analyzer.py
+        class Validator
+            load(self)
+            generate(self, res_list)
+            
+            
+    Assemble_engine.py
+        class AssembleEngine(Engine)
+            start(self)
+            stop(self)
+            start_thread(self)
+            __fresh_queue_testplan(self)
+            __fresh_queue_execution(self)
+            __assemble(self)
+
+    Configuration_engine.py
+        class ConfigurationEngine(Engine)
+            start(self, build_list=None, deploy_list=None)
+            start_thread(self, send_con)
+
+    Configurator.py
+        class Configurator
+            config(self)
+
+    Execution_engine.py
+        class ExecutionEngine(Engine)
+            start(self)
+            stop(self)
+            start_thread(self)
+            __add_task_to_queue(self)
+            __execute(self)
+            __deploy(self)
+            
+    Engine.py
+        class Engine:
+            start(self)
+            stop(self)
+
+    Error_handler.py
+        class ErrorHandler
+            handle(self, error_code)
+            exit(self)
+            reset_framework(self)
+            reset(self, engine)
+            continue_work(self)
+
+    Host.py
+        class Host
+            start(self)
+            reboot(self)
+            shutdown(self)
+            get_ip(self)
+            get_hostname(self)
+            get_version(self)
+            get_mac(self)
+            get_username(self)
+            get_password(self)
+            get_domain(self)
+        
+        class WindowsHost(Host)
+        
+        class LinuxHost(Host)
+        
+        class Build
+            get_scripts(self, task)
+            build(self, task)
+        
+        class Deploy
+            deploy(self, task)
+        
+        class Execute
+            execute_task(self, task)
+            check_status(self, task)
+            collect_result(self, task)
+            
+        Class WindowsBuildHost(WindowsHost, Build)
+        
+        class WindowsDeployHost(WindowsHost, Deploy)
+        
+        class WindowsExecuteHost(WindowsHost, Execute)
+        
+        class LinuxBuild(LinuxHost, Build)
+        
+        class LinuxExecute(LinuxHost, Execute)
+        
+    Log.py
+        class Log
+            log(self, msg)
+            
+    Queue.py
+        class Queue
+            insert_task(self, index=0, task='')
+            remove_task(self, task)
+            set_order(self, index, task)
+            clear(self)
+            get_task_list(self)
+            
+        class AssembleQueue(Queue):
+            build_task(self, task, host)
+        
+        class ExecuteQueue(Queue)
+            deploy(self, task, host)
+            execute(self, task)
+            check_status(self, task)
+            collect_result(self, task)
+            
+    Report.py
+        class Report
+            generate(self)
+            __final_data(self)
+            __final_data_2(self):
+            __result(self)
+            
+        class Email
+            send(self, receiver='', sender='', subject='', content='', attachments='')
+
+    Script.py
+        class Script
+            get_status(self)
+            set_status(self, status)
+            get_name(self)
+
+    Task.py
+        class Task
+            insert_script(self, script)
+            get_script_list(self)
+            insert_exe_list(self, file)
+            get_exe_list(self)
+            insert_uut_list(self, uut)
+            get_uut_list(self)
+            get_id(self)
+            get_name(self)
+            get_status(self)
+            set_status(self, status)
+            get_state(self)
+            set_state(self, state)
+            build(self, host)
+            get_scripts(self, host)
+            execute(self, host):
+            deploy(self, host)
+            check_status(self, host)
+            collect_result(self, host)
+            terminate(self, host)
+            get_exe_duration(self)
+            validate_host(self, validator)
+            validate_scripts(self, validator)
+            
+    Validator.py
+        class Validator
+            validate(self, name)
+        
+        Class HostValidator(Validator)
+            validate(self, host)
+            
+        Class ScriptValidator(Validator)
+            validate(self, task)
+		
+	
