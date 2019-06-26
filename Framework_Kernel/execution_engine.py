@@ -25,13 +25,13 @@ class ExecutionEngine(Engine):
         self.__pipe = pipe
         self.__deploy_list = deploy_list
         self.__execution_queue = ExecuteQueue()
-        self.__executor = Process(target=self.start_thread, name='framework_executor', args=())
 
         # self.execution_queue.task_list=[]
         # -----------execute结束后需要同时删除task list-----------------
         # execution_queue.task_list = task_list.copy()
 
     def start(self):
+        self.__executor = Process(target=self.start_thread, name='framework_executor', args=())
         self.status = self.__executor
         self.__executor.daemon = True
         self.__executor.start()
