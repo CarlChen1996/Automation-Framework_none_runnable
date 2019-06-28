@@ -21,9 +21,9 @@ class ConfigurationEngine(Engine):
         build_list.clear()
         deploy_list.clear()
         receive_con, send_con = Pipe()
-        configuration_process = Process(target=self.start_thread, args=(send_con,))
-        configuration_process.start()
-        self.status = configuration_process
+        self.__configuration_process = Process(target=self.start_thread, args=(send_con,))
+        self.__configuration_process.start()
+        self.status = self.__configuration_process
 
         receive = receive_con.recv()
         for i in receive:
@@ -83,3 +83,6 @@ class ConfigurationEngine(Engine):
             b.status = "on"
             sends.append(d)
         send_con.send(sends)
+
+    def stop(self):
+        self.__configuration_process.terminate()

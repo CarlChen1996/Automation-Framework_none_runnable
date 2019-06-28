@@ -27,6 +27,7 @@
         class ConfigurationEngine(Engine)
             start(self, build_list=None, deploy_list=None)
             start_thread(self, send_con)
+            stop(self)
 
     Configurator.py
         class Configurator
@@ -90,9 +91,9 @@
         class WindowsExecuteHost(WindowsHost, Execute)
         
         class LinuxBuild(LinuxHost, Build)
-        
+
         class LinuxExecute(LinuxHost, Execute)
-        
+
     Log.py
         class Log
             log(self, msg)
