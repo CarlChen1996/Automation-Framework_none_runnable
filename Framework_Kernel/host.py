@@ -85,19 +85,19 @@ class Build:
             pass
         self.log.log('get  {} scripts PASS'.format(task.get_name()))
 
-    def build(self, task):
+    def build_task(self, task):
         for script in task.get_script_list():
             pass
         self.log.log('build ' + task.get_name() + ' PASS')
-        task.insert_exe_list(task.get_name() + '.exe')
-        task.insert_exe_list(task.get_name())
+        task.insert_exe_file_list(task.get_name() + '.exe')
+        task.insert_exe_file_list(task.get_name())
 
 
 class Deploy:
     def __init__(self):
         self.log = Log('deploy_host')
 
-    def deploy(self, task):
+    def deploy_task(self, task):
         self.log.log('deploy package: ' + task.get_name() + ' Pass')
 
 
@@ -184,7 +184,7 @@ if __name__ == "__main__":
     b = WindowsBuildHost("", "", "", "", "", "", "", "")
     b.build()
     d = WindowsDeployHost("", "", "", "", "", "", "", "")
-    d.deploy()
+    d.deploy_task()
     e = WindowsExecuteHost("", "", "", "", "", "", "", "")
     e.check_status()
     e.collect_result()

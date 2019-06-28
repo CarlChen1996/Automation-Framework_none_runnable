@@ -9,7 +9,7 @@
 class Task:
     def __init__(self, name, need_build=True):
         self.__script_list = []
-        self.__exe_list = []
+        self.__exe_file_list = []
         self.__uut_list = []
         self.__id = 0
         self.__name = name
@@ -26,11 +26,11 @@ class Task:
         # get scripts
         return self.__script_list
 
-    def insert_exe_list(self, file):
-        self.__exe_list.append(file)
+    def insert_exe_file_list(self, file):
+        self.__exe_file_list.append(file)
 
-    def get_exe_list(self):
-        return self.__exe_list
+    def get_exe_file_list(self):
+        return self.__exe_file_list
 
     def insert_uut_list(self, uut):
         self.__uut_list.append(uut)
@@ -58,7 +58,7 @@ class Task:
 
     # ---------Below is funtion for task-------------
     def build(self, host):
-        host.build(self)
+        host.build_task(self)
 
     def get_scripts(self, host):
         host.get_scripts(self)
@@ -67,7 +67,7 @@ class Task:
         host.execute_task(self)
 
     def deploy(self, host):
-        host.deploy(self)
+        host.deploy_task(self)
 
     def check_status(self, host):
         host.check_status(self)
@@ -78,7 +78,7 @@ class Task:
     def terminate(self, host):
         pass
 
-    def get_exe_duration(self):
+    def get_execute_duration(self):
         pass
 
     def validate_host(self, validator):

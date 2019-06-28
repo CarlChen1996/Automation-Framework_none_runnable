@@ -13,5 +13,9 @@ class Configurator:
         self.__object_list = object_list
         pass
 
+    '''
+    modify host configuration
+    '''
+
     def config(self):
         pass

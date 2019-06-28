@@ -73,10 +73,10 @@
         
         class Build
             get_scripts(self, task)
-            build(self, task)
+            build_task(self, task)
         
         class Deploy
-            deploy(self, task)
+            deploy_task(self, task)
         
         class Execute
             execute_task(self, task)
@@ -106,7 +106,7 @@
             get_task_list(self)
             
         class AssembleQueue(Queue):
-            build_task(self, task, host)
+            assemble(self, task, host)
         
         class ExecuteQueue(Queue)
             deploy(self, task, host)
@@ -134,8 +134,8 @@
         class Task
             insert_script(self, script)
             get_script_list(self)
-            insert_exe_list(self, file)
-            get_exe_list(self)
+            insert_exe_file_list(self, file)
+            get_exe_file_list(self)
             insert_uut_list(self, uut)
             get_uut_list(self)
             get_id(self)
@@ -151,7 +151,7 @@
             check_status(self, host)
             collect_result(self, host)
             terminate(self, host)
-            get_exe_duration(self)
+            get_execute_duration(self)
             validate_host(self, validator)
             validate_scripts(self, validator)
             

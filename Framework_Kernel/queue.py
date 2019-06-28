@@ -35,7 +35,7 @@ class AssembleQueue(Queue):
         Queue.__init__(self)
         self.log = Log('assemble_queue')
 
-    def build_task(self, task, host):
+    def assemble(self, task, host):
         self.log.log('assemble_queue build {} on {}'.format(
             task.get_name(), host.get_hostname()))
         task.build(host)

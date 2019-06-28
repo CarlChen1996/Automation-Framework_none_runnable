@@ -156,7 +156,7 @@ class AssembleEngine(Engine):
                         for uut in task.get_uut_list():
                             h_validator.validate(uut)
                         s_validator.validate(task)
-                        self.__assembleQueue.build_task(task, b_host)
+                        self.__assembleQueue.assemble(task, b_host)
                         task.set_state('Assemble Finished')
                         log.log(
                             '[thread_assemble_task] **************{} assemble finished****************'.
