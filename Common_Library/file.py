@@ -7,6 +7,7 @@
 import sys
 import os
 import yaml
+from openpyxl import load_workbook
 
 
 class File:
@@ -48,20 +49,47 @@ class File:
 
 
 class XlsxFile(File):
-    def __init__(self, folder_path, name, size, sheet_name, rows, cols):
+    def __init__(self, folder_path, name, size=0, sheet_name='Sheet1', rows=1, cols=1):
         File.__init__(self, folder_path, name, size)
         self.sheet_name = sheet_name
         self.rows = rows
         self.cols = cols
 
-    def get_sheet_name(self):
-        print(sys._getframe().f_code.co_name + "  finished")
+    def open(self):
+        excel_handle = load_workbook(os.path.join(self.folder_path, self.name))
+        return excel_handle
 
-    def get_rows(self):
-        print(sys._getframe().f_code.co_name + "  finished")
+    def read(self, sheet_handle):
+        rows = self.get_rows(sheet_handle)
+        scripts_lis = []
+        uut_config_list = []
+        uut_config_dic = {}
+        sheet_convert_dic = {}
+        sheet_convert_dic[sheet_handle.cell(row=1, column=1).value] = sheet_handle.cell(row=2, column=1).value
+        for i in range(2, rows + 1):
+            scripts_lis.append(sheet_handle.cell(row=i, column=2).value)
+        scripts_lis.remove(None)
+        sheet_convert_dic[sheet_handle.cell(row=1, column=2).value] = scripts_lis
+        for i in range(2, 6):
+            uut_config_dic[sheet_handle.cell(row=i, column=3).value.split(':', 1)[0]] = \
+                sheet_handle.cell(row=i, column=3).value.split(':', 1)[1]
+        uut_config_list.append(uut_config_dic)
+        sheet_convert_dic[sheet_handle.cell(row=1, column=3).value] = uut_config_list
+        sheet_convert_dic[sheet_handle.cell(row=1, column=4).value] = sheet_handle.cell(row=2, column=4).value
+        return sheet_convert_dic
 
-    def get_cols(self):
-        print(sys._getframe().f_code.co_name + "  finished")
+
+    def close(self, sheet_handle):
+        sheet_handle.save(os.path.join(self.folder_path, self.name))
+
+    def get_sheet_name(self, excel_handle):
+        return excel_handle.sheetnames
+
+    def get_rows(self, sheet_handle):
+        return sheet_handle.max_row
+
+    def get_cols(self, sheet_handle):
+        return sheet_handle.max_column
 
 
 class MsgFile(File):

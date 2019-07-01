@@ -6,6 +6,7 @@
 # @Project : demo
 import os
 from Common_Library.file import YamlFile
+from Common_Library.file import XlsxFile
 from Framework_Kernel.log import assemble_log
 
 
@@ -18,9 +19,17 @@ class Analyzer:
         assemble_log.info('Load Data from file ')
         res_tem_list = []
         for i in self.file_list:
-            f = YamlFile(os.path.dirname(i), os.path.basename(i))
-            file_handle = f.open()
-            res = f.read(file_handle)
+            if os.path.splitext(i)[1].lower() == '.xlsx':
+                f = XlsxFile(os.path.dirname(i), os.path.basename(i))
+                file_handle = f.open()
+                sheet_handle = f.get_sheet_name(file_handle)[0]
+                res = f.read(file_handle[sheet_handle])
+            elif os.path.splitext(i)[1].lower() == '.yml' or os.path.splitext(i)[1].lower() == '.yaml':
+                f = YamlFile(os.path.dirname(i), os.path.basename(i))
+                file_handle = f.open()
+                res = f.read(file_handle)
+            else:
+                return []
             res_tem_list.append({i: res})
             # print("load data {} finished".format(i))
             f.close(file_handle)
