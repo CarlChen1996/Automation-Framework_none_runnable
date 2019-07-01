@@ -9,11 +9,11 @@ from Framework_Kernel.configurator import Configurator
 from Framework_Kernel.host import WindowsBuildHost, WindowsDeployHost
 from Framework_Kernel.analyzer import Analyzer
 from Framework_Kernel.validator import HostValidator
-from Framework_Kernel.log import Log
+from Framework_Kernel.log import configuration_log
 import os
 from multiprocessing import Process, Pipe
 
-log = Log(name='configuration')
+
 
 
 class ConfigurationEngine(Engine):
@@ -33,7 +33,7 @@ class ConfigurationEngine(Engine):
                 deploy_list.append(i)
 
     def start_thread(self, send_con):
-        log.log("configuration engine PID is {}".format(str(os.getpid())))
+        configuration_log.info("configuration engine PID is {}".format(str(os.getpid())))
         c = Configurator()
         c.config()
         env_host = os.path.join((os.path.abspath(r".\Configuration")),
@@ -56,12 +56,12 @@ class ConfigurationEngine(Engine):
                              hostname=b_hostname,
                              version=b_version,
                              mac=b_mac)
-        log.log('Init {}'.format(b.get_hostname()))
+        configuration_log.info('Init {}'.format(b.get_hostname()))
         d = WindowsDeployHost(ip=d_ip,
                               hostname=d_hostname,
                               version=d_version,
                               mac=d_mac)
-        log.log('Init {}'.format(d.get_hostname()))
+        configuration_log.info('Init {}'.format(d.get_hostname()))
         # b = WindowsBuildHost(
         #                       hostname="windows_Build_server1",
         #                       version="1.0",

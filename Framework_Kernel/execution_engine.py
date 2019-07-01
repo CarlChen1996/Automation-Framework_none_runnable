@@ -14,9 +14,9 @@ from Framework_Kernel.task import Task
 from Framework_Kernel.host import WindowsDeployHost, WindowsExecuteHost
 '''
 from Framework_Kernel.report import Report
-from Framework_Kernel.log import Log
+from Framework_Kernel.log import execution_log
 
-log = Log('execution')
+# execution_log = Log('execution')
 
 
 class ExecutionEngine(Engine):
@@ -51,26 +51,26 @@ class ExecutionEngine(Engine):
     def __add_task_to_queue(self):
         while True:
             receive = self.__pipe.recv()
-            print('[Execution] received: {}'.format(receive.get_name()))
+            execution_log.info('[Execution] received: {}'.format(receive.get_name()))
             self.__pipe.send(receive.get_name())
-            log.log("[thread_execution_queue_monitor] receive: {}".format(receive.get_name()))
+            execution_log.info("[thread_execution_queue_monitor] receive: {}".format(receive.get_name()))
             self.__execution_queue.insert_task(task=receive)
-            log.log('[thread_execution_queue_monitor] append {} to task_list'.format(receive.get_name()))
-            log.log('[thread_execution_queue_monitor] task_list now is {}'.
+            execution_log.info('[thread_execution_queue_monitor] append {} to task_list'.format(receive.get_name()))
+            execution_log.info('[thread_execution_queue_monitor] task_list now is {}'.
                     format(list(map(lambda i: i.get_name(),self.__execution_queue.get_task_list()))))
             time.sleep(1)
 
     def __execute(self):
         while True:
             time.sleep(1)
-            log.log('[thread_executor] task_list left: {}'.format(len(self.__execution_queue.get_task_list())))
+            execution_log.info('[thread_executor] task_list left: {}'.format(len(self.__execution_queue.get_task_list())))
             if self.__execution_queue.get_task_list():
                 self.__deploy()
                 time.sleep(3)
-                log.log('[thread_executor] task_list now is : {}'.
+                execution_log.info('[thread_executor] task_list now is : {}'.
                         format(list(map(lambda i: i.get_name(), self.__execution_queue.get_task_list()))))
             else:
-                log.log('[thread_executor]************************ wait for new task to execute **********************')
+                execution_log.info('[thread_executor]************************ wait for new task to execute **********************')
             time.sleep(5)
 
     def __deploy(self):
@@ -85,7 +85,7 @@ class ExecutionEngine(Engine):
         r = Report(i.get_name(), i.get_uut_list())
         r.generate()
         self.__execution_queue.remove_task(i)
-        log.log("[thread_executor] remove {} from task_list".format(i.get_name()))
-        log.log('[thread_executor] remove {} from execute queue'.format(i.get_name()))
-        log.log('[thread_executor] task left in execute queue: {}'.format(len(self.__execution_queue.get_task_list())))
+        execution_log.info("[thread_executor] remove {} from task_list".format(i.get_name()))
+        execution_log.info('[thread_executor] remove {} from execute queue'.format(i.get_name()))
+        execution_log.info('[thread_executor] task left in execute queue: {}'.format(len(self.__execution_queue.get_task_list())))
         print('---------------------------------------------------------------')

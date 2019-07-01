@@ -5,11 +5,9 @@
 # @File    : report.py
 # @Project : Automation-Framework
 from jinja2 import Environment, FileSystemLoader
-from Framework_Kernel.log import Log
+from Framework_Kernel.log import execution_log
 import yaml
 import os
-log = Log('report')
-
 
 class Report:
     def __init__(
@@ -86,7 +84,7 @@ class Report:
                   'w',
                   encoding='utf-8') as f:
             f.write(html)
-        log.log('generate {}.html finished'.format(self.__name))
+        execution_log.info('generate {}.html finished'.format(self.__name))
 
     def __final_data(self):
 

@@ -6,9 +6,8 @@
 # @Project : demo
 import os
 from Common_Library.file import YamlFile
-from Framework_Kernel.log import Log
+from Framework_Kernel.log import assemble_log
 
-log = Log('analyzer')
 
 
 class Analyzer:
@@ -16,7 +15,7 @@ class Analyzer:
         self.file_list = file_list
 
     def load(self):
-        log.log('Load Data from file ')
+        assemble_log.info('Load Data from file ')
         res_tem_list = []
         for i in self.file_list:
             f = YamlFile(os.path.dirname(i), os.path.basename(i))
@@ -30,6 +29,6 @@ class Analyzer:
         return res_tem_list
 
     def generate(self, res_list):
-        log.log('generate Data')
+        assemble_log.info('generate Data')
         # print("generate data finished")
         return res_list

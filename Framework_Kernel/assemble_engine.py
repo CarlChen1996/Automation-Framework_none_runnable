@@ -12,13 +12,13 @@ from Framework_Kernel.host import WindowsExecuteHost
 from Framework_Kernel.validator import HostValidator
 from Framework_Kernel.validator import ScriptValidator
 from Framework_Kernel.script import Script
-from Framework_Kernel.log import Log
+from Framework_Kernel.log import assemble_log
 from multiprocessing import Process
 import time
 import threading
 import os
 
-log = Log(name='assemble')
+
 root = os.getcwd()
 plan_root = os.path.join(root, 'Configuration\\test_plan')
 
@@ -63,7 +63,7 @@ class AssembleEngine(Engine):
         :return: None
         """
         while True:
-            print('[Thread_fresh_testplan] ***************begin to refresh queue *****************')
+            assemble_log.info('[Thread_fresh_testplan] ***************begin to refresh queue *****************')
             temp_list = os.listdir(plan_root)
             file_list = []
             for i in temp_list:
@@ -106,36 +106,36 @@ class AssembleEngine(Engine):
                                              version=uutitem['version'],
                                              mac=uutitem['mac'])
                     task.insert_uut_list(uut)
-                log.log('[Thread_fresh_testplan]--insert {} to assemble queue list'.format(
+                assemble_log.info('[Thread_fresh_testplan]--insert {} to assemble queue list'.format(
                     task.get_name()))
                 self.__assembleQueue.insert_task(task=task)
                 # -------------------rename task plan name -------------------------
                 os.rename(taskitem['file_path'], taskitem['file_path'] + 'PASS')
-                print('rename finished', taskitem['file_path'] + 'PASS')
-            log.log(
+                assemble_log.info('rename finished' + taskitem['file_path'] + 'PASS')
+            assemble_log.info(
                 '[Thread_fresh_testplan] ***************finish refresh queue *****************'
             )
-            log.log('[Thread_fresh_testplan] left task in assemble queue: {}'.format(
+            assemble_log.info('[Thread_fresh_testplan] left task in assemble queue: {}'.format(
                 len(self.__assembleQueue.get_task_list())))
             time.sleep(3)
 
     def __fresh_queue_execution(self):
         while True:
-            print('[fresh_queue_execution]-------begin to refresh----fresh_queue_execution----------------')
-            print(self.__assembleQueue.get_task_list())
+            assemble_log.info('[fresh_queue_execution]-------begin to refresh----fresh_queue_execution----------------')
+            assemble_log.info('task_list left:{}'.format(self.__assembleQueue.get_task_list()))
             for task in self.__assembleQueue.get_task_list()[:]:
-                print(task.get_state(), '*************************')
+                assemble_log.info(task.get_state()+ '*************************')
                 if task.get_state().upper() == "ASSEMBLE FINISHED":
                     self.__pipe.send(task)
-                    log.log('[fresh_queue_execution]-Send {} to execution engine'.format(task.get_name()))
+                    assemble_log.info('[fresh_queue_execution]-Send {} to execution engine'.format(task.get_name()))
                     send_status = self.__pipe.recv()
                     if send_status == task.get_name():
                         self.__assembleQueue.remove_task(task)
-                        print('[fresh_queue_execution] {} is removed from assmebleQueue'.format(task.get_name()))
-                        log.log('[fresh_queue_execution]task left in assemble queue: %d' %
+                        assemble_log.info('[fresh_queue_execution] {} is removed from assmebleQueue'.format(task.get_name()))
+                        assemble_log.info('[fresh_queue_execution]task left in assemble queue: %d' %
                                 len(self.__assembleQueue.get_task_list()))
                     else:
-                        print('[fresh_queue_execution]-----send task and received task is not the same one- ----------')
+                        assemble_log.info('[fresh_queue_execution]-----send task and received task is not the same one- ----------')
                 else:
                     time.sleep(1)
                     continue
@@ -143,7 +143,7 @@ class AssembleEngine(Engine):
 
     def __assemble(self):
         while True:
-            log.log(
+            assemble_log.info(
                 '[thread_assemble_task] ************************ Begine to assemble... **********************'
             )
             h_validator = HostValidator()
@@ -158,12 +158,12 @@ class AssembleEngine(Engine):
                         s_validator.validate(task)
                         self.__assembleQueue.assemble(task, b_host)
                         task.set_state('Assemble Finished')
-                        log.log(
+                        assemble_log.info(
                             '[thread_assemble_task] **************{} assemble finished****************'.
                                 format(task.get_name()))
             except Exception as e:
                 print(e)
-            print(
-                '[thread_assemble_task]--------------------------------------------------------------------------------'
-            )
-            time.sleep(1)
+            # print(
+            #     '[thread_assemble_task]--------------------------------------------------------------------------------'
+            # )
+            time.sleep(5)

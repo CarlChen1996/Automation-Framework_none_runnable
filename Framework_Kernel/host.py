@@ -5,7 +5,7 @@
 # @File    : test.py
 # @Project : demo
 import sys
-from Framework_Kernel.log import Log
+from Framework_Kernel.log import assemble_log,controller_log,execution_log
 
 
 class Host:
@@ -78,45 +78,45 @@ class LinuxHost(Host):
 
 class Build:
     def __init__(self):
-        self.log = Log('build_host')
+        self.log = assemble_log
 
     def get_scripts(self, task):
         for script in task.get_script_list():
             pass
-        self.log.log('get  {} scripts PASS'.format(task.get_name()))
+        self.log.info('get  {} scripts PASS'.format(task.get_name()))
 
     def build_task(self, task):
         for script in task.get_script_list():
             pass
-        self.log.log('build ' + task.get_name() + ' PASS')
+        self.log.info('build ' + task.get_name() + ' PASS')
         task.insert_exe_file_list(task.get_name() + '.exe')
         task.insert_exe_file_list(task.get_name())
 
 
 class Deploy:
     def __init__(self):
-        self.log = Log('deploy_host')
+        self.log = execution_log
 
     def deploy_task(self, task):
-        self.log.log('deploy package: ' + task.get_name() + ' Pass')
+        self.log.info('deploy package: ' + task.get_name() + ' Pass')
 
 
 class Execute:
     def __init__(self):
-        self.log = Log('uut')
+        self.log = execution_log
 
     def execute_task(self, task):
-        self.log.log('execute {} on  {}'.format(
+        self.log.info('execute {} on  {}'.format(
             task.get_name(),
             task.get_uut_list()[0].get_hostname()))
 
     def check_status(self, task):
-        self.log.log('check {} status on {}'.format(
+        self.log.info('check {} status on {}'.format(
             task.get_name(),
             task.get_uut_list()[0].get_hostname()))
 
     def collect_result(self, task):
-        self.log.log('collect {} result from {}'.format(
+        self.log.info('collect {} result from {}'.format(
             task.get_name(),
             task.get_uut_list()[0].get_hostname()))
 
