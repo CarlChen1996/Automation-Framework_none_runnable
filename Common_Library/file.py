@@ -59,24 +59,37 @@ class XlsxFile(File):
         excel_handle = load_workbook(os.path.join(self.folder_path, self.name))
         return excel_handle
 
-    def read(self, sheet_handle):
-        rows = self.get_rows(sheet_handle)
-        scripts_lis = []
-        uut_config_list = []
-        uut_config_dic = {}
-        sheet_convert_dic = {}
-        sheet_convert_dic[sheet_handle.cell(row=1, column=1).value] = sheet_handle.cell(row=2, column=1).value
-        for i in range(2, rows + 1):
-            scripts_lis.append(sheet_handle.cell(row=i, column=2).value)
-        scripts_lis.remove(None)
-        sheet_convert_dic[sheet_handle.cell(row=1, column=2).value] = scripts_lis
-        for i in range(2, 6):
-            uut_config_dic[sheet_handle.cell(row=i, column=3).value.split(':', 1)[0]] = \
-                sheet_handle.cell(row=i, column=3).value.split(':', 1)[1]
-        uut_config_list.append(uut_config_dic)
-        sheet_convert_dic[sheet_handle.cell(row=1, column=3).value] = uut_config_list
-        sheet_convert_dic[sheet_handle.cell(row=1, column=4).value] = sheet_handle.cell(row=2, column=4).value
-        return sheet_convert_dic
+    def read(self, excel_handle):
+        config_sheet = excel_handle['config']
+        dic = {}
+        for i in range(1, self.get_rows(config_sheet)+1):
+            dic[config_sheet.cell(row=i, column=1).value] = config_sheet.cell(row=i, column=2).value
+        dic['email'] = dic['email'].split()
+        if dic['needbuild'] == 'Y':
+            dic['needbuild'] = True
+        else:
+            dic['needbuild'] = False
+        uutlist_sheet = excel_handle['uutlist']
+        uut_list = []
+        uut_sheet_rows = self.get_rows(uutlist_sheet)
+        uut_sheet_cols = self.get_cols(uutlist_sheet)
+        for i in range(2, uut_sheet_rows+1):
+            uut_dic = {}
+            for j in range(1, uut_sheet_cols+1):
+                uut_dic[uutlist_sheet.cell(row=1, column=j).value] = uutlist_sheet.cell(row=i, column=j).value
+            uut_list.append(uut_dic)
+        dic['uutlist'] = uut_list
+        scriptslist_sheet = excel_handle['scriptslist']
+        scripts_list = []
+        scripts_dic = {}
+        scripts_sheet_rows = self.get_rows(scriptslist_sheet)
+        for i in range(2, scripts_sheet_rows+1):
+            scripts_dic[scriptslist_sheet.cell(row=i, column=1).value] = scriptslist_sheet.cell(row=i, column=2).value
+        for key in scripts_dic.keys():
+            if scripts_dic[key] == 'Y':
+                scripts_list.append(key)
+        dic['testscripts'] = scripts_list
+        return dic
 
 
     def close(self, sheet_handle):

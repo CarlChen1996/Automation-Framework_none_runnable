@@ -22,8 +22,7 @@ class Analyzer:
             if os.path.splitext(i)[1].lower() == '.xlsx':
                 f = XlsxFile(os.path.dirname(i), os.path.basename(i))
                 file_handle = f.open()
-                sheet_handle = f.get_sheet_name(file_handle)[0]
-                res = f.read(file_handle[sheet_handle])
+                res = f.read(file_handle)
             elif os.path.splitext(i)[1].lower() == '.yml' or os.path.splitext(i)[1].lower() == '.yaml':
                 f = YamlFile(os.path.dirname(i), os.path.basename(i))
                 file_handle = f.open()
