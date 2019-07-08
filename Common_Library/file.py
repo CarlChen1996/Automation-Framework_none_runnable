@@ -7,6 +7,7 @@
 import sys
 import os
 import yaml
+from openpyxl import load_workbook
 
 
 class File:
@@ -48,20 +49,60 @@ class File:
 
 
 class XlsxFile(File):
-    def __init__(self, folder_path, name, size, sheet_name, rows, cols):
+    def __init__(self, folder_path, name, size=0, sheet_name='Sheet1', rows=1, cols=1):
         File.__init__(self, folder_path, name, size)
         self.sheet_name = sheet_name
         self.rows = rows
         self.cols = cols
 
-    def get_sheet_name(self):
-        print(sys._getframe().f_code.co_name + "  finished")
+    def open(self):
+        excel_handle = load_workbook(os.path.join(self.folder_path, self.name))
+        return excel_handle
 
-    def get_rows(self):
-        print(sys._getframe().f_code.co_name + "  finished")
+    def read(self, excel_handle):
+        config_sheet = excel_handle['config']
+        dic = {}
+        for i in range(1, self.get_rows(config_sheet)+1):
+            dic[config_sheet.cell(row=i, column=1).value] = config_sheet.cell(row=i, column=2).value
+        dic['email'] = dic['email'].split()
+        if dic['needbuild'] == 'Y':
+            dic['needbuild'] = True
+        else:
+            dic['needbuild'] = False
+        uutlist_sheet = excel_handle['uutlist']
+        uut_list = []
+        uut_sheet_rows = self.get_rows(uutlist_sheet)
+        uut_sheet_cols = self.get_cols(uutlist_sheet)
+        for i in range(2, uut_sheet_rows+1):
+            uut_dic = {}
+            for j in range(1, uut_sheet_cols+1):
+                uut_dic[uutlist_sheet.cell(row=1, column=j).value] = uutlist_sheet.cell(row=i, column=j).value
+            uut_list.append(uut_dic)
+        dic['uutlist'] = uut_list
+        scriptslist_sheet = excel_handle['scriptslist']
+        scripts_list = []
+        scripts_dic = {}
+        scripts_sheet_rows = self.get_rows(scriptslist_sheet)
+        for i in range(2, scripts_sheet_rows+1):
+            scripts_dic[scriptslist_sheet.cell(row=i, column=1).value] = scriptslist_sheet.cell(row=i, column=2).value
+        for key in scripts_dic.keys():
+            if scripts_dic[key] == 'Y':
+                scripts_list.append(key)
+        dic['testscripts'] = scripts_list
+        return dic
 
-    def get_cols(self):
-        print(sys._getframe().f_code.co_name + "  finished")
+
+    def close(self, sheet_handle):
+        sheet_handle.save(os.path.join(self.folder_path, self.name))
+
+    def get_sheet_name(self, excel_handle):
+        return excel_handle.sheetnames
+
+    def get_rows(self, sheet_handle):
+        return sheet_handle.max_row
+
+    def get_cols(self, sheet_handle):
+        return sheet_handle.max_column
 
 
 class MsgFile(File):
