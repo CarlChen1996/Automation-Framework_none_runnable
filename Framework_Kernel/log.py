@@ -26,10 +26,11 @@ class Log:
         '''
 
                     name： 日志中将会打印的name，默认为运行程序的name
-                    level： 设置日志的打印级别，默认为DEBUG
+                    level： 设置日志的<打印>级别，默认为DEBUG
                     log_path： 日志文件夹的路径，默认为同级目录中的log文件夹
                     use_console： 是否在控制台打印，默认为True
-                    shot:写日志同时是否截图
+                    separator: 自定义分隔符
+                    if_screenshot:写日志同时是否截图
         '''
         if level.lower() == "critical":
             self.logger.setLevel(logging.CRITICAL)
@@ -60,8 +61,11 @@ class Log:
     def screenshot(self,screenshot=False):
         if screenshot==True:
             screenshot = ImageGrab.grab()
-            snap_path = self.log_path + self.logger.name + time.strftime('_%H-%M-%S_.jpg',time.localtime())
-            screenshot.save(snap_path)
+            snap_path = os.path.join(self.log_path + self.logger.name)
+            if not os.path.exists(snap_path):
+                os.makedirs(snap_path)
+            snap_file_path = snap_path + '\\{}.jpg'.format(datetime.datetime.now().strftime('%H-%M-%S.%f'))
+            screenshot.save(snap_file_path)
 
     def addHandler(self, hdlr):
         self.logger.addHandler(hdlr)
@@ -113,5 +117,8 @@ if __name__ == '__main__':
     time.sleep(5)
     l.if_screenshot=True
     l.log(10,'cnm')
+    assemble_log.if_screenshot=True
+    assemble_log.log(20,'hhhhahahaahahaha')
+    l.screenshot(True)
 
 

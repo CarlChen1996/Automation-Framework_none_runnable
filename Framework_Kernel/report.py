@@ -8,7 +8,7 @@ from jinja2 import Environment, FileSystemLoader
 from Framework_Kernel.log import execution_log
 import yaml
 import os
-
+import shutil
 class Report:
     def __init__(
             self,
@@ -79,11 +79,13 @@ class Report:
                                total=total,
                                task_name=self.__name,
                                encoding='utf-8')  # unicode string
-        filepath = os.path.join(os.getcwd(), 'Report\\' + self.__name + '\\'+self.__name+'.html')
-        with open(filepath,
+        filepath = os.path.join(os.getcwd(), 'Report\\' + self.__name + '\\')
+        with open(filepath+self.__name+'.html',
                   'w',
                   encoding='utf-8') as f:
             f.write(html)
+        static_path = os.path.join(os.getcwd(),'Report\\templates\\static')
+        shutil.copytree(static_path, filepath+'static')
         execution_log.info('generate {}.html finished'.format(self.__name))
 
     def __final_data(self):
