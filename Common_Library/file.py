@@ -62,29 +62,26 @@ class XlsxFile(File):
     def read(self, excel_handle):
         config_sheet = excel_handle['config']
         dic = {}
-        for i in range(1, self.get_rows(config_sheet)+1):
-            dic[config_sheet.cell(row=i, column=1).value] = config_sheet.cell(row=i, column=2).value
-        dic['email'] = dic['email'].split()
-        if dic['needbuild'] == 'Y':
+        for i in range(2, self.get_rows(config_sheet) + 1):
+            dic[config_sheet.cell(row=i, column=1).value.lower()] = config_sheet.cell(row=i, column=2).value.lower()
+        dic['email'] = dic['email'].split(';')
+        if dic['needbuild'] == 'y':
             dic['needbuild'] = True
         else:
             dic['needbuild'] = False
-        uutlist_sheet = excel_handle['uutlist']
+        uut_sheet = excel_handle['uut']
         uut_list = []
-        uut_sheet_rows = self.get_rows(uutlist_sheet)
-        uut_sheet_cols = self.get_cols(uutlist_sheet)
-        for i in range(2, uut_sheet_rows+1):
+        for i in range(2, self.get_rows(uut_sheet) + 1):
             uut_dic = {}
-            for j in range(1, uut_sheet_cols+1):
-                uut_dic[uutlist_sheet.cell(row=1, column=j).value] = uutlist_sheet.cell(row=i, column=j).value
+            for j in range(1, self.get_rows(uut_sheet) + 1):
+                uut_dic[uut_sheet.cell(row=1, column=j).value.lower()] = uut_sheet.cell(row=i, column=j).value.lower()
             uut_list.append(uut_dic)
         dic['uutlist'] = uut_list
-        scriptslist_sheet = excel_handle['scriptslist']
+        scripts_sheet = excel_handle['scripts']
         scripts_list = []
         scripts_dic = {}
-        scripts_sheet_rows = self.get_rows(scriptslist_sheet)
-        for i in range(2, scripts_sheet_rows+1):
-            scripts_dic[scriptslist_sheet.cell(row=i, column=1).value] = scriptslist_sheet.cell(row=i, column=2).value
+        for i in range(2, self.get_rows(scripts_sheet) + 1):
+            scripts_dic[scripts_sheet.cell(row=i, column=1).value] = scripts_sheet.cell(row=i, column=2).value
         for key in scripts_dic.keys():
             if scripts_dic[key] == 'Y':
                 scripts_list.append(key)

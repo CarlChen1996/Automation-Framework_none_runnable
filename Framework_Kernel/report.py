@@ -187,7 +187,7 @@ class Report:
         result = []
         for i in self.__uut_list:
             with open(os.path.join(os.getcwd(),
-                                   'Report\\{}\\{}\\{}.yaml'.format(self.__name, i.get_hostname(), i.get_hostname())), encoding='utf-8') as f:
+                                   'Report\\{}\\{}\\{}.yaml'.format(self.__name, i.get_ip(), i.get_ip())), encoding='utf-8') as f:
                 a = yaml.safe_load(f.read())
                 result.extend(a)
         with open(os.path.join(os.getcwd(),
@@ -217,6 +217,6 @@ class Email:
 
 if __name__ == '__main__':
     # debug in this module should change os.getcwd() to os.path.dirname(os.getcwd())
-    uut_list = [{'hostname':'uut_1'}, {'hostname':'uut_2'}]
+    uut_list = [{'hostname':'15.83.250.1'}, {'hostname':'15.83.250.2'}]
     r = Report(name='task_1',uut_list=uut_list)
     r.generate()

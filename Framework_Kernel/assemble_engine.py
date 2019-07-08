@@ -95,15 +95,14 @@ class AssembleEngine(Engine):
             # ************************************************************************
             """
             for taskitem in task_source_list:
-                task = Task(taskitem['name'], taskitem['needbuild'])
+                task = Task(taskitem['name'], taskitem['email'], taskitem['repository'], taskitem['needbuild'])
                 task.set_state('Wait Assemble')
                 for script in taskitem['testscripts']:
                     task.insert_script(Script(name=script))
                 for uutitem in taskitem['uutlist']:
                     # ------需要根据 uut的os 来实例，目前没实现，只考虑windows------------
                     uut = WindowsExecuteHost(ip=uutitem['ip'],
-                                             hostname=uutitem['hostname'],
-                                             version=uutitem['version'],
+                                             version=uutitem['os'],
                                              mac=uutitem['mac'])
                     task.insert_uut_list(uut)
                 assemble_log.info('[Thread_fresh_testplan]--insert {} to assemble queue list'.format(

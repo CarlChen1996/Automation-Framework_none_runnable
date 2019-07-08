@@ -7,7 +7,9 @@
 
 
 class Task:
-    def __init__(self, name, need_build=True):
+    def __init__(self, name, email='', repository='', need_build=True):
+        self.__email = email
+        self.__repository = repository
         self.__script_list = []
         self.__exe_file_list = []
         self.__uut_list = []
@@ -46,6 +48,12 @@ class Task:
 
     def get_status(self):
         return self.__status
+
+    def get_email(self):
+        return self.__email
+
+    def get_repository(self):
+        return self.__repository
 
     def set_status(self, status):
         self.__status = status
