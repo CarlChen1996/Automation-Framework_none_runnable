@@ -5,11 +5,210 @@
     <title>Test Report</title>
     <meta name="generator" content="HTMLTestRunner 0.8.2.1"/>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <link href="http://libs.baidu.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet">
-    <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
-    <script src="http://libs.baidu.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
-    
-<style type="text/css" media="screen">
+    {% block static %}
+    {% endblock %}
+    <script type="text/javascript">
+    var dom = document.getElementById("container");
+    var myChart = echarts.init(dom);
+    var app = {};
+    option = null;
+    option = {
+    <!--backgroundColor: '#ffffff',-->
+
+    title: {
+    text: 'Summary',
+    left: 'center',
+    top: 0,
+    textStyle: {
+        color: 'black'
+    }
+    },
+
+    tooltip : {
+    trigger: 'item',
+    formatter: "{a} <br/>{b} : {c} ({d}%)"
+    },
+
+    <!--visualMap: {-->
+    <!--show: false,-->
+    <!--min: 0,-->
+    <!--max: 200,-->
+    <!--inRange: {-->
+        <!--colorLightness: [0, 1]-->
+    <!--}-->
+    <!--},-->
+    series : [
+    {
+        name:'Test Case',
+        type:'pie',
+        radius : '70%',
+        center: ['50%', '50%'],
+        data:{{ data|tojson }}.sort(function (a, b) { return a.value - b.value; }),
+        <!--roseType: 'radius',-->
+        label: {
+            normal: {
+                textStyle: {
+                    color: 'rgba(0, 0, 0, 1)'
+                }
+            }
+        },
+        labelLine: {
+            normal: {
+                lineStyle: {
+                    color: 'rgba(0, 0, 0, 1)'
+                },
+                smooth: 0.2,
+                length: 10,
+                length2: 20
+            }
+        },
+        itemStyle: {
+            normal: {
+                <!--color: '#000000',-->
+                shadowBlur: 20,
+                shadowColor: 'rgba(0, 0, 0, 0.5)'
+            }
+        },
+
+        animationType: 'scale',
+        animationEasing: 'elasticOut',
+        animationDelay: function (idx) {
+            return Math.random() * 200;
+        }
+    }
+    ]
+    };;
+    if (option && typeof option === "object") {
+    myChart.setOption(option, true);
+    }
+    myChart.on('click', function (params) {
+    if(params.name=='Pass'){
+    showCase(2)}
+    else if(params.name=='Fail'){
+    showCase(1)}
+    });
+    </script>
+    <script language="javascript" type="text/javascript">
+    output_list = Array();
+
+    /*level 调整增加只显示通过用例的分类 --Findyou
+    0:Summary //all hiddenRow
+    1:Failed  //pt hiddenRow, ft none
+    2:Pass    //pt none, ft hiddenRow
+    3:All     //pt none, ft none
+    */
+
+
+    function changeStyle(ctid){
+
+    if(document.getElementById(ctid).style.display=='none'){
+      document.getElementById(ctid).style.display=''
+    }else{
+      document.getElementById(ctid).style.display='none'
+    }
+    }
+
+    function showCase(level) {
+    trs = document.getElementsByTagName("tr");
+    for (var i = 0; i < trs.length; i++) {
+    tr = trs[i];
+    id = tr.id;
+    if (id.substr(0,2) == 'ft') {
+        if (level == 2 || level == 0 ) {
+            tr.className = 'hiddenRow';
+        }
+        else {
+            tr.className = '';
+        }
+    }
+    if (id.substr(0,2) == 'pt') {
+        if (level < 2) {
+            tr.className = 'hiddenRow';
+        }
+        else {
+            tr.className = '';
+        }
+    }
+    }
+
+    //加入【详细】切换文字变化 --Findyou
+    detail_class=document.getElementsByClassName('detail');
+    //console.log(detail_class.length)
+    if (level == 3) {
+    for (var i = 0; i < detail_class.length; i++){
+        detail_class[i].innerHTML="outline"
+    }
+    }
+    else{
+        for (var i = 0; i < detail_class.length; i++){
+        detail_class[i].innerHTML="detail"
+    }
+    }
+
+    }
+
+    <!--function showClassDetail(cid, count) {-->
+
+    <!--var id_list = Array(count);-->
+    <!--var toHide = 1;-->
+    <!--for (var i = 0; i < count; i++) {-->
+    <!--//ID修改 点 为 下划线 -Findyou-->
+    <!--tid0 = 't' + cid.substr(1) + '_' + (i+1);-->
+    <!--tid = 'f' + tid0;-->
+    <!--tr = document.getElementById(tid);-->
+    <!--if (!tr) {-->
+        <!--tid = 'p' + tid0;-->
+        <!--tr = document.getElementById(tid);-->
+    <!--}-->
+    <!--id_list[i] = tid;-->
+    <!--if (tr.className) {-->
+        <!--toHide = 0;-->
+    <!--}-->
+    <!--}-->
+    <!--for (var i = 0; i < count; i++) {-->
+    <!--tid = id_list[i];-->
+    <!--//修改点击无法收起的BUG，加入【详细】切换文字变化 &#45;&#45;Findyou-->
+    <!--if (toHide) {-->
+        <!--document.getElementById(tid).className = 'hiddenRow';-->
+        <!--document.getElementById(cid).innerText = "detail"-->
+    <!--}-->
+    <!--else {-->
+        <!--document.getElementById(tid).className = '';-->
+        <!--document.getElementById(cid).innerText = "outline"-->
+    <!--}-->
+    <!--}-->
+    <!--}-->
+
+
+
+    function html_escape(s) {
+    s = s.replace(/&/g,'&amp;');
+    s = s.replace(/</g,'&lt;');
+    s = s.replace(/>/g,'&gt;');
+    return s;
+    }
+    </script>
+    <script type="text/javascript">
+        var tag = "False"
+        function table_hidden(){
+            var table=document.getElementById("result_table");
+            var table2=document.getElementById("result_table_2");
+            var button=document.getElementById("hidden_button");
+            if (tag == "False"){
+                table2.removeAttribute("hidden");
+                table.setAttribute("hidden",true);
+                tag = "True"
+                button.innerHTML="Group by UUT"
+            }
+            else{
+                table2.setAttribute("hidden",true);
+                table.removeAttribute("hidden");
+                tag="False"
+                button.innerHTML="Group by Case"
+            }
+        }
+    </script>
+    <style type="text/css" media="screen">
 body        { font-family: Microsoft YaHei,Tahoma,arial,helvetica,sans-serif;padding:50px; font-size: 80%;
                 background:url(https://lifemoves.org/wp-content/uploads/2017/03/hp-logo.png) no-repeat 95% 100%;
                 background-size: 20%;}
@@ -37,219 +236,9 @@ table       { font-size: 100%; }
 .teststep   { margin-left: 4em; font-size:12px}
 
 </style>
-
 </head>
 <body >
 <div id="container" style="float:right;height: 200%;width:35%"></div>
-<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/echarts.min.js"></script>
-       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts-gl/echarts-gl.min.js"></script>
-       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts-stat/ecStat.min.js"></script>
-       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/extension/dataTool.min.js"></script>
-       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/map/js/china.js"></script>
-       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/map/js/world.js"></script>
-       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/extension/bmap.min.js"></script>
-       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/simplex.js"></script>
-<script type="text/javascript">
-var dom = document.getElementById("container");
-var myChart = echarts.init(dom);
-var app = {};
-option = null;
-option = {
-<!--backgroundColor: '#ffffff',-->
-
-title: {
-text: 'Summary',
-left: 'center',
-top: 0,
-textStyle: {
-    color: 'black'
-}
-},
-
-tooltip : {
-trigger: 'item',
-formatter: "{a} <br/>{b} : {c} ({d}%)"
-},
-
-<!--visualMap: {-->
-<!--show: false,-->
-<!--min: 0,-->
-<!--max: 200,-->
-<!--inRange: {-->
-    <!--colorLightness: [0, 1]-->
-<!--}-->
-<!--},-->
-series : [
-{
-    name:'Test Case',
-    type:'pie',
-    radius : '70%',
-    center: ['50%', '50%'],
-    data:{{ data|tojson }}.sort(function (a, b) { return a.value - b.value; }),
-    <!--roseType: 'radius',-->
-    label: {
-        normal: {
-            textStyle: {
-                color: 'rgba(0, 0, 0, 1)'
-            }
-        }
-    },
-    labelLine: {
-        normal: {
-            lineStyle: {
-                color: 'rgba(0, 0, 0, 1)'
-            },
-            smooth: 0.2,
-            length: 10,
-            length2: 20
-        }
-    },
-    itemStyle: {
-        normal: {
-            <!--color: '#000000',-->
-            shadowBlur: 20,
-            shadowColor: 'rgba(0, 0, 0, 0.5)'
-        }
-    },
-
-    animationType: 'scale',
-    animationEasing: 'elasticOut',
-    animationDelay: function (idx) {
-        return Math.random() * 200;
-    }
-}
-]
-};;
-if (option && typeof option === "object") {
-myChart.setOption(option, true);
-}
-myChart.on('click', function (params) {
-if(params.name=='Pass'){
-showCase(2)}
-else if(params.name=='Fail'){
-showCase(1)}
-});
-</script>
-<script language="javascript" type="text/javascript">
-output_list = Array();
-
-/*level 调整增加只显示通过用例的分类 --Findyou
-0:Summary //all hiddenRow
-1:Failed  //pt hiddenRow, ft none
-2:Pass    //pt none, ft hiddenRow
-3:All     //pt none, ft none
-*/
-
-
-function changeStyle(ctid){
-
-if(document.getElementById(ctid).style.display=='none'){
-  document.getElementById(ctid).style.display=''
-}else{
-  document.getElementById(ctid).style.display='none'
-}
-}
-
-function showCase(level) {
-trs = document.getElementsByTagName("tr");
-for (var i = 0; i < trs.length; i++) {
-tr = trs[i];
-id = tr.id;
-if (id.substr(0,2) == 'ft') {
-    if (level == 2 || level == 0 ) {
-        tr.className = 'hiddenRow';
-    }
-    else {
-        tr.className = '';
-    }
-}
-if (id.substr(0,2) == 'pt') {
-    if (level < 2) {
-        tr.className = 'hiddenRow';
-    }
-    else {
-        tr.className = '';
-    }
-}
-}
-
-//加入【详细】切换文字变化 --Findyou
-detail_class=document.getElementsByClassName('detail');
-//console.log(detail_class.length)
-if (level == 3) {
-for (var i = 0; i < detail_class.length; i++){
-    detail_class[i].innerHTML="outline"
-}
-}
-else{
-    for (var i = 0; i < detail_class.length; i++){
-    detail_class[i].innerHTML="detail"
-}
-}
-
-}
-
-<!--function showClassDetail(cid, count) {-->
-
-<!--var id_list = Array(count);-->
-<!--var toHide = 1;-->
-<!--for (var i = 0; i < count; i++) {-->
-<!--//ID修改 点 为 下划线 -Findyou-->
-<!--tid0 = 't' + cid.substr(1) + '_' + (i+1);-->
-<!--tid = 'f' + tid0;-->
-<!--tr = document.getElementById(tid);-->
-<!--if (!tr) {-->
-    <!--tid = 'p' + tid0;-->
-    <!--tr = document.getElementById(tid);-->
-<!--}-->
-<!--id_list[i] = tid;-->
-<!--if (tr.className) {-->
-    <!--toHide = 0;-->
-<!--}-->
-<!--}-->
-<!--for (var i = 0; i < count; i++) {-->
-<!--tid = id_list[i];-->
-<!--//修改点击无法收起的BUG，加入【详细】切换文字变化 &#45;&#45;Findyou-->
-<!--if (toHide) {-->
-    <!--document.getElementById(tid).className = 'hiddenRow';-->
-    <!--document.getElementById(cid).innerText = "detail"-->
-<!--}-->
-<!--else {-->
-    <!--document.getElementById(tid).className = '';-->
-    <!--document.getElementById(cid).innerText = "outline"-->
-<!--}-->
-<!--}-->
-<!--}-->
-
-
-
-function html_escape(s) {
-s = s.replace(/&/g,'&amp;');
-s = s.replace(/</g,'&lt;');
-s = s.replace(/>/g,'&gt;');
-return s;
-}
-</script>
-<script type="text/javascript">
-    var tag = "False"
-    function table_hidden(){
-        var table=document.getElementById("result_table");
-        var table2=document.getElementById("result_table_2");
-        var button=document.getElementById("hidden_button");
-        if (tag == "False"){
-            table2.removeAttribute("hidden");
-            table.setAttribute("hidden",true);
-            tag = "True"
-            button.innerHTML="Group by UUT"
-        }
-        else{
-            table2.setAttribute("hidden",true);
-            table.removeAttribute("hidden");
-            tag="False"
-            button.innerHTML="Group by Case"
-        }
-    }
-</script>
 {% block heading_style %}
 <div class='heading' style="width:50%;">
 {% endblock %}
@@ -261,7 +250,6 @@ return s;
             <strong>Status : </strong> ALL {{total['Count']}} Pass {{total['Pass']}} Failure {{total['Fail']}}, Passing rate: {{total['Passing rate']}}%</p>
     </div>
 </div>
-
 <p id='show_detail_line'>
 <a class="btn btn-primary" href='javascript:showCase(0)'>Summary {{total['Passing rate']}}%</a>
 <a class="btn btn-danger" href='javascript:showCase(1)'>Failed {{total['Fail']}}</a>

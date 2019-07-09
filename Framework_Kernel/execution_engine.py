@@ -13,7 +13,7 @@ from Framework_Kernel.queue import ExecuteQueue
 from Framework_Kernel.task import Task
 from Framework_Kernel.host import WindowsDeployHost, WindowsExecuteHost
 '''
-from Framework_Kernel.report import Report
+from Framework_Kernel.report import Report,Email
 from Framework_Kernel.log import execution_log
 
 # execution_log = Log('execution')
@@ -83,7 +83,9 @@ class ExecutionEngine(Engine):
         self.__execution_queue.check_status(i)
         self.__execution_queue.collect_result(i)
         r = Report(i.get_name(), i.get_uut_list())
-        r.generate()
+        e = Email(i.get_email())
+        e.zip_result_package(r.generate(),i.get_name())
+        e.send()
         self.__execution_queue.remove_task(i)
         execution_log.info("[thread_executor] remove {} from task_list".format(i.get_name()))
         execution_log.info('[thread_executor] remove {} from execute queue'.format(i.get_name()))
