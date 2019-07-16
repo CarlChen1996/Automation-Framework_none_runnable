@@ -67,7 +67,7 @@ class AssembleEngine(Engine):
             temp_list = os.listdir(plan_root)
             file_list = []
             for i in temp_list:
-                if 'PASS' in i.upper() or 'FAIL' in i.upper():
+                if 'loaded' in i.lower():
                     time.sleep(3)
                     continue
                 file_list.append(os.path.join(plan_root, i))
@@ -87,11 +87,12 @@ class AssembleEngine(Engine):
             #                           testscripts:[script1, script2,],
             #                           uutlist:[uutinformatio,uutinformation],
             #                           needbuild:true
+                                        email:xxx.xxx@hp.com
+                                        repository:https://hp.com
             #                           file_path:c:\\xxxx\\xxx\\testplan\\xxx.yml}
-            # uutinformation: {         hostname: uut1,
-            #                           ip:1.1.1.1,
+            # uutinformation: {         ip:1.1.1.1,
             #                           mac:1234566,
-            #                           version: win7}}
+            #                           os: win7e}}
             # ************************************************************************
             """
             for taskitem in task_source_list:
@@ -109,8 +110,12 @@ class AssembleEngine(Engine):
                     task.get_name()))
                 self.__assembleQueue.insert_task(task=task)
                 # -------------------rename task plan name -------------------------
-                os.rename(taskitem['file_path'], taskitem['file_path'] + 'PASS')
-                assemble_log.info('rename finished' + taskitem['file_path'] + 'PASS')
+                os.rename(taskitem['file_path'],
+                          taskitem['file_path'][:taskitem['file_path'].index('TEST_PLAN')] +
+                          'Loaded_' + taskitem['file_path'][taskitem['file_path'].index('TEST_PLAN'):])
+                assemble_log.info('rename finished' +
+                                  taskitem['file_path'][:taskitem['file_path'].index('TEST_PLAN')] +
+                                  'Loaded_' + taskitem['file_path'][taskitem['file_path'].index('TEST_PLAN'):])
             assemble_log.info(
                 '[Thread_fresh_testplan] ***************finish refresh queue *****************'
             )
