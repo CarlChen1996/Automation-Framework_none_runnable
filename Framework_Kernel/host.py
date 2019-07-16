@@ -107,7 +107,7 @@ class Build:
             job_win.creare_job()
             job_win.build_job()
             if job_win.build_result=='SUCCESS':
-                task.insert_exe_file_list(r'/jenkins/windows/'+my_job_name+r'/'+my_job_output_name+'.exe')
+                task.insert_exe_file_list(r'/jenkins/windows/'+my_remote_folder_name+r'/'+my_job_output_name+'.exe')
                 task.set_status(job_win.build_result)
             else:
                 task.set_status(job_win.build_result)
@@ -124,7 +124,7 @@ class Build:
             job_linux.creare_job()
             job_linux.build_job()
             if job_linux.build_result=='SUCCESS':
-                task.insert_exe_file_list(r'/jenkins/windows/'+my_job_name1+r'/'+my_job_output_name1)
+                task.insert_exe_file_list(r'/jenkins/windows/'+my_remote_folder_name1+r'/'+my_job_output_name1)
                 task.set_status(job_linux.build_result)
             else:
                 task.set_status(job_linux.build_result)

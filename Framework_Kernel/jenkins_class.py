@@ -12,6 +12,7 @@ import os
 from lxml import etree as et
 import datetime
 import logging
+from Framework_Kernel.log import assemble_log
 
 class OS_type:
     win="windows"
@@ -40,16 +41,18 @@ class Jenkins_Server():
         try:
             self.connection=jenkins.Jenkins(self.url, username=self.id, password=self.token)
         except Exception as e:
-            logging.info(str(e))
-            print(e)
+            assemble_log.info(str(e))
+            # logging.info(str(e))
+            # print(e)
             self.connection=None
 
     def build_job(self,job_name):
         try:
             self.connection.build_job(job_name)
         except Exception as e:
-            logging.info(str(e))
-            print(e)
+            assemble_log.info(str(e))
+            # logging.info(str(e))
+            # print(e)
 
     def get_job_list(self):
         job_list=[]
@@ -61,8 +64,9 @@ class Jenkins_Server():
         try:
             return self.connection.get_job_info(job_name).get("lastBuild").get("number")
         except Exception as e:
-            logging.info(str(e))
-            print(e)
+            assemble_log.info(str(e))
+            # logging.info(str(e))
+            # print(e)
             return None
 
     def get_build_result(self,job_name,last_build_number):
@@ -72,13 +76,15 @@ class Jenkins_Server():
                 if t:
                     return t
                 else:
-                    logging.info("wait {} build {} result".format(job_name,last_build_number))
-                    print("wait {} build {} result".format(job_name,last_build_number))
+                    assemble_log.info("wait {} build {} result".format(job_name,last_build_number))
+                    # logging.info("wait {} build {} result".format(job_name,last_build_number))
+                    # print("wait {} build {} result".format(job_name,last_build_number))
                     time.sleep(1)
 
         except Exception as e :
-            logging.info(str(e))
-            print(e)
+            assemble_log.info(str(e))
+            # logging.info(str(e))
+            # print(e)
             return None
 
     def create_job(self,new_job_name,new_job_config):
@@ -88,8 +94,9 @@ class Jenkins_Server():
                 config=f.read()
             self.connection.create_job(new_job_name,config)
         except Exception as e:
-            logging.info(str(e))
-            print(e)
+            assemble_log.info(str(e))
+            # logging.info(str(e))
+            # print(e)
 
     def process_config(self,config_file,repository,py_entry,output_name,remote_folder_name,build_node,job_os_type):
         try:
@@ -100,8 +107,9 @@ class Jenkins_Server():
                 if ele_repository:
                     ele_repository[0].text=repository
                 else:
-                    logging.info("not found repository in module")
-                    print("not found repository in module")
+                    assemble_log.info("not found repository in module")
+                    # logging.info("not found repository in module")
+                    # print("not found repository in module")
                     return None
                 if job_os_type =="windows":
                     ele_builder=ele_tree.xpath(r"./builders/hudson.tasks.BatchFile/command")
@@ -111,15 +119,17 @@ class Jenkins_Server():
                     ele_builder[0].text=ele_builder[0].text.replace("hello.py",py_entry)
                     ele_builder[0].text = ele_builder[0].text.replace("output_name", output_name)
                 else:
-                    logging.info("not found builder in module")
-                    print("not found builder in module")
+                    assemble_log.info("not found builder in module")
+                    # logging.info("not found builder in module")
+                    # print("not found builder in module")
                     return None
                 ele_build_node=ele_tree.xpath(r"./assignedNode")
                 if ele_build_node:
                     ele_build_node[0].text=build_node
                 else:
-                    logging.info("not found builder node in module")
-                    print("not found builder node in module")
+                    assemble_log.info("not found builder node in module")
+                    # logging.info("not found builder node in module")
+                    # print("not found builder node in module")
                     return None
                 ele_publisher_node=ele_tree.xpath(r"//jenkins.plugins.publish__over__ftp.BapFtpTransfer/remoteDirectory")
                 if ele_publisher_node:
@@ -127,8 +137,9 @@ class Jenkins_Server():
                 return et.tostring(ele_tree.getroot(),encoding="UTF-8").decode("utf-8")
 
         except Exception as e:
-            logging.info(str(e))
-            print(e)
+            assemble_log.info(str(e))
+            # logging.info(str(e))
+            # print(e)
 
     def create_job_params(self,job_name,job_os_type,repository,py_entry,output_name,remote_folder_name):
         if job_os_type =="windows":
@@ -144,15 +155,17 @@ class Jenkins_Server():
             config=self.process_config(config_file,repository,py_entry,output_name,remote_folder_name,build_node,job_os_type)
             self.connection.create_job(job_name, config)
         except Exception as e:
-            logging.info(str(e))
-            print(e)
+            assemble_log.info(str(e))
+            # logging.info(str(e))
+            # print(e)
 
     def remove_job(self,job_name):
         try:
             self.connection.delete_job(job_name)
         except Exception as e:
-            logging.info(str(e))
-            print(e)
+            assemble_log.info(str(e))
+            # logging.info(str(e))
+            # print(e)
 
     def check_job_exists(self,job_name):
         return self.connection.job_exists(job_name)
@@ -181,27 +194,36 @@ class JOB:
 
     def build_job(self):
         start_last_build = self.server.get_last_build_number(self.job_name)
-        logging.info("start build job {}".format(self.job_name))
-        print("start build job {}".format(self.job_name))
+        # logging.info("start build job {}".format(self.job_name))
+        assemble_log.info("start build job {}".format(self.job_name))
+        # print("start build job {}".format(self.job_name))
         self.server.build_job(self.job_name)
         while True:
             current_last_build = self.server.get_last_build_number(self.job_name)
             if start_last_build == current_last_build:
-                logging.info("start_last_build_number is {} ,cureent_last_build_number is {}".format(start_last_build,
-                                                                                                     current_last_build))
-                print("start_last_build_number is {} ,cureent_last_build_number is {}".format(start_last_build,
-                                                                                              current_last_build))
-                logging.info("wait {} build finish,delay 1s".format(self.job_name))
-                print("wait {} build finish,delay 1s".format(self.job_name))
+                assemble_log.info(
+                    "start_last_build_number is {} ,cureent_last_build_number is {}".format(start_last_build,
+                                                                                             current_last_build)
+                )
+                # logging.info("start_last_build_number is {} ,cureent_last_build_number is {}".format(start_last_build,
+                #                                                                                      current_last_build))
+                # print("start_last_build_number is {} ,cureent_last_build_number is {}".format(start_last_build,
+                #                                                                               current_last_build))
+                assemble_log.info("wait {} build finish,delay 1s".format(self.job_name))
+                # logging.info("wait {} build finish,delay 1s".format(self.job_name))
+                # print("wait {} build finish,delay 1s".format(self.job_name))
                 time.sleep(1)
             else:
                 result=self.server.get_build_result(self.job_name, current_last_build)
-                logging.info("start_last_build_number is {} ,cureent_last_build_number is {}".format(start_last_build,
+                assemble_log.info("start_last_build_number is {} ,cureent_last_build_number is {}".format(start_last_build,
                                                                                                      current_last_build))
-                print("start_last_build_number is {} ,cureent_last_build_number is {}".format(start_last_build,
-                                                                                              current_last_build))
-                logging.info("{} build finish,result is {}".format(self.job_name, result))
-                print("{} build finish,result is {}".format(self.job_name,result))
+                # logging.info("start_last_build_number is {} ,cureent_last_build_number is {}".format(start_last_build,
+                #                                                                                      current_last_build))
+                # print("start_last_build_number is {} ,cureent_last_build_number is {}".format(start_last_build,
+                #                                                                               current_last_build))
+                assemble_log.info("{} build finish,result is {}".format(self.job_name, result))
+                # logging.info("{} build finish,result is {}".format(self.job_name, result))
+                # print("{} build finish,result is {}".format(self.job_name,result))
                 self.build_result=result
                 break
 

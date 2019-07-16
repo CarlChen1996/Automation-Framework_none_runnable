@@ -158,6 +158,7 @@ class AssembleEngine(Engine):
                         self.__assembleQueue.assemble(task, b_host)
                         print(20*'*')
                         print(task.get_status(),task.get_exe_file_list())
+                        print(20 * '*')
                         task.set_state('Assemble Finished')
                         assemble_log.info(
                             '[thread_assemble_task] **************{} assemble finished****************'.
