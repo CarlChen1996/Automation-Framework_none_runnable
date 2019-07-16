@@ -6,6 +6,7 @@
 # @Project : demo
 import sys
 from Framework_Kernel.log import assemble_log,controller_log,execution_log
+from Framework_Kernel import jenkins_class
 
 
 class Host:
@@ -85,12 +86,61 @@ class Build:
             pass
         self.log.info('get  {} scripts PASS'.format(task.get_name()))
 
+    def jenkins_build(self,task,target_os,ip,user_name,password,py_entry="run.py",output_name = "run"):
+        # my_url = "http://15.83.248.200:8080"
+        my_url= "http://"+ip+":8080"
+        # my_id = "bamboo"
+        my_id=user_name
+        # my_token = "1177eafe586b4459f7410f9abb393e15f2"
+        my_token=password
+        server1 = jenkins_class.Jenkins_Server(my_url, my_id, my_token)
+        server1.connect()
+        if target_os==jenkins_class.OS_type.win:
+            """job info"""
+            my_job_name = "job_test_win"
+            my_job_os_type = jenkins_class.OS_type.win
+            my_job_repository = task.get_repository()
+            my_job_py_entry = py_entry
+            my_job_output_name = output_name
+            my_remote_folder_name = task.get_name()
+            job_win = jenkins_class.JOB(my_job_name, my_job_os_type, my_job_repository, my_job_py_entry, my_job_output_name, my_remote_folder_name ,server1)
+            job_win.creare_job()
+            job_win.build_job()
+            if job_win.build_result=='SUCCESS':
+                task.insert_exe_file_list(r'/jenkins/windows/'+my_job_name+r'/'+my_job_output_name+'.exe')
+                task.set_status(job_win.build_result)
+            else:
+                task.set_status(job_win.build_result)
+            job_win.remove()
+        elif target_os==jenkins_class.OS_type.linux:
+            """job info"""
+            my_job_name1 = "job_test_linux"
+            my_job_os_type1 = jenkins_class.OS_type.linux
+            my_job_repository1 = task.get_repository()
+            my_job_py_entry1 = py_entry
+            my_job_output_name1 = output_name
+            my_remote_folder_name1=task.get_name()
+            job_linux = jenkins_class.JOB(my_job_name1, my_job_os_type1, my_job_repository1, my_job_py_entry1, my_job_output_name1,my_remote_folder_name1,server1)
+            job_linux.creare_job()
+            job_linux.build_job()
+            if job_linux.build_result=='SUCCESS':
+                task.insert_exe_file_list(r'/jenkins/windows/'+my_job_name1+r'/'+my_job_output_name1)
+                task.set_status(job_linux.build_result)
+            else:
+                task.set_status(job_linux.build_result)
+            job_linux.remove()
+
+    def get_os_type(self,task):
+        for i in task.get_uut_list():
+            if 'wes' in i._Host__version.lower():
+                return jenkins_class.OS_type.win
+            elif 'tp' in i._Host__version.lower():
+                return jenkins_class.OS_type.linux
+
     def build_task(self, task):
-        for script in task.get_script_list():
-            pass
-        self.log.info('build ' + task.get_name() + ' PASS')
-        task.insert_exe_file_list(task.get_name() + '.exe')
-        task.insert_exe_file_list(task.get_name())
+        os_type=self.get_os_type(task)
+        self.jenkins_build(task, os_type,self._Host__ip,self._Host__username,self._Host__password)
+        self.log.info('build ' + task.get_name() + task.get_status())
 
 
 class Deploy:

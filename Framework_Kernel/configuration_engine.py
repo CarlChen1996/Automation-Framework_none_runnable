@@ -47,20 +47,26 @@ class ConfigurationEngine(Engine):
         b_hostname = build_host_data.get("hostname")
         b_version = build_host_data.get("version")
         b_mac = build_host_data.get("mac")
+        b_user_name=build_host_data.get("username")
+        b_password=build_host_data.get("password")
+        b_domain=build_host_data.get("domain")
 
         d_ip = deploy_host_data.get("ip")
         d_hostname = deploy_host_data.get("hostname")
         d_version = deploy_host_data.get("version")
         d_mac = deploy_host_data.get("mac")
+        d_user_name=deploy_host_data.get("username")
+        d_password=deploy_host_data.get("password")
+        d_domain=deploy_host_data.get("domain")
         b = WindowsBuildHost(ip=b_ip,
                              hostname=b_hostname,
                              version=b_version,
-                             mac=b_mac)
+                             mac=b_mac,username=b_user_name,password=b_password,domain=b_domain)
         configuration_log.info('Init {}'.format(b.get_hostname()))
         d = WindowsDeployHost(ip=d_ip,
                               hostname=d_hostname,
                               version=d_version,
-                              mac=d_mac)
+                              mac=d_mac,username=d_user_name,password=d_password,domain=d_domain)
         configuration_log.info('Init {}'.format(d.get_hostname()))
         # b = WindowsBuildHost(
         #                       hostname="windows_Build_server1",
