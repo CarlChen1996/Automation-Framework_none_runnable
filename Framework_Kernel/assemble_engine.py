@@ -121,7 +121,7 @@ class AssembleEngine(Engine):
     def __fresh_queue_execution(self):
         while True:
             assemble_log.info('[fresh_queue_execution]-------begin to refresh----fresh_queue_execution----------------')
-            assemble_log.info('task_list left:{}'.format(self.__assembleQueue.get_task_list()))
+            assemble_log.info('task_list left:{}'.format(len(self.__assembleQueue.get_task_list())))
             for task in self.__assembleQueue.get_task_list()[:]:
                 assemble_log.info(task.get_state()+ '*************************')
                 if task.get_state().upper() == "ASSEMBLE FINISHED":

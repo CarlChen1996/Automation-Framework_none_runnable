@@ -93,8 +93,8 @@
     <td align='right'>
         <span class="label label-danger danger">{{s['result']}}</span>
     </td>
-    <td class="text-center">{% if s['expect'][:3]=='img' %}<a style="display:block;" target="_blank" href="{{t[0]}}/expect_{{s['expect']}}">{{s['expect'][4:]}}</a>{% else %}{{s['expect']}}{% endif %}</td>
-    <td class="text-center">{% if s['actual'][:3]=='img' %}<a style="display:block;" target="_blank" href="{{t[0]}}/actual_{{s['actual']}}">{{s['actual'][4:]}}</a>{% else %}{{s['actual']}}{% endif %}</td>
+    <td class="text-center">{% if s['expect'][:3]=='img' %}<a style="display:block;" target="_blank" href="{{t[0]}}/test_report/expect_{{s['expect']}}">{{s['expect'][4:]}}</a>{% else %}{{s['expect']}}{% endif %}</td>
+    <td class="text-center">{% if s['actual'][:3]=='img' %}<a style="display:block;" target="_blank" href="{{t[0]}}/test_report/actual_{{s['actual']}}">{{s['actual'][4:]}}</a>{% else %}{{s['actual']}}{% endif %}</td>
     <td class="text-center">{{s['note']}}</td>
     </tr>
     {%elif s['result']=='pass'%}
@@ -104,8 +104,8 @@
     <td align='right'>
         <span class="label label-success success" >{{s['result']}}</span>
     </td>
-    <td class="text-center">{% if s['expect'][:3]=='img' %}<a style="display:block;" target="_blank" href="{{t[0]}}/expect_{{s['expect']}}">{{s['expect'][4:]}}</a>{% else %}{{s['expect']}}{% endif %}</td>
-    <td class="text-center">{% if s['actual'][:3]=='img' %}<a style="display:block;" target="_blank" href="{{t[0]}}/actual_{{s['actual']}}">{{s['actual'][4:]}}</a>{% else %}{{s['actual']}}{% endif %}</td>
+    <td class="text-center">{% if s['expect'][:3]=='img' %}<a style="display:block;" target="_blank" href="{{t[0]}}/test_report/expect_{{s['expect']}}">{{s['expect'][4:]}}</a>{% else %}{{s['expect']}}{% endif %}</td>
+    <td class="text-center">{% if s['actual'][:3]=='img' %}<a style="display:block;" target="_blank" href="{{t[0]}}/test_report/actual_{{s['actual']}}">{{s['actual'][4:]}}</a>{% else %}{{s['actual']}}{% endif %}</td>
     <td class="text-center">{{s['note']}}</td>
     </tr>
     {%endif%}
