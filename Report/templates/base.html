@@ -7,6 +7,10 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     {% block static %}
     {% endblock %}
+
+</head>
+<body >
+<div id="container" style="float:right;height: 200%;width:35%"></div>
     <script type="text/javascript">
     var dom = document.getElementById("container");
     var myChart = echarts.init(dom);
@@ -210,7 +214,7 @@
     </script>
     <style type="text/css" media="screen">
 body        { font-family: Microsoft YaHei,Tahoma,arial,helvetica,sans-serif;padding:50px; font-size: 80%;
-                background:url(https://lifemoves.org/wp-content/uploads/2017/03/hp-logo.png) no-repeat 95% 100%;
+                background:url(static/image/hp-logo.png) no-repeat 95% 100%;
                 background-size: 20%;}
 /*  hp-logo.jpg now use https://lifemoves.org/wp-content/uploads/2017/03/hp-logo.png  */
 table       { font-size: 100%; }
@@ -236,9 +240,6 @@ table       { font-size: 100%; }
 .teststep   { margin-left: 4em; font-size:12px}
 
 </style>
-</head>
-<body >
-<div id="container" style="float:right;height: 200%;width:35%"></div>
 {% block heading_style %}
 <div class='heading' style="width:50%;">
 {% endblock %}
