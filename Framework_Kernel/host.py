@@ -124,7 +124,7 @@ class Build:
             job_linux.creare_job()
             job_linux.build_job()
             if job_linux.build_result=='SUCCESS':
-                task.insert_exe_file_list(r'/jenkins/windows/'+my_remote_folder_name1+r'/'+my_job_output_name1)
+                task.insert_exe_file_list(r'/jenkins/linux/'+my_remote_folder_name1+r'/'+my_job_output_name1)
                 task.set_status(job_linux.build_result)
             else:
                 task.set_status(job_linux.build_result)
