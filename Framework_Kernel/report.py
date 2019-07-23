@@ -171,13 +171,13 @@ class Report:
                 if v['case_name'] == k[0]:
                     index = final_data_2.index(k)
                     final_data_2[index][1].append(v)
-                    if v['result'] == 'Pass':
+                    if v['result'] == 'Pass' or v['result'] == 'pass':
                         final_data_2[index][2] += 1
                         passed_case_number += 1
-                    if v['result'] == 'Fail':
+                    if v['result'] == 'Fail' or v['result'] == 'fail':
                         final_data_2[index][3] += 1
                         failed_case_number += 1
-                    if v['result'] == 'Norun':
+                    if v['result'] == 'Norun' or v['result'] == 'norun':
                         final_data_2[index][4] += 1
                         norun_case_number += 1
                     final_data_2[index][5] += 1
