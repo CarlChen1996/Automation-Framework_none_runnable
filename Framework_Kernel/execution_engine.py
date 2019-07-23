@@ -4,11 +4,13 @@
 # @Email   : carl.chen@hp.com
 # @File    : ExecutionEngine.py
 # @Project : Automation-Framework
+import os
 from multiprocessing import Process
 import threading
 import time
 from Framework_Kernel.engine import Engine
 from Framework_Kernel.queue import ExecuteQueue
+import ftplib
 '''
 from Framework_Kernel.task import Task
 from Framework_Kernel.host import WindowsDeployHost, WindowsExecuteHost
@@ -82,6 +84,7 @@ class ExecutionEngine(Engine):
         # --------需要得到返回值 ------------------
         # self.__execution_queue.check_status(i)
         self.__execution_queue.collect_result(i)
+
         r = Report(i.get_name(), i.get_uut_list())
         e = Email(i.get_email())
         e.zip_result_package(r.generate(),i.get_name())
@@ -91,3 +94,6 @@ class ExecutionEngine(Engine):
         execution_log.info('[thread_executor] remove {} from execute queue'.format(i.get_name()))
         execution_log.info('[thread_executor] task left in execute queue: {}'.format(len(self.__execution_queue.get_task_list())))
         print('---------------------------------------------------------------')
+
+
+

@@ -4,6 +4,8 @@
 # @Email   : balance.cheng@hp.com
 # @File    : QTPutils.py
 # @Project : demo
+import time
+
 import win32com.client
 import os
 import re
@@ -33,7 +35,7 @@ class QTP_HPDM:
         col2:Mac
         """
         # ------Delete exist Data-------------------------------------------
-        os_list = {"ThinPro7":"HP ThinPro 7", "WES7P":"WES7P-64", "WES10":"Win10IoT-64", "WES7E":"WES7E"}
+        os_list = {"THINPRO7":"HP ThinPro 7", "WES7P":"WES7P-64", "WES10":"Win10IoT-64", "WES7E":"WES7E"}
         # print(list(os_list.values()))
         for os_item in os_list.values():
             sheet_uut = workbook['UUT_{}'.format(os_item)]
@@ -47,12 +49,15 @@ class QTP_HPDM:
         # ---------------------------------------------------------------------
         # ----------Set UUT Data according task uut_list---------------------------------
         for uut in task.get_uut_list():
-            if uut.get_version() in os_list.keys():
-                sheet_uut = workbook['UUT_{}'.format(os_list[uut.get_version()])]
+            if uut.get_version().upper() in os_list.keys():
+                sheet_uut = workbook['UUT_{}'.format(os_list[uut.get_version().upper()])]
                 max_row = sheet_uut.max_row
                 print(uut.get_version(),sheet_uut.max_row)
                 sheet_uut.cell(max_row+1, 1).value=uut.get_ip()
-                sheet_uut.cell(max_row+1, 2).value=uut.get_mac()
+                sheet_uut.cell(max_row+1, 2).value=uut.get_mac().upper()
+                print('===========================================')
+                print(uut.get_ip(), uut.get_mac())
+                print('===========================================')
                 workbook.save(self.__test_data_path)
         # ---------Set Config Data according task uut_list exe_list ------------------
         package_path = os.path.dirname(task.get_exe_file_list()[0])
@@ -63,7 +68,7 @@ class QTP_HPDM:
             sheet_config.cell(2, 1).value = "Windows_{}".format(task.get_name())
         else:
             sheet_config.cell(2, 1).value = "Unknown_{}".format(task.get_name())
-        sheet_config.cell(2, 2).value = 'c:\\inetpub\\ftproot\\{}'.format(package_path)
+        sheet_config.cell(2, 2).value = 'c:/inetpub/ftproot{}'.format(package_path)
         workbook.save(self.__test_data_path)
         self.__upload_test_data()
 
@@ -75,11 +80,15 @@ class QTP_HPDM:
         ftp.close()
 
     def __run_qtp_script(self, testPath):
+        import pythoncom
+        pythoncom.CoInitialize()
         qtp = win32com.client.DispatchEx("QuickTest.Application", self.__ip)
         qtp.Launch()
         qtp.Visible = True
         qtp.Open(testPath)
         qtp.Test.Run()
+        pythoncom.CoUninitialize()
+        time.sleep(5)
 
     def __create_filter(self):
         """
@@ -96,7 +105,7 @@ class QTP_HPDM:
 
     def deploy_task(self, task, deploy_server):
         self.set_test_data(task)
-        self.discover_devices(task)
+        # self.discover_devices(task)
         # uut = task.uut_list[0]
         # package_path = task.exe_list[0]
         '''
@@ -105,7 +114,7 @@ class QTP_HPDM:
         self.__ip = deploy_server
         self.__run_qtp_script(self.__send_packages_path)
 
-    def execute_task(self, task, deploy_server):
+    def execute_task(self, task):
         self.set_test_data(task)
         # uut_list = task.uut_list
         # exe_list = task.exe_list
@@ -114,12 +123,10 @@ class QTP_HPDM:
         exe_list[0]: local folder
         exe_list[1]: exe file name
         '''
-        self.__ip = deploy_server
         self.__run_qtp_script(self.__send_command_path)
 
-    def get_result(self, task, deploy_server):
+    def get_result(self, task):
         self.set_test_data(task)
-        self.__ip = deploy_server
         self.__run_qtp_script(self.__get_result_path)
 
 

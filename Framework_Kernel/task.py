@@ -4,7 +4,8 @@
 # @Email   : balance.cheng@hp.com
 # @File    : Task.py
 # @Project : framework
-
+from Framework_Kernel import QTPutils
+import ftplib
 
 class Task:
     def __init__(self, name, email='', repository='', need_build=True):
@@ -71,17 +72,17 @@ class Task:
     def get_scripts(self, host):
         host.get_scripts(self)
 
-    def execute(self, host):
-        host.execute_task(self)
+    def execute(self):
+        QTPutils.QTP_HPDM().execute_task(self)
 
     def deploy(self, host):
         host.deploy_task(self)
 
-    def check_status(self, host):
-        host.check_status(self)
+    # def check_status(self, host):
+    #     host.check_status(self)
 
-    def collect_result(self, host):
-        host.collect_result(self)
+    def collect_result(self):
+        QTPutils.QTP_HPDM().get_result(self)
 
     def terminate(self, host):
         pass
