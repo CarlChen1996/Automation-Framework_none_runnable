@@ -6,7 +6,7 @@
 # @Project : demo
 import sys
 from Framework_Kernel.log import assemble_log,controller_log,execution_log
-from Framework_Kernel import jenkins_class
+from Framework_Kernel import jenkins_class, QTPutils
 
 
 class Host:
@@ -103,8 +103,7 @@ class Build:
             my_job_py_entry = py_entry
             my_job_output_name = output_name
             my_remote_folder_name = task.get_name()
-            my_mail_list=task.get_email()
-            job_win = jenkins_class.JOB(my_job_name, my_job_os_type, my_job_repository, my_job_py_entry, my_job_output_name, my_remote_folder_name ,server1,my_mail_list)
+            job_win = jenkins_class.JOB(my_job_name, my_job_os_type, my_job_repository, my_job_py_entry, my_job_output_name, my_remote_folder_name ,server1)
             job_win.creare_job()
             job_win.build_job()
             if job_win.build_result=='SUCCESS':
@@ -121,8 +120,7 @@ class Build:
             my_job_py_entry1 = py_entry
             my_job_output_name1 = output_name
             my_remote_folder_name1=task.get_name()
-            my_mail_list = task.get_email()
-            job_linux = jenkins_class.JOB(my_job_name1, my_job_os_type1, my_job_repository1, my_job_py_entry1, my_job_output_name1,my_remote_folder_name1,server1,my_mail_list)
+            job_linux = jenkins_class.JOB(my_job_name1, my_job_os_type1, my_job_repository1, my_job_py_entry1, my_job_output_name1,my_remote_folder_name1,server1)
             job_linux.creare_job()
             job_linux.build_job()
             if job_linux.build_result=='SUCCESS':
@@ -146,18 +144,22 @@ class Build:
 
 
 class Deploy:
-    def __init__(self):
+    def __init__(self, host):
         self.log = execution_log
+        self.host = host
 
     def deploy_task(self, task):
+        QTPutils.QTP_HPDM().deploy_task(task, self.host.get_ip())
         self.log.info('deploy package: ' + task.get_name() + ' Pass')
 
 
 class Execute:
-    def __init__(self):
+    def __init__(self, host):
         self.log = execution_log
+        self.host = host
 
     def execute_task(self, task):
+        QTPutils.QTP_HPDM().execute_task(task, self.host.get_ip())
         self.log.info('execute {} on  {}'.format(
             task.get_name(),
             task.get_uut_list()[0].get_hostname()))
@@ -168,6 +170,7 @@ class Execute:
             task.get_uut_list()[0].get_hostname()))
 
     def collect_result(self, task):
+        QTPutils.QTP_HPDM().get_result(task, self.host.get_ip())
         self.log.info('collect {} result from {}'.format(
             task.get_name(),
             task.get_uut_list()[0].get_hostname()))
@@ -202,7 +205,7 @@ class WindowsDeployHost(WindowsHost, Deploy):
                  status='off'):
         WindowsHost.__init__(self, ip, mac, hostname, version, username,
                              password, domain, status)
-        Deploy.__init__(self)
+        Deploy.__init__(self, self)
 
     pass
 
@@ -219,7 +222,7 @@ class WindowsExecuteHost(WindowsHost, Execute):
                  status='off'):
         WindowsHost.__init__(self, ip, mac, hostname, version, username,
                              password, domain, status)
-        Execute.__init__(self)
+        Execute.__init__(self, self)
 
     pass
 

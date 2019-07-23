@@ -80,7 +80,7 @@ class ExecutionEngine(Engine):
         self.__execution_queue.deploy(i, d)
         self.__execution_queue.execute(i)
         # --------需要得到返回值 ------------------
-        self.__execution_queue.check_status(i)
+        # self.__execution_queue.check_status(i)
         self.__execution_queue.collect_result(i)
         r = Report(i.get_name(), i.get_uut_list())
         e = Email(i.get_email())

@@ -9,8 +9,8 @@ import os
 import re
 import ftplib
 import openpyxl
-from Framework_Kernel.task import Task
-from Framework_Kernel.host import WindowsExecuteHost
+# from Framework_Kernel.task import Task
+# from Framework_Kernel.host import WindowsExecuteHost
 
 
 class QTP_HPDM:
@@ -87,18 +87,26 @@ class QTP_HPDM:
         """
         self.__run_qtp_script(self.__create_filter_path)
 
+    def discover_devices(self, task):
+        self.set_test_data(task)
+        self.__run_qtp_script(self.__discover_devices_path)
+
     def create_template(self):
         self.__run_qtp_script(self.__create_template_path)
 
-    def deploy_task(self, task):
+    def deploy_task(self, task, deploy_server):
+        self.set_test_data(task)
+        self.discover_devices(task)
         # uut = task.uut_list[0]
         # package_path = task.exe_list[0]
         '''
         Do operation, put uutlist and package path(local path) to QTP test_data.xlsx
         '''
+        self.__ip = deploy_server
         self.__run_qtp_script(self.__send_packages_path)
 
-    def execute_task(self, task):
+    def execute_task(self, task, deploy_server):
+        self.set_test_data(task)
         # uut_list = task.uut_list
         # exe_list = task.exe_list
         '''
@@ -106,33 +114,35 @@ class QTP_HPDM:
         exe_list[0]: local folder
         exe_list[1]: exe file name
         '''
-
+        self.__ip = deploy_server
         self.__run_qtp_script(self.__send_command_path)
 
-    def get_result(self, task):
+    def get_result(self, task, deploy_server):
+        self.set_test_data(task)
+        self.__ip = deploy_server
         self.__run_qtp_script(self.__get_result_path)
 
 
-class Deploy:
-    def __init__(self):
-        pass
-
-    def deploy(self, task):
-        QTP_HPDM().deploy_task(task)
-
-
-class Execute():
-    def __init__(self):
-        pass
-
-    def execute_task(self, task):
-        QTP_HPDM().execute_task(task)
-
-    def check_status(self, task):
-        pass
-
-    def collect_result(self, task):
-        QTP_HPDM().get_result(task)
+# class Deploy:
+#     def __init__(self):
+#         pass
+#
+#     def deploy(self, task):
+#         QTP_HPDM().deploy_task(task)
+#
+#
+# class Execute():
+#     def __init__(self):
+#         pass
+#
+#     def execute_task(self, task):
+#         QTP_HPDM().execute_task(task)
+#
+#     def check_status(self, task):
+#         pass
+#
+#     def collect_result(self, task):
+#         QTP_HPDM().get_result(task)
 
 
 if __name__ == '__main__':
