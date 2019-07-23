@@ -98,7 +98,7 @@ class Jenkins_Server():
             # logging.info(str(e))
             # print(e)
 
-    def process_config(self,config_file,repository,py_entry,output_name,remote_folder_name,build_node,job_os_type):
+    def process_config(self,config_file,repository,py_entry,output_name,remote_folder_name,build_node,job_os_type,mail_list):
         try:
             with open(config_file) as f:
                 ele_tree:et._ElementTree=et.parse(f)
@@ -134,6 +134,10 @@ class Jenkins_Server():
                 ele_publisher_node=ele_tree.xpath(r"//jenkins.plugins.publish__over__ftp.BapFtpTransfer/remoteDirectory")
                 if ele_publisher_node:
                     ele_publisher_node[0].text=ele_publisher_node[0].text.replace('${JOB_NAME}', remote_folder_name)
+
+                ele_mail_list = ele_tree.xpath(r'./publishers/hudson.tasks.Mailer/recipients')
+                if ele_mail_list:
+                    ele_mail_list[0].text=",".join(mail_list)
                 return et.tostring(ele_tree.getroot(),encoding="UTF-8").decode("utf-8")
 
         except Exception as e:
@@ -141,7 +145,7 @@ class Jenkins_Server():
             # logging.info(str(e))
             # print(e)
 
-    def create_job_params(self,job_name,job_os_type,repository,py_entry,output_name,remote_folder_name):
+    def create_job_params(self,job_name,job_os_type,repository,py_entry,output_name,remote_folder_name,mail_list):
         if job_os_type =="windows":
             config_file=self.config_module_win
             build_node="Build_Node_W_1"
@@ -152,7 +156,7 @@ class Jenkins_Server():
             raise Exception("please specify job_os_type ")
 
         try:
-            config=self.process_config(config_file,repository,py_entry,output_name,remote_folder_name,build_node,job_os_type)
+            config=self.process_config(config_file,repository,py_entry,output_name,remote_folder_name,build_node,job_os_type,mail_list)
             self.connection.create_job(job_name, config)
         except Exception as e:
             assemble_log.info(str(e))
@@ -172,7 +176,7 @@ class Jenkins_Server():
 
 
 class JOB:
-    def __init__(self,job_name,job_os_type,repository,py_entry,output_name,remote_folder_name,server):
+    def __init__(self,job_name,job_os_type,repository,py_entry,output_name,remote_folder_name,server,mail_list):
         self.job_name=job_name
         self.job_os_type=job_os_type
         self.repository=repository
@@ -181,16 +185,18 @@ class JOB:
         self.build_result=None
         self.remote_folder_name=remote_folder_name
         self.server=server
+        self.mail_list=mail_list
+
 
     def creare_job(self):
         """test create win job"""
         if not self.server.check_job_exists(self.job_name):
             self.server.create_job_params(self.job_name, self.job_os_type,self.repository, self.py_entry,
-                                     self.output_name,self.remote_folder_name)
+                                     self.output_name,self.remote_folder_name,self.mail_list)
         else:
             self.server.remove_job(self.job_name)
             self.server.create_job_params(self.job_name, self.job_os_type, self.repository, self.py_entry,
-                                     self.output_name,self.remote_folder_name)
+                                     self.output_name,self.remote_folder_name,self.mail_list)
 
     def build_job(self):
         start_last_build = self.server.get_last_build_number(self.job_name)
