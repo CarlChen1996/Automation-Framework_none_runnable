@@ -29,6 +29,9 @@ class QTP_HPDM:
         self.__test_data_path = os.path.join(root, 'Configuration\\test_data.xlsx')
 
     def set_test_data(self, task):
+        """
+        For Deploy
+        """
         workbook = openpyxl.load_workbook(self.__test_data_path)
         """
         col1:IP
@@ -52,7 +55,7 @@ class QTP_HPDM:
             if uut.get_version().upper() in os_list.keys():
                 sheet_uut = workbook['UUT_{}'.format(os_list[uut.get_version().upper()])]
                 max_row = sheet_uut.max_row
-                print(uut.get_version(),sheet_uut.max_row)
+                # print(uut.get_version(),sheet_uut.max_row)
                 sheet_uut.cell(max_row+1, 1).value=uut.get_ip()
                 sheet_uut.cell(max_row+1, 2).value=uut.get_mac().upper()
                 print('===========================================')
@@ -60,6 +63,48 @@ class QTP_HPDM:
                 print('===========================================')
                 workbook.save(self.__test_data_path)
         # ---------Set Config Data according task uut_list exe_list ------------------
+        package_path = os.path.dirname(task.get_exe_file_list()[0])
+        sheet_config = workbook['Config']
+        if 'LINUX' in package_path.upper():
+            sheet_config.cell(2, 1).value = "Linux_{}".format(task.get_name())
+        elif 'WINDOW' in package_path.upper():
+            sheet_config.cell(2, 1).value = "Windows_{}".format(task.get_name())
+        else:
+            sheet_config.cell(2, 1).value = "Unknown_{}".format(task.get_name())
+        sheet_config.cell(2, 2).value = 'c:/inetpub/ftproot{}'.format(package_path)
+        workbook.save(self.__test_data_path)
+        self.__upload_test_data()
+
+    def set_execute_data(self, host, task):
+        """
+        This task only for support exe_file_list
+        """
+        ip = host.get_ip()
+        version = host.get_version()
+        mac = host.get_mac()
+        workbook = openpyxl.load_workbook(self.__test_data_path)
+        """
+        col1:IP
+        col2:Mac
+        """
+        # ------Delete exist Data-------------------------------------------
+        os_list = {"THINPRO7":"HP ThinPro 7", "WES7P":"WES7P-64", "WES10":"Win10IoT-64", "WES7E":"WES7E"}
+        for os_item in os_list.values():
+            sheet_uut = workbook['UUT_{}'.format(os_item)]
+            rows = sheet_uut.max_row
+            for i in range(2, rows+1):
+                """
+                Delete all the data in OS sheet
+                """
+                sheet_uut.delete_rows(2)
+                workbook.save(self.__test_data_path)
+        if version in os_list.keys():
+            sheet_uut = workbook['UUT_{}'.format(os_list[version.upper()])]
+            max_row = sheet_uut.max_row
+            sheet_uut.cell(max_row + 1, 1).value = ip
+            sheet_uut.cell(max_row + 1, 2).value = mac.upper()
+            workbook.save(self.__test_data_path)
+        # ---Set exe file path data---------------------------
         package_path = os.path.dirname(task.get_exe_file_list()[0])
         sheet_config = workbook['Config']
         if 'LINUX' in package_path.upper():
@@ -103,31 +148,30 @@ class QTP_HPDM:
     def create_template(self):
         self.__run_qtp_script(self.__create_template_path)
 
-    def deploy_task(self, task, deploy_server):
+    def deploy_task(self, task, deploy_host):
         self.set_test_data(task)
-        # self.discover_devices(task)
-        # uut = task.uut_list[0]
-        # package_path = task.exe_list[0]
+        self.discover_devices(task)
         '''
         Do operation, put uutlist and package path(local path) to QTP test_data.xlsx
         '''
-        self.__ip = deploy_server
+        self.__ip = deploy_host.get_ip()
         self.__run_qtp_script(self.__send_packages_path)
 
-    def execute_task(self, task):
-        self.set_test_data(task)
-        # uut_list = task.uut_list
-        # exe_list = task.exe_list
-        '''
-        Do operation, put uut_list and exe_list to QTP test_data.xlsx
-        exe_list[0]: local folder
-        exe_list[1]: exe file name
-        '''
+    def execute_task(self):
+        # test data is prepared after deploy
         self.__run_qtp_script(self.__send_command_path)
 
-    def get_result(self, task):
-        self.set_test_data(task)
+    # def execute_task(self, host, task):
+    #     self.set_execute_data(host, task)
+    #     self.__run_qtp_script(self.__send_command_path)
+
+    def get_result(self):
+        # test data is prepared after deploy
         self.__run_qtp_script(self.__get_result_path)
+
+    # def get_result(self, task):
+    #     self.set_test_data(task)
+    #     self.__run_qtp_script(self.__get_result_path)
 
 
 # class Deploy:

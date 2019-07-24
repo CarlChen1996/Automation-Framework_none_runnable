@@ -52,15 +52,17 @@ class ExecuteQueue(Queue):
         self.log = execution_log
 
     def deploy(self, task, host):
+        # host is Deploy Host
         self.log.info('execute_queue deploy {} to {} with {}'.format(
             task.get_name(), task.get_uut_list()[0].get_hostname(), host.get_hostname()))
         task.deploy(host)
 
     def execute(self, task):
+        # host is UUT host
         # for host in task.get_uut_list():
         #     self.log.info('execute_queue execute {} on {}'.format(
         #         task.get_name(), host.get_hostname()))
-        #     task.execute()
+        #     task.execute(host)
         self.log.info('execute_queue execute {}'.format(
                     task.get_name()))
         task.execute()

@@ -72,8 +72,12 @@ class Task:
     def get_scripts(self, host):
         host.get_scripts(self)
 
+    # def execute(self, host):
+    #     # host is UUT host
+    #     host.execute_task(self)
+
     def execute(self):
-        QTPutils.QTP_HPDM().execute_task(self)
+        QTPutils.QTP_HPDM().execute_task()
 
     def deploy(self, host):
         host.deploy_task(self)
@@ -81,8 +85,11 @@ class Task:
     # def check_status(self, host):
     #     host.check_status(self)
 
+    # def collect_result(self, host):
+    #     host.collect_result(self)
+
     def collect_result(self):
-        QTPutils.QTP_HPDM().get_result(self)
+        QTPutils.QTP_HPDM().get_result()
 
     def terminate(self, host):
         pass
