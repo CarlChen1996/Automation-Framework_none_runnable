@@ -94,7 +94,11 @@ class Report:
                   encoding='utf-8') as f:
             f.write(html)
         static_path = os.path.join(os.getcwd(),'Report\\templates\\static')
-        shutil.copytree(static_path, filepath+'\\'+'static')
+        if not os.path.exists(filepath+'\\'+'static'):
+            shutil.copytree(static_path, filepath+'\\'+'static')
+            execution_log.info('copy static folder finished')
+        else:
+            execution_log.info('target folder exist, copy static folder failed')
         execution_log.info('generate {}.html finished'.format(self.__name))
         return filepath
     def __final_data(self):

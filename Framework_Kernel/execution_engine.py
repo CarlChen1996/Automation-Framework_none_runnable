@@ -9,6 +9,7 @@ from multiprocessing import Process
 import threading
 import time
 from Framework_Kernel.engine import Engine
+from Framework_Kernel.ftp_tools import FTPUtils
 from Framework_Kernel.queue import ExecuteQueue
 import ftplib
 '''
@@ -84,6 +85,12 @@ class ExecutionEngine(Engine):
         # --------需要得到返回值 ------------------
         # self.__execution_queue.check_status(i)
         self.__execution_queue.collect_result(i)
+
+        ftp_util = FTPUtils()
+        task_list = ftp_util.get_list()
+        for folder in task_list:
+            ftp_util.download_dir(os.path.join('.\\Report', folder), folder)
+        ftp_util.close()
 
         r = Report(i.get_name(), i.get_uut_list())
         e = Email(i.get_email())
