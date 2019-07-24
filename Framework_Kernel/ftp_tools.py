@@ -1,39 +1,3 @@
-# from multiprocessing import Pipe
-# from Framework_Kernel.log import controller_log
-# from Framework_Kernel import configuration_engine
-# from Framework_Kernel import assemble_engine
-# from Framework_Kernel import execution_engine
-# from Common_Library.functions import get_keyboard_input
-# from multiprocessing import Process
-# import threading
-# import time
-# from Framework_Kernel.task import Task
-# from Framework_Kernel.host import WindowsExecuteHost
-# from Framework_Kernel.host import WindowsDeployHost
-# from Framework_Kernel.QTPutils import QTP_HPDM
-# import ruamel.yaml as yaml
-#
-#
-#
-# if __name__ == '__main__':
-#
-#     task = Task('precheck')
-#     uut1 = WindowsExecuteHost('15.83.248.208', '7C:D3:0A:05:01:97', '', 'WES10', '', '', '', '')
-#     # uut2 = WindowsExecuteHost('15.83.250.20', '48:0F:CF:BC:DD:3C', '', 'WES10', 'Admin', 'Admin', '', 'on')
-#     uut3 = WindowsExecuteHost('15.83.250.205', '48:0F:CF:BB:7C:65', '', 'WES7E', 'Administrator', 'Administrator', '', 'on')
-#     # uut4 = WindowsExecuteHost('15.83.250.210', '48:0F:CF:BB:7F:65', '', 'WES7E', 'Administrator', 'Administrator', '', 'on')
-#     deploy_host = WindowsDeployHost("15.83.248.251","","")
-#     execute_host = WindowsExecuteHost("15.83.248.251", "", "")
-#     task.insert_uut_list(uut1)
-#     # task.insert_uut_list(uut2)
-#     task.insert_uut_list(uut3)
-#     # task.insert_uut_list(uut4)
-#     task.insert_exe_file_list(r'/jenkins/windows/task_2/run.exe')
-#     # task.deploy(deploy_host)
-#     # print('deploying')
-#     task.execute()
-#     print('executing')
-#     task.collect_result(execute_host)
 import ftplib
 import os
 
