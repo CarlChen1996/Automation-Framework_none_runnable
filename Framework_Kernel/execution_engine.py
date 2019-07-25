@@ -10,7 +10,7 @@ import threading
 import time
 from Framework_Kernel.engine import Engine
 from Framework_Kernel.ftp_tools import FTPUtils
-from Framework_Kernel.queue import ExecuteQueue
+from Framework_Kernel.queue_task import ExecuteQueue
 import ftplib
 '''
 from Framework_Kernel.task import Task

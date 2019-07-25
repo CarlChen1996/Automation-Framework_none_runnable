@@ -8,19 +8,21 @@ import os
 import time
 import datetime
 import logging
+import logging.handlers as lh
 from PIL import ImageGrab
+from Configuration.settings import *
 
 
 class Log:
-    def __init__(self, name='', type='default', level='debug',separator='-',use_console=True,if_screenshot=False,):
+    def __init__(self, name=NAME, log_type=LOG_TYPE, level=LEVEL, separator=SEPARATOR, use_console=USE_CONSOLE, if_screenshot=IF_SCREENSHOT, log_path=LOG_PATH):
         self.__name = name
-        self.__type = type
+        self.__type = log_type
         self.__level = level
         self.separator = separator
         self.if_screenshot = if_screenshot
         self.log_path = os.path.join(
                                     os.getcwd(),
-                                    'Log\\{}\\'.format(time.strftime("%Y-%m-%d_%H", time.localtime()))
+                                    'Log\\{}\\{}\\'.format(time.strftime(log_path, time.localtime()),self.__name)
                                     )
         self.logger = logging.getLogger(name)
         '''
@@ -47,9 +49,9 @@ class Log:
 
         if not os.path.exists(self.log_path):
             os.makedirs(self.log_path)
-
-        log_file_path = self.log_path + '{}.log'.format(self.__name)
-        log_handler = logging.FileHandler(log_file_path, encoding='utf-8')
+        # log_file_path = self.log_path + '{}.log'.format(self.__name)
+        log_handler = lh.TimedRotatingFileHandler(self.log_path+self.__name, when=WHEN, interval=INTERVAL, backupCount=BACKUP_COUNT, encoding='utf-8')
+        log_handler.suffix = "%H_%M_%S.log"
         log_handler.setFormatter(
             logging.Formatter("[%(asctime)s] {} %(name)s {} [%(levelname)s] {} %(message)s".format(self.separator, self.separator, self.separator)))
         self.logger.addHandler(log_handler)
@@ -61,7 +63,7 @@ class Log:
     def screenshot(self,screenshot=False):
         if screenshot==True:
             screenshot = ImageGrab.grab()
-            snap_path = os.path.join(self.log_path + self.logger.name)
+            snap_path = os.path.join(self.log_path +'screenshot')
             if not os.path.exists(snap_path):
                 os.makedirs(snap_path)
             snap_file_path = snap_path + '\\{}.jpg'.format(datetime.datetime.now().strftime('%H-%M-%S.%f'))
@@ -114,11 +116,18 @@ configuration_log = Log(name='configuration_engine')
 if __name__ == '__main__':
     l = Log(name='test',if_screenshot=False)
     l.info('213124')
-    time.sleep(5)
+    for i in range(5):
+        l.info('test')
+        time.sleep(1)
     l.if_screenshot=True
     l.log(10,'cnm')
     assemble_log.if_screenshot=True
-    assemble_log.log(20,'hhhhahahaahahaha')
+    for i in range(3):
+        assemble_log.log(20,'hhhhahahaahahaha')
+        assemble_log.info('test')
+        time.sleep(1)
     l.screenshot(True)
+
+
 
 
