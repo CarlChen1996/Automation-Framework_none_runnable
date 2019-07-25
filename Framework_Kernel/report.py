@@ -34,10 +34,8 @@ class Report:
         self.__data = self.__final_data()
         self.__data_2 = self.__final_data_2()
 
+    # generate html
     def generate(self):
-        # print('generate html finished')
-        # print(self.script_list)
-
         env = Environment(loader=FileSystemLoader(os.path.join(os.getcwd(), 'Report\\templates'), encoding='utf-8'))
         information = {
             'Category': 'TEST ',
@@ -46,23 +44,15 @@ class Report:
             'Duration': ' 00:30:03',
             'Note': '为了RC的最后一次回归测试',
         }
-
-        report_data = self.__data['final_data']
-        report_data_2 = self.__data_2['final_data_2']
-        passCount = self.__data['passCount']
-        failCount = self.__data['failCount']
-        norunCount = self.__data['norunCount']
-        count = self.__data['count']
         # total=[PassingRate,Pass,Fail,NoRun,Count]
         total = {
-            'Passing rate': '%.2f' % (100 * passCount / count),
-            'Pass': passCount,
-            'Fail': failCount,
-            'NoRun': norunCount,
-            'Count': count
-
+            'Passing rate': '%.2f' % (100 * self.__data['passCount'] / self.__data['count']),
+            'Pass': self.__data['passCount'],
+            'Fail': self.__data['failCount'],
+            'NoRun': self.__data['norunCount'],
+            'Count': self.__data['count']
         }
-
+        # the canvas data
         data = [
             {
                 'value': total['Pass'],
@@ -80,27 +70,31 @@ class Report:
             },
             # {'value': total['NoRun'], 'name': 'No Run', 'itemStyle': {'color': 'grey'}},
         ]
-        template = env.get_template('tmp.html')
+        template = env.get_template('template_1.html')
         html = template.render(information=information,
-                               final_data=report_data,
-                               final_data_2=report_data_2,
+                               final_data=self.__data['final_data'],
+                               final_data_2=self.__data_2['final_data_2'],
                                data=data,
                                total=total,
                                task_name=self.__name,
                                encoding='utf-8')  # unicode string
-        filepath = os.path.join(os.getcwd(), 'Report\\' + self.__name)
-        with open(filepath + '\\'+self.__name+'.html',
+        task_folder_path = os.path.join(os.getcwd(), 'Report\\' + self.__name)
+        with open(task_folder_path + '\\'+self.__name+'.html',
                   'w',
                   encoding='utf-8') as f:
             f.write(html)
+
+        # copy static folder
         static_path = os.path.join(os.getcwd(),'Report\\templates\\static')
-        if not os.path.exists(filepath+'\\'+'static'):
-            shutil.copytree(static_path, filepath+'\\'+'static')
+        if not os.path.exists(task_folder_path+'\\'+'static'):
+            shutil.copytree(static_path, task_folder_path+'\\'+'static')
             execution_log.info('copy static folder finished')
         else:
             execution_log.info('target folder exist, copy static folder failed')
         execution_log.info('generate {}.html finished'.format(self.__name))
-        return filepath
+        return task_folder_path
+
+    # group by uut
     def __final_data(self):
 
         file = os.path.join(os.getcwd(), 'Report\\{}\\result.yaml'.format(self.__name))
@@ -111,30 +105,29 @@ class Report:
         test_uut_list = []
         final_data = []
         f = open(file, encoding='utf-8')
-        a = yaml.safe_load(f.read())
+        source_data = yaml.safe_load(f.read())
 
-        for v in a:
-            if v['uut_name'] not in test_uut_list:
-                test_uut_list.append(v['uut_name'])
+        for each_result in source_data:
+            if each_result['uut_name'] not in test_uut_list:
+                test_uut_list.append(each_result['uut_name'])
 
         for uut_name in test_uut_list:
-            # project, case[], pass, fail, norun, total
+            # [uut, case[], pass, fail, norun, total]
             final_data.append([uut_name, [], 0, 0, 0, 0])
         # print(test_uut_list)
-
-        for v in a:
-            # print(v)
-            for k in final_data:
-                if v['uut_name'] == k[0]:
-                    index = final_data.index(k)
-                    final_data[index][1].append(v)
-                    if v['result'].upper() == 'PASS':
+        for each_result in source_data:
+            # k = [uut_name , [], 0, 0, 0, 0]
+            for each_uut_result in final_data:
+                if each_result['uut_name'] == each_uut_result[0]:
+                    index = final_data.index(each_uut_result)
+                    final_data[index][1].append(each_result)
+                    if each_result['result'].upper() == 'PASS':
                         final_data[index][2] += 1
                         passed_case_number += 1
-                    if v['result'].upper() == 'FAIL':
+                    if each_result['result'].upper() == 'FAIL':
                         final_data[index][3] += 1
                         failed_case_number += 1
-                    if v['result'].upper() == 'NORUN':
+                    if each_result['result'].upper() == 'NORUN':
                         final_data[index][4] += 1
                         norun_case_number += 1
                     final_data[index][5] += 1
@@ -144,11 +137,10 @@ class Report:
         data_dict['failCount'] = failed_case_number
         data_dict['norunCount'] = norun_case_number
         data_dict['count'] = total_case_number
-        # print('-------------------------????????????---')
-        # print(data_dict)
-        # print('-------------------------????????????---')
+
         return data_dict
 
+    # group by case
     def __final_data_2(self):
         file = os.path.join(os.getcwd(), 'Report\\{}\\result.yaml'.format(self.__name))
         passed_case_number = 0
@@ -158,30 +150,30 @@ class Report:
         test_case_list = []
         final_data_2 = []
         f = open(file, encoding='utf-8')
-        a = yaml.safe_load(f.read())
+        source_data = yaml.safe_load(f.read())
 
-        for v in a:
-            if v['case_name'] not in test_case_list:
-                test_case_list.append(v['case_name'])
+        for each_result in source_data:
+            if each_result['case_name'] not in test_case_list:
+                test_case_list.append(each_result['case_name'])
 
         for case_name in test_case_list:
-            # project, case[], pass, fail, norun, total
+            # [case_name, uut[], pass, fail, norun, total]
             final_data_2.append([case_name, [], 0, 0, 0, 0])
         # print(test_uut_list)
 
-        for v in a:
-            # print(v)
-            for k in final_data_2:
-                if v['case_name'] == k[0]:
-                    index = final_data_2.index(k)
-                    final_data_2[index][1].append(v)
-                    if v['result'].upper() == 'PASS' :
+        for each_result in source_data:
+            # print(each_result)
+            for each_case_result in final_data_2:
+                if each_result['case_name'] == each_case_result[0]:
+                    index = final_data_2.index(each_case_result)
+                    final_data_2[index][1].append(each_result)
+                    if each_result['result'].upper() == 'PASS' :
                         final_data_2[index][2] += 1
                         passed_case_number += 1
-                    if v['result'].upper() == 'FAIL' :
+                    if each_result['result'].upper() == 'FAIL' :
                         final_data_2[index][3] += 1
                         failed_case_number += 1
-                    if v['result'].upper() == 'NORUN' :
+                    if each_result['result'].upper() == 'NORUN' :
                         final_data_2[index][4] += 1
                         norun_case_number += 1
                     final_data_2[index][5] += 1
@@ -191,11 +183,10 @@ class Report:
         data_dict_2['failCount'] = failed_case_number
         data_dict_2['norunCount'] = norun_case_number
         data_dict_2['count'] = total_case_number
-        # print('-------------------------????????????---')
-        # print(data_dict_2)
-        # print('-------------------------????????????---')
+
         return data_dict_2
 
+    # get all uut result
     def __result(self):
         result = []
         for i in self.__uut_list:
@@ -258,13 +249,15 @@ class Email:
         except smtplib.SMTPException as e:
             print("Error: %s" % e)
 
+
 if __name__ == '__main__':
     # debug in this module should change os.getcwd() to os.path.dirname(os.getcwd())
-    # uut_list = [{'hostname':'15.83.250.1'}, {'hostname':'15.83.250.2'}]
-    # r = Report(name='task_1',uut_list=uut_list)
-    # r.generate()
+    uut_list = ['15.83.250.1', '15.83.250.2']
+    r = Report(name='task_1',uut_list=uut_list)
+    e = Email('carl.chen@hp.com')
+    e.zip_result_package(r.generate(), 'task_1')
     # zip_result_package(r'E:\PycharmProjects\Automation-Framework\Report\task_1','task_1.zip')
-
+    #
     # e=Email(receiver=['carl.chen@hp.com'],attachments_rar='E:\\PycharmProjects\\test\\log_module\\task_1.rar')
     # e.send()
-    pass
+    # pass
