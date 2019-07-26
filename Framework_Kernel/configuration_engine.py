@@ -9,7 +9,7 @@ from Framework_Kernel.configurator import Configurator
 from Framework_Kernel.host import WindowsBuildHost, WindowsDeployHost
 from Framework_Kernel.analyzer import Analyzer
 from Framework_Kernel.validator import HostValidator
-from Framework_Kernel.log import configuration_log
+from Framework_Kernel.log import Log
 import os
 from multiprocessing import Process, Pipe
 
@@ -33,6 +33,7 @@ class ConfigurationEngine(Engine):
                 deploy_list.append(i)
 
     def start_thread(self, send_con):
+        configuration_log = Log(name='configuration')
         configuration_log.info("configuration engine PID is {}".format(str(os.getpid())))
         c = Configurator()
         c.config()

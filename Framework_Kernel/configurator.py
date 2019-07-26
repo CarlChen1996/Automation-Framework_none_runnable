@@ -4,7 +4,6 @@
 # @Email   : Bamboo.pan@hp.com
 # @File    : Configurator.py
 # @Project : demo
-from Framework_Kernel.log import controller_log
 
 
 class Configurator:

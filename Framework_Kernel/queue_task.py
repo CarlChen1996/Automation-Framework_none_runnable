@@ -4,7 +4,7 @@
 # @Email   : balance.cheng@hp.com
 # @File    : Queue.py
 # @Project : framework
-from Framework_Kernel.log import assemble_log,execution_log
+from Framework_Kernel.log import Log
 
 
 class Queue:
@@ -33,7 +33,7 @@ class Queue:
 class AssembleQueue(Queue):
     def __init__(self):
         Queue.__init__(self)
-        self.log = assemble_log
+        self.log = Log(name='queue_assemble')
 
     def assemble(self, task, host):
         self.log.info('assemble_queue build {} on {}'.format(
@@ -49,7 +49,7 @@ class AssembleQueue(Queue):
 class ExecuteQueue(Queue):
     def __init__(self):
         Queue.__init__(self)
-        self.log = execution_log
+        self.log = Log(name='queue_execute')
 
     def deploy(self, task, host):
         # host is Deploy Host

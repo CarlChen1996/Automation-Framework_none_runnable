@@ -27,9 +27,9 @@ class Log:
         self.logger = logging.getLogger(name)
         '''
 
-                    name： 日志中将会打印的name，默认为运行程序的name
+                    name： 日志中将会打印的name，默认为''
                     level： 设置日志的<打印>级别，默认为DEBUG
-                    log_path： 日志文件夹的路径，默认为同级目录中的log文件夹
+                    log_path： 日志文件夹的路径
                     use_console： 是否在控制台打印，默认为True
                     separator: 自定义分隔符
                     if_screenshot:写日志同时是否截图
@@ -51,7 +51,7 @@ class Log:
             os.makedirs(self.log_path)
         # log_file_path = self.log_path + '{}.log'.format(self.__name)
         log_handler = lh.TimedRotatingFileHandler(self.log_path+self.__name, when=WHEN, interval=INTERVAL, backupCount=BACKUP_COUNT, encoding='utf-8')
-        log_handler.suffix = "%H_%M_%S.log"
+        log_handler.suffix = "%Y-%m-%d_%H-%M-%S.log"
         log_handler.setFormatter(
             logging.Formatter("[%(asctime)s] {} %(name)s {} [%(levelname)s] {} %(message)s".format(self.separator, self.separator, self.separator)))
         self.logger.addHandler(log_handler)
@@ -106,27 +106,27 @@ class Log:
         self.logger.log(level, msg, *args, **kwargs)
 
 
-controller_log = Log(name='controller')
-execution_log = Log(name='execution_engine')
-# execution_log = Log(name='execution_engine',if_screenshot=True,separator='?')
-assemble_log = Log(name='assemble_engine')
-configuration_log = Log(name='configuration_engine')
+# controller_log = Log(name='controller')
+# execution_log = Log(name='execution_engine')
+# # execution_log = Log(name='execution_engine',if_screenshot=True,separator='?')
+# configuration_log = Log(name='configuration_engine')
 
 
 if __name__ == '__main__':
-    l = Log(name='test',if_screenshot=False)
-    l.info('213124')
-    for i in range(5):
-        l.info('test')
-        time.sleep(1)
-    l.if_screenshot=True
-    l.log(10,'cnm')
-    assemble_log.if_screenshot=True
-    for i in range(3):
-        assemble_log.log(20,'hhhhahahaahahaha')
-        assemble_log.info('test')
-        time.sleep(1)
-    l.screenshot(True)
+    # l = Log(name='test',if_screenshot=False)
+    #     # l.info('213124')
+    #     # for i in range(5):
+    #     #     l.info('test')
+    #     #     time.sleep(1)
+    #     # l.if_screenshot=True
+    #     # l.log(10,'cnm')
+    #     # assemble_log.if_screenshot=True
+    #     # for i in range(3):
+    #     #     assemble_log.log(20,'hhhhahahaahahaha')
+    #     #     assemble_log.info('test')
+    #     #     time.sleep(1)
+    #     # l.screenshot(True)
+    pass
 
 
 

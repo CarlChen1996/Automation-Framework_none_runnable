@@ -11,15 +11,13 @@ import time
 from Framework_Kernel.engine import Engine
 from Framework_Kernel.ftp_tools import FTPUtils
 from Framework_Kernel.queue_task import ExecuteQueue
-import ftplib
 '''
 from Framework_Kernel.task import Task
 from Framework_Kernel.host import WindowsDeployHost, WindowsExecuteHost
 '''
 from Framework_Kernel.report import Report,Email
-from Framework_Kernel.log import execution_log
+from Framework_Kernel.log import Log
 
-# execution_log = Log('execution')
 
 
 class ExecutionEngine(Engine):
@@ -28,7 +26,6 @@ class ExecutionEngine(Engine):
         self.__pipe = pipe
         self.__deploy_list = deploy_list
         self.__execution_queue = ExecuteQueue()
-
         # self.execution_queue.task_list=[]
         # -----------execute结束后需要同时删除task list-----------------
         # execution_queue.task_list = task_list.copy()
@@ -52,6 +49,8 @@ class ExecutionEngine(Engine):
         thread_executor.join()
 
     def __add_task_to_queue(self):
+        self.log_1=Log(name='execution_add_task_to_queue')
+        execution_log = self.log_1
         while True:
             receive = self.__pipe.recv()
             execution_log.info('[Execution] received: {}'.format(receive.get_name()))
@@ -64,6 +63,8 @@ class ExecutionEngine(Engine):
             time.sleep(1)
 
     def __execute(self):
+        self.log_2=Log(name='execution_execute')
+        execution_log = self.log_2
         while True:
             time.sleep(1)
             execution_log.info('[thread_executor] task_list left: {}'.format(len(self.__execution_queue.get_task_list())))
@@ -77,6 +78,8 @@ class ExecutionEngine(Engine):
             time.sleep(5)
 
     def __deploy(self):
+        # self.log_3=Log(name='execution_deploy')
+        execution_log = self.log_2
         d = self.__deploy_list[0]
         i = self.__execution_queue.get_task_list()[0]
         # ----------循环里面添加 刷新list的方法 ---------------------

@@ -7,7 +7,7 @@
 import zipfile
 
 from jinja2 import Environment, FileSystemLoader
-from Framework_Kernel.log import execution_log
+from Framework_Kernel.log import Log
 import yaml
 import os
 import shutil
@@ -17,7 +17,7 @@ from email.mime.text import MIMEText
 from email.mime.image import MIMEImage
 from email.header import Header
 
-
+execution_log = Log(name='report')
 class Report:
     def __init__(
             self,

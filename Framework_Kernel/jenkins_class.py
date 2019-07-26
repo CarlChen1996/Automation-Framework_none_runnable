@@ -12,8 +12,10 @@ import os
 from lxml import etree as et
 import datetime
 import logging
-from Framework_Kernel.log import assemble_log
+from Framework_Kernel.log import Log
 
+
+assemble_log=Log(name='jenkins')
 class OS_type:
     win="windows"
     linux="linux"

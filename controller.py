@@ -1,5 +1,5 @@
 from multiprocessing import Pipe
-from Framework_Kernel.log import controller_log
+from Framework_Kernel.log import Log
 from Framework_Kernel import configuration_engine
 from Framework_Kernel import assemble_engine
 from Framework_Kernel import execution_engine
@@ -7,7 +7,7 @@ from Common_Library.functions import get_keyboard_input
 from multiprocessing import Process
 import threading
 import time
-
+controller_log=Log(name='controller')
 
 def run_with_manual_mode():
     is_framework_configured = False

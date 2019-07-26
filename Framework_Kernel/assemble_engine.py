@@ -12,7 +12,7 @@ from Framework_Kernel.host import WindowsExecuteHost
 from Framework_Kernel.validator import HostValidator
 from Framework_Kernel.validator import ScriptValidator
 from Framework_Kernel.script import Script
-from Framework_Kernel.log import assemble_log
+from Framework_Kernel.log import Log
 from multiprocessing import Process
 import time
 import threading
@@ -30,6 +30,7 @@ class AssembleEngine(Engine):
         self.tasklist = []
         self.__build_list = build_list
 
+
     def start(self):
         self.__assembler = Process(target=self.start_thread,
                                    name='framework_Assembler',
@@ -42,6 +43,7 @@ class AssembleEngine(Engine):
         self.__assembler.terminate()
 
     def start_thread(self):
+
         refreshQ_thread = threading.Thread(target=self.__fresh_queue_testplan,
                                            name='fresh_queue_testplan',
                                            args=())
@@ -62,6 +64,8 @@ class AssembleEngine(Engine):
         refresh Queue from test plan in test folder
         :return: None
         """
+        self.log_1=Log(name='assemble_fresh_queue_testplan')
+        assemble_log=self.log_1
         while True:
             assemble_log.info('[Thread_fresh_testplan] ***************begin to refresh queue *****************')
             temp_list = os.listdir(plan_root)
@@ -124,6 +128,8 @@ class AssembleEngine(Engine):
             time.sleep(3)
 
     def __fresh_queue_execution(self):
+        self.log_2=Log(name='assemble_fresh_queue_execution')
+        assemble_log=self.log_2
         while True:
             assemble_log.info('[fresh_queue_execution]-------begin to refresh----fresh_queue_execution----------------')
             assemble_log.info('task_list left:{}'.format(len(self.__assembleQueue.get_task_list())))
@@ -146,6 +152,8 @@ class AssembleEngine(Engine):
             time.sleep(3)
 
     def __assemble(self):
+        self.log_3=Log(name='assemble_assemble')
+        assemble_log=self.log_3
         while True:
             assemble_log.info(
                 '[thread_assemble_task] ************************ Begine to assemble... **********************'
