@@ -5,11 +5,9 @@
 # @File    : test.py
 # @Project : demo
 import sys
-from Framework_Kernel.log import Log
+from Framework_Kernel.log import assemble_log,execution_log
 from Framework_Kernel import jenkins_class, QTPutils
 
-build_log=Log(name='host_build')
-deploy_log=Log(name='host_deploy')
 
 class Host:
     def __init__(self,
@@ -81,7 +79,7 @@ class LinuxHost(Host):
 
 class Build:
     def __init__(self):
-        self.log = build_log
+        self.log = assemble_log
 
     def get_scripts(self, task):
         for script in task.get_script_list():
@@ -149,7 +147,7 @@ class Build:
 
 class Deploy:
     def __init__(self, host):
-        self.log = deploy_log
+        self.log = execution_log
         self.host = host
 
     def deploy_task(self, task):
@@ -159,7 +157,7 @@ class Deploy:
 
 class Execute:
     def __init__(self, host):
-        self.log = deploy_log
+        self.log = execution_log
         self.host = host
 
     def execute_task(self, task):

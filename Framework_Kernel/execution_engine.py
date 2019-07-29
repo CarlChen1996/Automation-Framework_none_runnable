@@ -16,8 +16,7 @@ from Framework_Kernel.task import Task
 from Framework_Kernel.host import WindowsDeployHost, WindowsExecuteHost
 '''
 from Framework_Kernel.report import Report,Email
-from Framework_Kernel.log import Log
-
+from Framework_Kernel.log import execution_log
 
 
 class ExecutionEngine(Engine):
@@ -49,8 +48,6 @@ class ExecutionEngine(Engine):
         thread_executor.join()
 
     def __add_task_to_queue(self):
-        self.log_1=Log(name='execution_add_task_to_queue')
-        execution_log = self.log_1
         while True:
             receive = self.__pipe.recv()
             execution_log.info('[Execution] received: {}'.format(receive.get_name()))
@@ -63,8 +60,6 @@ class ExecutionEngine(Engine):
             time.sleep(1)
 
     def __execute(self):
-        self.log_2=Log(name='execution_execute')
-        execution_log = self.log_2
         while True:
             time.sleep(1)
             execution_log.info('[thread_executor] task_list left: {}'.format(len(self.__execution_queue.get_task_list())))
@@ -78,8 +73,6 @@ class ExecutionEngine(Engine):
             time.sleep(5)
 
     def __deploy(self):
-        # self.log_3=Log(name='execution_deploy')
-        execution_log = self.log_2
         d = self.__deploy_list[0]
         i = self.__execution_queue.get_task_list()[0]
         # ----------循环里面添加 刷新list的方法 ---------------------

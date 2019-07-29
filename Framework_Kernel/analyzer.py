@@ -7,7 +7,7 @@
 import os
 from Common_Library.file import YamlFile
 from Common_Library.file import XlsxFile
-
+from Framework_Kernel.log import assemble_log
 
 
 class Analyzer:
@@ -16,7 +16,7 @@ class Analyzer:
 
 
     def load(self):
-        print('Load Data from file ')
+        assemble_log.info('Load Data from file ')
         res_tem_list = []
         for i in self.file_list:
             if os.path.splitext(i)[1].lower() == '.xlsx':
@@ -37,5 +37,5 @@ class Analyzer:
         return res_tem_list
 
     def generate(self, res_list):
-        print("generate data finished")
+        assemble_log.info("generate data finished")
         return res_list
