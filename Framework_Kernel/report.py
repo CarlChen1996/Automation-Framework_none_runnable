@@ -190,10 +190,13 @@ class Report:
     def __result(self):
         result = []
         for i in self.__uut_list:
-            with open(os.path.join(os.getcwd(),
-                                   'Report\\{}\\{}\\test_report\\{}.yaml'.format(self.__name, i.get_ip(), i.get_ip())), encoding='utf-8') as f:
+            uut_result_file = os.path.join(os.getcwd(), 'Report\\{}\\{}\\test_report\\{}.yaml'.format(self.__name, i.get_ip(), i.get_ip()))
+            if not os.path.exists(uut_result_file):
+                continue
+            with open(uut_result_file, encoding='utf-8') as f:
                 a = yaml.safe_load(f.read())
                 result.extend(a)
+
         with open(os.path.join(os.getcwd(),
                                'Report\\{}\\result.yaml'.format(self.__name)), 'w', encoding='utf-8') as g:
             yaml.dump(result, g)
