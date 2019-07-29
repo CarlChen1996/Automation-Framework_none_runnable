@@ -192,6 +192,8 @@ class Report:
         for i in self.__uut_list:
             uut_result_file = os.path.join(os.getcwd(), 'Report\\{}\\{}\\test_report\\{}.yaml'.format(self.__name, i.get_ip(), i.get_ip()))
             if not os.path.exists(uut_result_file):
+                a = [{'uut_name':i,'case_name':'Error','steps':[],'result':'Fail'}]
+                result.extend(a)
                 continue
             with open(uut_result_file, encoding='utf-8') as f:
                 a = yaml.safe_load(f.read())
@@ -254,8 +256,8 @@ class Email:
 
 
 if __name__ == '__main__':
-    # debug in this module should change os.getcwd() to os.path.dirname(os.getcwd())
-    uut_list = ['15.83.250.1', '15.83.250.2']
+    # debug in this module should change os.getcwd() to os.path.dirname(os.getcwd()) and i.get_ip() to i
+    uut_list = ['15.83.250.1', '15.83.250.2', '15.15.15.15']
     r = Report(name='task_1',uut_list=uut_list)
     e = Email('carl.chen@hp.com')
     e.zip_result_package(r.generate(), 'task_1')
