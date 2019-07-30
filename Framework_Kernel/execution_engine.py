@@ -88,7 +88,6 @@ class ExecutionEngine(Engine):
         for folder in task_list:
             ftp_util.download_dir(os.path.join('.\\Report', folder), folder)
         ftp_util.close()
-
         r = Report(i.get_name(), i.get_uut_list())
         task_report_path = r.generate()
         e = Email(i.get_email())
