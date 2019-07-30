@@ -91,7 +91,7 @@ class AssembleEngine(Engine):
             #                           needbuild:true
                                         email:xxx.xxx@hp.com
                                         repository:https://hp.com
-            #                           file_path:c:\\xxxx\\xxx\\testplan\\xxx.yml}
+            #                           file_path:c:\\xxxx\\xxx\\testplan\\xxx.xlsx}
             # uutinformation: {         ip:1.1.1.1,
             #                           mac:1234566,
             #                           os: win7e}}

@@ -1,1 +1,36 @@
 # The folder is used to store those common libraries not only be used in framework Kernel but also be used by test script, like File, etc.
+
+# Code outline
+    File.py
+        class File
+            open(self)
+            read(self)
+            write(self)
+            close(self)
+            copy(self)
+            move(self)
+            delete(self)
+            rename(self)
+            exist(self)
+
+        class XlsxFile(File)
+            open(self)
+            read(self, excel_handle)
+            close(self, sheet_handle)
+            get_sheet_name(self, excel_handle)
+            get_rows(self, sheet_handle)
+            get_cols(self, sheet_handle)
+
+        class MsgFile(File)
+            get_attanchment(self)
+
+        YamlFile(File)
+            read(self, file_handle)
+            close(self, file_handle)
+
+        HtmlFile(File)
+
+        TxtFile(File)
+
+    Functions.py
+        get_keyboard_input(timeout)

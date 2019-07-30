@@ -9,7 +9,7 @@
         
         
     Analyzer.py
-        class Validator
+        class Analyzer
             load(self)
             generate(self, res_list)
             
@@ -55,6 +55,15 @@
             reset(self, engine)
             continue_work(self)
 
+    Ftp_tools.py
+        class FTPUtils
+            get_list(self)
+            is_ftp_file(self)
+            download(self, localfile, remotefile)
+            download_dir(self, local, remote)
+            upload(self, localfile, remotefile)
+            close(self)
+
     Host.py
         class Host
             start(self)
@@ -74,6 +83,8 @@
         
         class Build
             get_scripts(self, task)
+            jenkins_build(self, task, target_os, ip, user_name, password, py_entry="run.py", output_name="run")
+            get_os_type(self, task)
             build_task(self, task)
         
         class Deploy
@@ -94,11 +105,60 @@
 
         class LinuxExecute(LinuxHost, Execute)
 
+    Jenkins_class.py
+        class OS_type
+
+        timer(func)
+            calculate(*args,**kwargs)
+
+        class Jenkins_Server
+            connect(self)
+            build_job(self, job_name)
+            get_job_list(self)
+            get_last_build_number(self, job_name)
+            get_build_result(self,job_name, last_build_number)
+            create_job(self, new_job_name, new_job_config)
+            process_config(self, config_file, repository, py_entry, output_name, remote_folder_name, build_node, job_os_type, mail_list)
+            create_job_params(self, job_name, job_os_type, repository, py_entry, output_name, remote_folder_name, mail_list)
+            remove_job(self, job_name)
+            check_job_exists(self, job_name)
+
+        class JOB
+            creare_job(self)
+            build_job(self)
+            remove(self)
+
     Log.py
+        class SafeLog(TimedRotatingFileHandler)
+            shouldRollover(self, record)
+            doRollover(self)
+            getFilesToDelete(self)
+
         class Log
-            log(self, msg)
+            screenshot(self,screenshot=False)
+            addHandler(self, hdlr)
+            removeHandler(self, hdlr)
+            critical(self, msg, *args, **kwargs)
+            warning(self, msg, *args, **kwargs)
+            error(self, msg, *args, **kwargs)
+            info(self, msg, *args, **kwargs)
+            debug(self, msg, *args, **kwargs)
+            log(self, level, msg,  *args, **kwargs)
+
+    QTPutils.py
+        class QTP_HPDM
+            set_test_data(self, task)
+            set_execute_data(self, host, task)
+            __upload_test_data(self)
+            __run_qtp_script(self, testPath)
+            __create_filter(self)
+            discover_devices(self, task)
+            create_template(self)
+            deploy_task(self, task, deploy_host)
+            execute_task(self)
+            get_result(self)
             
-    Queue.py
+    Queue_task.py
         class Queue
             insert_task(self, index=0, task='')
             remove_task(self, task)
@@ -123,7 +183,8 @@
             __result(self)
             
         class Email
-            send(self, receiver='', sender='', subject='', content='', attachments='')
+            zip_result_package(self, result_path, name)
+            send(self)
 
     Script.py
         class Script
@@ -149,10 +210,9 @@
             set_state(self, state)
             build(self, host)
             get_scripts(self, host)
-            execute(self, host):
+            execute(self):
             deploy(self, host)
-            check_status(self, host)
-            collect_result(self, host)
+            collect_result(self)
             terminate(self, host)
             get_execute_duration(self)
             validate_host(self, validator)
