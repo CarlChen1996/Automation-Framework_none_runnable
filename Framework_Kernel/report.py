@@ -209,7 +209,7 @@ class Email:
     def __init__(self, receiver, ):
         self.receiver = receiver
         self.smtpserver = '15.73.212.81'
-        self.sender = 'carl.chen@hp.com'
+        self.sender = 'AutomationFramework@hp.com'
         self.subject = Header('Report email test', 'utf-8').encode()
 
     def zip_result_package(self, result_path, name):
