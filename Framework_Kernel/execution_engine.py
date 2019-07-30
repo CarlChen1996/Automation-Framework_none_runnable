@@ -5,6 +5,7 @@
 # @File    : ExecutionEngine.py
 # @Project : Automation-Framework
 import os
+import shutil
 from multiprocessing import Process
 import threading
 import time
@@ -89,9 +90,11 @@ class ExecutionEngine(Engine):
         ftp_util.close()
 
         r = Report(i.get_name(), i.get_uut_list())
+        task_report_path = r.generate()
         e = Email(i.get_email())
-        e.zip_result_package(r.generate(),i.get_name())
+        e.zip_result_package(task_report_path,i.get_name())
         e.send()
+        shutil.rmtree(task_report_path)
         self.__execution_queue.remove_task(i)
         execution_log.info("[thread_executor] remove {} from task_list".format(i.get_name()))
         execution_log.info('[thread_executor] remove {} from execute queue'.format(i.get_name()))
