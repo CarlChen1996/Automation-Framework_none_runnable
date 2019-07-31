@@ -105,11 +105,16 @@
 
     function changeStyle(ctid){
 
-    if(document.getElementById(ctid).style.display=='none'){
-      document.getElementById(ctid).style.display=''
+    if(document.getElementById(ctid).className=='hiddenRow'){
+      <!--document.getElementById(ctid).style.display='';-->
+      document.getElementById(ctid).className='none';
     }else{
-      document.getElementById(ctid).style.display='none'
+      <!--document.getElementById(ctid).style.display='none';-->
+      document.getElementById(ctid).className='hiddenRow';
     }
+    <!--if(document.getElementById(ctid).className=='hiddenRow'){-->
+        <!--document.getElementById(ctid).className='none';-->
+    <!--}-->
     }
 
     function showCase(level) {
@@ -213,9 +218,12 @@
         }
     </script>
     <style type="text/css" media="screen">
-body        { font-family: Microsoft YaHei,Tahoma,arial,helvetica,sans-serif;padding:50px; font-size: 80%;
-                background:url(static/image/hp-logo.png) no-repeat 95% 100%;
+body        {
+                font-family: Microsoft YaHei,Tahoma,arial,helvetica,sans-serif;padding:50px; font-size: 80%;
+                background:url(static/image/hp-logo.png) no-repeat fixed bottom 10px right;
                 background-size: 20%;
+                height:100%;
+                width:100%;
                 }
 /*  hp-logo.jpg now use https://lifemoves.org/wp-content/uploads/2017/03/hp-logo.png  */
 table       { font-size: 100%; }
@@ -258,19 +266,24 @@ table       { font-size: 100%; }
 <a class="btn btn-success" href='javascript:showCase(2)'>Passed {{total['Pass']}}</a>
 <a class="btn btn-info" href='javascript:showCase(3)'>ALL {{total['Count']}}</a>
 </p>
+
 <a class="btn btn-info" style="background-color:#fcf8e3; margin-top:40px;"  href='javascript:table_hidden()'><font id="hidden_button" color="black">Group by Case</font></a>
+<!--<p style="margin-left:20px;font-size:12px">↑  Click here to change table </p>-->
 {% block table1 %}
 {% endblock %}
 {% block table2 %}
 {% endblock %}
 <div style="font-size:10px">
     <p>Script Version: 1.0</p>
-    <p>Frameword Version: 1.0</p>
+    <p>Framework Version: 1.0</p>
 </div>
 <div id='ending'>&nbsp;</div>
     <div style=" position:fixed;right:50px; bottom:30px; width:20px; height:20px;cursor:pointer">
     <a href="#"><span class="glyphicon glyphicon-eject" style = "font-size:30px;" aria-hidden="true">
     </span></a></div>
-<p align="center">©  Copyright 2019 HP ThinCliens QA, Automation</p>
+<div style=" position:relative;bottom:-200px;">
+    <p align="center">©  Copyright 2019 HP ThinCliens QA, Automation</p>
+</div>
+
 </body>
 </html>
