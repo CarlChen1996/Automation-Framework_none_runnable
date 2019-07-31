@@ -39,6 +39,7 @@
             stop(self)
             start_thread(self)
             __add_task_to_queue(self)
+            insert_task_to_queue(self)
             __execute(self)
             __deploy(self)
             

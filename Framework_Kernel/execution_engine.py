@@ -25,7 +25,7 @@ class ExecutionEngine(Engine):
     def __init__(self, deploy_list, pipe):
         self.__pipe = pipe
         self.__deploy_list = deploy_list
-        self.__execution_queue = ExecuteQueue()
+        self.execution_queue = ExecuteQueue()
         # self.execution_queue.task_list=[]
         # -----------execute结束后需要同时删除task list-----------------
         # execution_queue.task_list = task_list.copy()
@@ -50,38 +50,41 @@ class ExecutionEngine(Engine):
 
     def __add_task_to_queue(self):
         while True:
-            receive = self.__pipe.recv()
-            execution_log.info('[Execution] received: {}'.format(receive.get_name()))
-            self.__pipe.send(receive.get_name())
-            execution_log.info("[thread_execution_queue_monitor] receive: {}".format(receive.get_name()))
-            self.__execution_queue.insert_task(task=receive)
-            execution_log.info('[thread_execution_queue_monitor] append {} to task_list'.format(receive.get_name()))
-            execution_log.info('[thread_execution_queue_monitor] task_list now is {}'.
-                    format(list(map(lambda i: i.get_name(),self.__execution_queue.get_task_list()))))
-            time.sleep(1)
+            self.insert_task_to_queue()
+
+    def insert_task_to_queue(self):
+        receive = self.__pipe.recv()
+        execution_log.info('[Execution] received: {}'.format(receive.get_name()))
+        self.__pipe.send(receive.get_name())
+        execution_log.info("[thread_execution_queue_monitor] receive: {}".format(receive.get_name()))
+        self.execution_queue.insert_task(task=receive)
+        execution_log.info('[thread_execution_queue_monitor] append {} to task_list'.format(receive.get_name()))
+        execution_log.info('[thread_execution_queue_monitor] task_list now is {}'.
+                           format(list(map(lambda i: i.get_name(), self.execution_queue.get_task_list()))))
+        time.sleep(1)
 
     def __execute(self):
         while True:
             time.sleep(1)
-            execution_log.info('[thread_executor] task_list left: {}'.format(len(self.__execution_queue.get_task_list())))
-            if self.__execution_queue.get_task_list():
+            execution_log.info('[thread_executor] task_list left: {}'.format(len(self.execution_queue.get_task_list())))
+            if self.execution_queue.get_task_list():
                 self.__deploy()
                 time.sleep(3)
                 execution_log.info('[thread_executor] task_list now is : {}'.
-                        format(list(map(lambda i: i.get_name(), self.__execution_queue.get_task_list()))))
+                                   format(list(map(lambda i: i.get_name(), self.execution_queue.get_task_list()))))
             else:
                 execution_log.info('[thread_executor]************************ wait for new task to execute **********************')
             time.sleep(5)
 
     def __deploy(self):
         d = self.__deploy_list[0]
-        i = self.__execution_queue.get_task_list()[0]
+        i = self.execution_queue.get_task_list()[0]
         # ----------循环里面添加 刷新list的方法 ---------------------
-        self.__execution_queue.deploy(i, d)
-        self.__execution_queue.execute(i)
+        self.execution_queue.deploy(i, d)
+        self.execution_queue.execute(i)
         # --------需要得到返回值 ------------------
         # self.__execution_queue.check_status(i)
-        self.__execution_queue.collect_result(i)
+        self.execution_queue.collect_result(i)
 
         ftp_util = FTPUtils()
         task_list = ftp_util.get_list()
@@ -94,10 +97,10 @@ class ExecutionEngine(Engine):
         e.zip_result_package(task_report_path,i.get_name())
         e.send()
         shutil.rmtree(task_report_path)
-        self.__execution_queue.remove_task(i)
+        self.execution_queue.remove_task(i)
         execution_log.info("[thread_executor] remove {} from task_list".format(i.get_name()))
         execution_log.info('[thread_executor] remove {} from execute queue'.format(i.get_name()))
-        execution_log.info('[thread_executor] task left in execute queue: {}'.format(len(self.__execution_queue.get_task_list())))
+        execution_log.info('[thread_executor] task left in execute queue: {}'.format(len(self.execution_queue.get_task_list())))
         print('---------------------------------------------------------------')
 
 
