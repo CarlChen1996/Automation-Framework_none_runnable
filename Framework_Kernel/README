@@ -20,7 +20,12 @@
             stop(self)
             start_thread(self)
             __fresh_queue_testplan(self)
+            scan_folder()
+            get_task_from_folder(self, file_list)
+            generate_task(self, file_list)
             __fresh_queue_execution(self)
+            send_task_to_execution(self)
+            get_signal_after_send(self, task)
             __assemble(self)
 
     Configuration_engine.py
