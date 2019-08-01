@@ -8,21 +8,27 @@ from multiprocessing import Process
 import threading
 import time
 
+
 def run_with_manual_mode():
     is_framework_configured = False
-    controller_log.info("This is the manual operation mode, framework must be configured before continue")
+    controller_log.info(
+        "This is the manual operation mode, framework must be configured before continue"
+    )
     controller_log.info(
         "++++++++++++++++++++++++++ manual mode first selection+++++++++++++++++++++++++++++++"
     )
-    controller_log.info("+++++++++++++++++++++++ 01:start config +++++++++++++++++++++++")
-    controller_log.info("+++++++++++++++++++++++ 99:exit +++++++++++++++++++++++++")
+    controller_log.info(
+        "+++++++++++++++++++++++ 01:start config +++++++++++++++++++++++")
+    controller_log.info(
+        "+++++++++++++++++++++++ 99:exit +++++++++++++++++++++++++")
     manual_mode_first_selection = get_keyboard_input(60)
     controller_log.info(run_mode)
     while True:
         if manual_mode_first_selection == "01":  # start config engine
             controller_log.info("start config")
             instance_config_engine.start(build_server_list, deploy_list)
-            controller_log.info("config pid is {}".format(instance_config_engine.status.pid))
+            controller_log.info("config pid is {}".format(
+                instance_config_engine.status.pid))
             is_framework_configured = True
             break
         elif manual_mode_first_selection == "99":
@@ -31,30 +37,46 @@ def run_with_manual_mode():
             )
             break
         else:
-            controller_log.info("Unknown run mode, please select the valid run mode from the list")
+            controller_log.info(
+                "Unknown run mode, please select the valid run mode from the list"
+            )
             manual_mode_first_selection = get_keyboard_input(60)
 
     while is_framework_configured:
-        controller_log.info("Framework has been configured, please continue with the operation")
+        controller_log.info(
+            "Framework has been configured, please continue with the operation"
+        )
         controller_log.info(
             "++++++++++++++++++++++++++ manual mode second selection+++++++++++++++++++++++++++++++"
         )
-        controller_log.info("+++++++++++++++++++++++ 01:start assembly +++++++++++++++++++++++")
-        controller_log.info("+++++++++++++++++++++++ 02:start execution +++++++++++++++++++++++")
-        controller_log.info("+++++++++++++++++++++++ 03:stop assembly +++++++++++++++++++++++")
-        controller_log.info("+++++++++++++++++++++++ 04:stop execution +++++++++++++++++++++++")
-        controller_log.info("+++++++++++++++++++++++ 99:exit - this will stop all engines  +++++++++++++++++++++++")
+        controller_log.info(
+            "+++++++++++++++++++++++ 01:start assembly +++++++++++++++++++++++"
+        )
+        controller_log.info(
+            "+++++++++++++++++++++++ 02:start execution +++++++++++++++++++++++"
+        )
+        controller_log.info(
+            "+++++++++++++++++++++++ 03:stop assembly +++++++++++++++++++++++")
+        controller_log.info(
+            "+++++++++++++++++++++++ 04:stop execution +++++++++++++++++++++++"
+        )
+        controller_log.info(
+            "+++++++++++++++++++++++ 99:exit - this will stop all engines  +++++++++++++++++++++++"
+        )
         manual_mode_second_selection = get_keyboard_input(600)
         controller_log.info(run_mode)
-        if manual_mode_second_selection == "01":    # start assemble
+        if manual_mode_second_selection == "01":  # start assemble
             controller_log.info("start assembly")
-            thread_start_assemble = threading.Thread(target=instance_assemble_engine.start())
+            thread_start_assemble = threading.Thread(
+                target=instance_assemble_engine.start())
             thread_start_assemble.start()
-            controller_log.info("assemble pid is {}".format(instance_assemble_engine.status.pid))
+            controller_log.info("assemble pid is {}".format(
+                instance_assemble_engine.status.pid))
         elif manual_mode_second_selection == "02":
             controller_log.info("start execution")
             instance_execution_engine.start()
-            controller_log.info("execute pid is {}".format(instance_execution_engine.status.pid))
+            controller_log.info("execute pid is {}".format(
+                instance_execution_engine.status.pid))
         elif manual_mode_second_selection == "03":
             controller_log.info("stop assembly")
             instance_assemble_engine.stop()
@@ -67,7 +89,8 @@ def run_with_manual_mode():
             )
             break
         else:
-            controller_log.info("Unknown run mode, please select the valid mode from the list")
+            controller_log.info(
+                "Unknown run mode, please select the valid mode from the list")
 
 
 def run_with_auto_mode():
@@ -79,16 +102,17 @@ def run_with_auto_mode():
     controller_log.info('start assemble engine')
     instance_assemble_engine.start()
     controller_log.info('assemble finished')
-    print(
-        '=================start execution engine=====================')
+    print('=================start execution engine=====================')
     controller_log.info('start execution engine')
     instance_execution_engine.start()
     controller_log.info('execution finished')
-    watch_assemble_thread = threading.Thread(
-        target=keep_assemble_alive, name="watch_assemble_thread", args=())
+    watch_assemble_thread = threading.Thread(target=keep_assemble_alive,
+                                             name="watch_assemble_thread",
+                                             args=())
     watch_assemble_thread.start()
-    watch_executor_thread = threading.Thread(
-        target=keep_executor_alive, name="watch_executor_thread", args=())
+    watch_executor_thread = threading.Thread(target=keep_executor_alive,
+                                             name="watch_executor_thread",
+                                             args=())
     watch_executor_thread.start()
 
 
@@ -104,9 +128,12 @@ def keep_assemble_alive():
                     "[watch_assemble_thread] start assemble engine successfully"
                 )
             else:
-                controller_log.info("[watch_assemble_thread] can't start assemble engine")
-        controller_log.info("[watch_assemble_thread] assemble engine pid {} current status is {}"
-                .format(instance_assemble_engine.status.pid, str(instance_assemble_engine.status.is_alive())))
+                controller_log.info(
+                    "[watch_assemble_thread] can't start assemble engine")
+        controller_log.info(
+            "[watch_assemble_thread] assemble engine pid {} current status is {}"
+            .format(instance_assemble_engine.status.pid,
+                    str(instance_assemble_engine.status.is_alive())))
 
 
 def keep_executor_alive():
@@ -121,9 +148,12 @@ def keep_executor_alive():
                     "[watch_executor_thread] start execution engine successfully"
                 )
             else:
-                controller_log.info("[watch_executor_thread] can't start execution engine")
-        controller_log.info("[watch_executor_thread] execution engine pid {} current status is {}"
-                .format(instance_execution_engine.status.pid, str(instance_execution_engine.status.is_alive())))
+                controller_log.info(
+                    "[watch_executor_thread] can't start execution engine")
+        controller_log.info(
+            "[watch_executor_thread] execution engine pid {} current status is {}"
+            .format(instance_execution_engine.status.pid,
+                    str(instance_execution_engine.status.is_alive())))
 
 
 if __name__ == '__main__':
@@ -132,14 +162,19 @@ if __name__ == '__main__':
     build_server_list = []
     deploy_list = []
     instance_config_engine = configuration_engine.ConfigurationEngine()
-    instance_assemble_engine = assemble_engine.AssembleEngine(pipe[0], build_server_list)
-    instance_execution_engine = execution_engine.ExecutionEngine(deploy_list, pipe[1])
+    instance_assemble_engine = assemble_engine.AssembleEngine(
+        pipe[0], build_server_list)
+    instance_execution_engine = execution_engine.ExecutionEngine(
+        deploy_list, pipe[1])
     controller_log.info(
         "++++++++++++++++++++++++++ Select mode+++++++++++++++++++++++++++++++"
     )
-    controller_log.info("+++++++++++++++++++++++ 01:manual +++++++++++++++++++++++")
-    controller_log.info("+++++++++++++++++++++++ 02:auto,default +++++++++++++++++")
-    controller_log.info("+++++++++++++++++++++++ 99:exit +++++++++++++++++++++++++")
+    controller_log.info(
+        "+++++++++++++++++++++++ 01:manual +++++++++++++++++++++++")
+    controller_log.info(
+        "+++++++++++++++++++++++ 02:auto,default +++++++++++++++++")
+    controller_log.info(
+        "+++++++++++++++++++++++ 99:exit +++++++++++++++++++++++++")
     run_mode = get_keyboard_input(60)
     controller_log.info(run_mode)
     while True:
@@ -157,5 +192,7 @@ if __name__ == '__main__':
             )
             break
         else:
-            controller_log.info("Unknown run mode, please select the valid run mode from the list")
+            controller_log.info(
+                "Unknown run mode, please select the valid run mode from the list"
+            )
             run_mode = get_keyboard_input(60)
