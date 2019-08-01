@@ -132,6 +132,7 @@ class QTP_HPDM:
         qtp.Visible = True
         qtp.Open(testPath)
         qtp.Test.Run()
+        qtp.Quit()
         pythoncom.CoUninitialize()
         time.sleep(5)
 
@@ -197,16 +198,16 @@ class QTP_HPDM:
 
 
 if __name__ == '__main__':
-
-    task = Task('precheck')
-    uut1 = WindowsExecuteHost('15.83.248.208', '7C:D3:0A:05:01:97', '', 'WES10', 'Admin', 'Admin', '', 'on')
-    uut2 = WindowsExecuteHost('15.83.250.20', '48:0F:CF:BC:DD:3C', '', 'WES10', 'Admin', 'Admin', '', 'on')
-    uut3 = WindowsExecuteHost('15.83.250.205', '48:0F:CF:BB:7C:65', '', 'WES7E', 'Administrator', 'Administrator', '', 'on')
-    uut4 = WindowsExecuteHost('15.83.250.210', '48:0F:CF:BB:7F:65', '', 'WES7E', 'Administrator', 'Administrator', '', 'on')
-    task.insert_uut_list(uut1)
-    task.insert_uut_list(uut2)
-    task.insert_uut_list(uut3)
-    task.insert_uut_list(uut4)
-    task.insert_exe_file_list(r'C:\inetpub\ftproot\jenkins\windows\task_2\run.exe')
+    pass
+    # task = Task('precheck')
+    # uut1 = WindowsExecuteHost('15.83.248.208', '7C:D3:0A:05:01:97', '', 'WES10', 'Admin', 'Admin', '', 'on')
+    # uut2 = WindowsExecuteHost('15.83.250.20', '48:0F:CF:BC:DD:3C', '', 'WES10', 'Admin', 'Admin', '', 'on')
+    # uut3 = WindowsExecuteHost('15.83.250.205', '48:0F:CF:BB:7C:65', '', 'WES7E', 'Administrator', 'Administrator', '', 'on')
+    # uut4 = WindowsExecuteHost('15.83.250.210', '48:0F:CF:BB:7F:65', '', 'WES7E', 'Administrator', 'Administrator', '', 'on')
+    # task.insert_uut_list(uut1)
+    # task.insert_uut_list(uut2)
+    # task.insert_uut_list(uut3)
+    # task.insert_uut_list(uut4)
+    # task.insert_exe_file_list(r'C:\inetpub\ftproot\jenkins\windows\task_2\run.exe')
+    # # QTP_HPDM().set_test_data(task)
     # QTP_HPDM().set_test_data(task)
-    QTP_HPDM().set_test_data(task)
