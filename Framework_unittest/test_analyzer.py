@@ -1,9 +1,14 @@
+# -*- coding: utf-8 -*-
+# @Time    : 7/31/2019 6:00 PM
+# @Author  : Kit.Liu
+# @Email   : jie.liu1@hp.com
+# @File    : test_analyzer.py
+# @Project : Automation-Framework
 from Framework_Kernel import analyzer
 from Common_Library import file
 from unittest.mock import patch
 import os
 import unittest
-
 
 '''
 setUp: define excel name without Loaded prefix before test
@@ -11,7 +16,6 @@ tearDown: define excel name with Loaded prefix after test
 test_load_excel: load excel by function analyzer.Analyzer.load
 test_read_excel: read excel by function file.XlsxFile.read
 '''
-
 
 excel_content = {
     'name': 'task_1', 'email': ['jie.liu1@hp.com'], 'needbuild': True, 'repository': 'https://hp.com',

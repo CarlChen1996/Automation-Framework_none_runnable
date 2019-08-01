@@ -96,7 +96,7 @@ class ExecutionEngine(Engine):
         e = Email(i.get_email())
         e.zip_result_package(task_report_path,i.get_name())
         e.send()
-        shutil.rmtree(task_report_path)
+        r.remove_report_folder(task_report_path)
         self.execution_queue.remove_task(i)
         execution_log.info("[thread_executor] remove {} from task_list".format(i.get_name()))
         execution_log.info('[thread_executor] remove {} from execute queue'.format(i.get_name()))

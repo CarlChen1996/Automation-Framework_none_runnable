@@ -1,9 +1,14 @@
+# -*- coding: utf-8 -*-
+# @Time    : 7/31/2019 6:00 PM
+# @Author  : Kit.Liu
+# @Email   : jie.liu1@hp.com
+# @File    : test_execution_engine.py
+# @Project : Automation-Framework
 from Framework_Kernel import execution_engine
 from Framework_Kernel.task import Task
 from multiprocessing import Pipe
 from unittest.mock import patch
 import unittest
-
 
 '''
 setUp: Instantiated pipe and send task, instantiated Execution Engine

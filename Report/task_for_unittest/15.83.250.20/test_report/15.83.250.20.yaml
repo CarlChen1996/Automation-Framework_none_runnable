@@ -1,0 +1,702 @@
+- case_name: print_hello
+  result: pass
+  steps:
+  - actual: hello_world
+    expect: hello_world
+    note: print hello world
+    result: pass
+    step_name: print_hello_step1
+  uut_name: 15.83.250.20
+- case_name: check_basic_info
+  result: fail
+  steps:
+  - actual: img/123.png
+    expect: img/123.jpg
+    note: Just test view image function, no other meaning
+    result: fail
+    step_name: image_test
+  - actual: 15.83.250.20
+    expect: 15.83.248.208
+    note: To check ip is correct or not
+    result: fail
+    step_name: ip_check
+  - actual: "(UTC+08:00) \u5317\u4EAC\uFF0C\u91CD\u5E86\uFF0C\u9999\u6E2F\u7279\u522B\
+      \u884C\u653F\u533A\uFF0C\u4E4C\u9C81\u6728\u9F50"
+    expect: (UTC+08:00) Beijing, Chongqing, Hong Kong, Urumqi
+    note: To check timezone is correct or not
+    result: fail
+    step_name: timezone_check
+  - actual: win10
+    expect: win10
+    note: To check os_type is correct or not
+    result: pass
+    step_name: os_type_check
+  - actual: L41 v01.11
+    expect: Q70 Ver. 01.04.02
+    note: To check bios is correct or not
+    result: fail
+    step_name: bios_check
+  uut_name: 15.83.250.20
+- case_name: print_hello
+  result: pass
+  steps:
+  - actual: hello_world
+    expect: hello_world
+    note: print hello world
+    result: pass
+    step_name: print_hello_step1
+  uut_name: 15.83.250.20
+- case_name: check_basic_info
+  result: fail
+  steps:
+  - actual: img/123.png
+    expect: img/123.jpg
+    note: Just test view image function, no other meaning
+    result: fail
+    step_name: image_test
+  - actual: 15.83.250.20
+    expect: 15.83.248.208
+    note: To check ip is correct or not
+    result: fail
+    step_name: ip_check
+  - actual: "(UTC+08:00) \u5317\u4EAC\uFF0C\u91CD\u5E86\uFF0C\u9999\u6E2F\u7279\u522B\
+      \u884C\u653F\u533A\uFF0C\u4E4C\u9C81\u6728\u9F50"
+    expect: (UTC+08:00) Beijing, Chongqing, Hong Kong, Urumqi
+    note: To check timezone is correct or not
+    result: fail
+    step_name: timezone_check
+  - actual: win10
+    expect: win10
+    note: To check os_type is correct or not
+    result: pass
+    step_name: os_type_check
+  - actual: L41 v01.11
+    expect: Q70 Ver. 01.04.02
+    note: To check bios is correct or not
+    result: fail
+    step_name: bios_check
+  uut_name: 15.83.250.20
+- case_name: print_hello
+  result: pass
+  steps:
+  - actual: hello_world
+    expect: hello_world
+    note: print hello world
+    result: pass
+    step_name: print_hello_step1
+  uut_name: 15.83.250.20
+- case_name: check_basic_info
+  result: fail
+  steps:
+  - actual: img/123.png
+    expect: img/123.jpg
+    note: Just test view image function, no other meaning
+    result: fail
+    step_name: image_test
+  - actual: 15.83.250.20
+    expect: 15.83.248.208
+    note: To check ip is correct or not
+    result: fail
+    step_name: ip_check
+  - actual: "(UTC+08:00) \u5317\u4EAC\uFF0C\u91CD\u5E86\uFF0C\u9999\u6E2F\u7279\u522B\
+      \u884C\u653F\u533A\uFF0C\u4E4C\u9C81\u6728\u9F50"
+    expect: (UTC+08:00) Beijing, Chongqing, Hong Kong, Urumqi
+    note: To check timezone is correct or not
+    result: fail
+    step_name: timezone_check
+  - actual: win10
+    expect: win10
+    note: To check os_type is correct or not
+    result: pass
+    step_name: os_type_check
+  - actual: L41 v01.11
+    expect: Q70 Ver. 01.04.02
+    note: To check bios is correct or not
+    result: fail
+    step_name: bios_check
+  uut_name: 15.83.250.20
+- case_name: print_hello
+  result: pass
+  steps:
+  - actual: hello_world
+    expect: hello_world
+    note: print hello world
+    result: pass
+    step_name: print_hello_step1
+  uut_name: 15.83.250.20
+- case_name: check_basic_info
+  result: fail
+  steps:
+  - actual: img/123.png
+    expect: img/123.jpg
+    note: Just test view image function, no other meaning
+    result: fail
+    step_name: image_test
+  - actual: 15.83.250.20
+    expect: 15.83.248.208
+    note: To check ip is correct or not
+    result: fail
+    step_name: ip_check
+  - actual: "(UTC+08:00) \u5317\u4EAC\uFF0C\u91CD\u5E86\uFF0C\u9999\u6E2F\u7279\u522B\
+      \u884C\u653F\u533A\uFF0C\u4E4C\u9C81\u6728\u9F50"
+    expect: (UTC+08:00) Beijing, Chongqing, Hong Kong, Urumqi
+    note: To check timezone is correct or not
+    result: fail
+    step_name: timezone_check
+  - actual: win10
+    expect: win10
+    note: To check os_type is correct or not
+    result: pass
+    step_name: os_type_check
+  - actual: L41 v01.11
+    expect: Q70 Ver. 01.04.02
+    note: To check bios is correct or not
+    result: fail
+    step_name: bios_check
+  uut_name: 15.83.250.20
+- case_name: print_hello
+  result: pass
+  steps:
+  - actual: hello_world
+    expect: hello_world
+    note: print hello world
+    result: pass
+    step_name: print_hello_step1
+  uut_name: 15.83.250.20
+- case_name: check_basic_info
+  result: fail
+  steps:
+  - actual: img/123.png
+    expect: img/123.jpg
+    note: Just test view image function, no other meaning
+    result: fail
+    step_name: image_test
+  - actual: 15.83.250.20
+    expect: 15.83.248.208
+    note: To check ip is correct or not
+    result: fail
+    step_name: ip_check
+  - actual: "(UTC+08:00) \u5317\u4EAC\uFF0C\u91CD\u5E86\uFF0C\u9999\u6E2F\u7279\u522B\
+      \u884C\u653F\u533A\uFF0C\u4E4C\u9C81\u6728\u9F50"
+    expect: (UTC+08:00) Beijing, Chongqing, Hong Kong, Urumqi
+    note: To check timezone is correct or not
+    result: fail
+    step_name: timezone_check
+  - actual: win10
+    expect: win10
+    note: To check os_type is correct or not
+    result: pass
+    step_name: os_type_check
+  - actual: L41 v01.11
+    expect: Q70 Ver. 01.04.02
+    note: To check bios is correct or not
+    result: fail
+    step_name: bios_check
+  uut_name: 15.83.250.20
+- case_name: print_hello
+  result: pass
+  steps:
+  - actual: hello_world
+    expect: hello_world
+    note: print hello world
+    result: pass
+    step_name: print_hello_step1
+  uut_name: 15.83.250.20
+- case_name: check_basic_info
+  result: fail
+  steps:
+  - actual: img/123.png
+    expect: img/123.jpg
+    note: Just test view image function, no other meaning
+    result: fail
+    step_name: image_test
+  - actual: 15.83.250.20
+    expect: 15.83.248.208
+    note: To check ip is correct or not
+    result: fail
+    step_name: ip_check
+  - actual: "(UTC+08:00) \u5317\u4EAC\uFF0C\u91CD\u5E86\uFF0C\u9999\u6E2F\u7279\u522B\
+      \u884C\u653F\u533A\uFF0C\u4E4C\u9C81\u6728\u9F50"
+    expect: (UTC+08:00) Beijing, Chongqing, Hong Kong, Urumqi
+    note: To check timezone is correct or not
+    result: fail
+    step_name: timezone_check
+  - actual: win10
+    expect: win10
+    note: To check os_type is correct or not
+    result: pass
+    step_name: os_type_check
+  - actual: L41 v01.11
+    expect: Q70 Ver. 01.04.02
+    note: To check bios is correct or not
+    result: fail
+    step_name: bios_check
+  uut_name: 15.83.250.20
+- case_name: print_hello
+  result: pass
+  steps:
+  - actual: hello_world
+    expect: hello_world
+    note: print hello world
+    result: pass
+    step_name: print_hello_step1
+  uut_name: 15.83.250.20
+- case_name: check_basic_info
+  result: fail
+  steps:
+  - actual: img/123.png
+    expect: img/123.jpg
+    note: Just test view image function, no other meaning
+    result: fail
+    step_name: image_test
+  - actual: 15.83.250.20
+    expect: 15.83.248.208
+    note: To check ip is correct or not
+    result: fail
+    step_name: ip_check
+  - actual: "(UTC+08:00) \u5317\u4EAC\uFF0C\u91CD\u5E86\uFF0C\u9999\u6E2F\u7279\u522B\
+      \u884C\u653F\u533A\uFF0C\u4E4C\u9C81\u6728\u9F50"
+    expect: (UTC+08:00) Beijing, Chongqing, Hong Kong, Urumqi
+    note: To check timezone is correct or not
+    result: fail
+    step_name: timezone_check
+  - actual: win10
+    expect: win10
+    note: To check os_type is correct or not
+    result: pass
+    step_name: os_type_check
+  - actual: L41 v01.11
+    expect: Q70 Ver. 01.04.02
+    note: To check bios is correct or not
+    result: fail
+    step_name: bios_check
+  uut_name: 15.83.250.20
+- case_name: print_hello
+  result: pass
+  steps:
+  - actual: hello_world
+    expect: hello_world
+    note: print hello world
+    result: pass
+    step_name: print_hello_step1
+  uut_name: 15.83.250.20
+- case_name: check_basic_info
+  result: fail
+  steps:
+  - actual: img/123.png
+    expect: img/123.jpg
+    note: Just test view image function, no other meaning
+    result: fail
+    step_name: image_test
+  - actual: 15.83.250.20
+    expect: 15.83.248.208
+    note: To check ip is correct or not
+    result: fail
+    step_name: ip_check
+  - actual: "(UTC+08:00) \u5317\u4EAC\uFF0C\u91CD\u5E86\uFF0C\u9999\u6E2F\u7279\u522B\
+      \u884C\u653F\u533A\uFF0C\u4E4C\u9C81\u6728\u9F50"
+    expect: (UTC+08:00) Beijing, Chongqing, Hong Kong, Urumqi
+    note: To check timezone is correct or not
+    result: fail
+    step_name: timezone_check
+  - actual: win10
+    expect: win10
+    note: To check os_type is correct or not
+    result: pass
+    step_name: os_type_check
+  - actual: L41 v01.11
+    expect: Q70 Ver. 01.04.02
+    note: To check bios is correct or not
+    result: fail
+    step_name: bios_check
+  uut_name: 15.83.250.20
+- case_name: print_hello
+  result: pass
+  steps:
+  - actual: hello_world
+    expect: hello_world
+    note: print hello world
+    result: pass
+    step_name: print_hello_step1
+  uut_name: 15.83.250.20
+- case_name: check_basic_info
+  result: fail
+  steps:
+  - actual: img/123.png
+    expect: img/123.jpg
+    note: Just test view image function, no other meaning
+    result: fail
+    step_name: image_test
+  - actual: 15.83.250.20
+    expect: 15.83.248.208
+    note: To check ip is correct or not
+    result: fail
+    step_name: ip_check
+  - actual: "(UTC+08:00) \u5317\u4EAC\uFF0C\u91CD\u5E86\uFF0C\u9999\u6E2F\u7279\u522B\
+      \u884C\u653F\u533A\uFF0C\u4E4C\u9C81\u6728\u9F50"
+    expect: (UTC+08:00) Beijing, Chongqing, Hong Kong, Urumqi
+    note: To check timezone is correct or not
+    result: fail
+    step_name: timezone_check
+  - actual: win10
+    expect: win10
+    note: To check os_type is correct or not
+    result: pass
+    step_name: os_type_check
+  - actual: L41 v01.11
+    expect: Q70 Ver. 01.04.02
+    note: To check bios is correct or not
+    result: fail
+    step_name: bios_check
+  uut_name: 15.83.250.20
+- case_name: print_hello
+  result: pass
+  steps:
+  - actual: hello_world
+    expect: hello_world
+    note: print hello world
+    result: pass
+    step_name: print_hello_step1
+  uut_name: 15.83.250.20
+- case_name: check_basic_info
+  result: fail
+  steps:
+  - actual: img/123.png
+    expect: img/123.jpg
+    note: Just test view image function, no other meaning
+    result: fail
+    step_name: image_test
+  - actual: 15.83.250.20
+    expect: 15.83.248.208
+    note: To check ip is correct or not
+    result: fail
+    step_name: ip_check
+  - actual: "(UTC+08:00) \u5317\u4EAC\uFF0C\u91CD\u5E86\uFF0C\u9999\u6E2F\u7279\u522B\
+      \u884C\u653F\u533A\uFF0C\u4E4C\u9C81\u6728\u9F50"
+    expect: (UTC+08:00) Beijing, Chongqing, Hong Kong, Urumqi
+    note: To check timezone is correct or not
+    result: fail
+    step_name: timezone_check
+  - actual: win10
+    expect: win10
+    note: To check os_type is correct or not
+    result: pass
+    step_name: os_type_check
+  - actual: L41 v01.11
+    expect: Q70 Ver. 01.04.02
+    note: To check bios is correct or not
+    result: fail
+    step_name: bios_check
+  uut_name: 15.83.250.20
+- case_name: print_hello
+  result: pass
+  steps:
+  - actual: hello_world
+    expect: hello_world
+    note: print hello world
+    result: pass
+    step_name: print_hello_step1
+  uut_name: 15.83.250.20
+- case_name: check_basic_info
+  result: fail
+  steps:
+  - actual: img/123.png
+    expect: img/123.jpg
+    note: Just test view image function, no other meaning
+    result: fail
+    step_name: image_test
+  - actual: 15.83.250.20
+    expect: 15.83.248.208
+    note: To check ip is correct or not
+    result: fail
+    step_name: ip_check
+  - actual: "(UTC+08:00) \u5317\u4EAC\uFF0C\u91CD\u5E86\uFF0C\u9999\u6E2F\u7279\u522B\
+      \u884C\u653F\u533A\uFF0C\u4E4C\u9C81\u6728\u9F50"
+    expect: (UTC+08:00) Beijing, Chongqing, Hong Kong, Urumqi
+    note: To check timezone is correct or not
+    result: fail
+    step_name: timezone_check
+  - actual: win10
+    expect: win10
+    note: To check os_type is correct or not
+    result: pass
+    step_name: os_type_check
+  - actual: L41 v01.11
+    expect: Q70 Ver. 01.04.02
+    note: To check bios is correct or not
+    result: fail
+    step_name: bios_check
+  uut_name: 15.83.250.20
+- case_name: print_hello
+  result: pass
+  steps:
+  - actual: hello_world
+    expect: hello_world
+    note: print hello world
+    result: pass
+    step_name: print_hello_step1
+  uut_name: 15.83.250.20
+- case_name: check_basic_info
+  result: fail
+  steps:
+  - actual: img/123.png
+    expect: img/123.jpg
+    note: Just test view image function, no other meaning
+    result: fail
+    step_name: image_test
+  - actual: 15.83.250.20
+    expect: 15.83.248.208
+    note: To check ip is correct or not
+    result: fail
+    step_name: ip_check
+  - actual: "(UTC+08:00) \u5317\u4EAC\uFF0C\u91CD\u5E86\uFF0C\u9999\u6E2F\u7279\u522B\
+      \u884C\u653F\u533A\uFF0C\u4E4C\u9C81\u6728\u9F50"
+    expect: (UTC+08:00) Beijing, Chongqing, Hong Kong, Urumqi
+    note: To check timezone is correct or not
+    result: fail
+    step_name: timezone_check
+  - actual: win10
+    expect: win10
+    note: To check os_type is correct or not
+    result: pass
+    step_name: os_type_check
+  - actual: L41 v01.11
+    expect: Q70 Ver. 01.04.02
+    note: To check bios is correct or not
+    result: fail
+    step_name: bios_check
+  uut_name: 15.83.250.20
+- case_name: print_hello
+  result: pass
+  steps:
+  - actual: hello_world
+    expect: hello_world
+    note: print hello world
+    result: pass
+    step_name: print_hello_step1
+  uut_name: 15.83.250.20
+- case_name: check_basic_info
+  result: fail
+  steps:
+  - actual: img/123.png
+    expect: img/123.jpg
+    note: Just test view image function, no other meaning
+    result: fail
+    step_name: image_test
+  - actual: 15.83.250.20
+    expect: 15.83.248.208
+    note: To check ip is correct or not
+    result: fail
+    step_name: ip_check
+  - actual: "(UTC+08:00) \u5317\u4EAC\uFF0C\u91CD\u5E86\uFF0C\u9999\u6E2F\u7279\u522B\
+      \u884C\u653F\u533A\uFF0C\u4E4C\u9C81\u6728\u9F50"
+    expect: (UTC+08:00) Beijing, Chongqing, Hong Kong, Urumqi
+    note: To check timezone is correct or not
+    result: fail
+    step_name: timezone_check
+  - actual: win10
+    expect: win10
+    note: To check os_type is correct or not
+    result: pass
+    step_name: os_type_check
+  - actual: L41 v01.11
+    expect: Q70 Ver. 01.04.02
+    note: To check bios is correct or not
+    result: fail
+    step_name: bios_check
+  uut_name: 15.83.250.20
+- case_name: print_hello
+  result: pass
+  steps:
+  - actual: hello_world
+    expect: hello_world
+    note: print hello world
+    result: pass
+    step_name: print_hello_step1
+  uut_name: 15.83.250.20
+- case_name: check_basic_info
+  result: fail
+  steps:
+  - actual: img/123.png
+    expect: img/123.jpg
+    note: Just test view image function, no other meaning
+    result: fail
+    step_name: image_test
+  - actual: 15.83.250.20
+    expect: 15.83.248.208
+    note: To check ip is correct or not
+    result: fail
+    step_name: ip_check
+  - actual: "(UTC+08:00) \u5317\u4EAC\uFF0C\u91CD\u5E86\uFF0C\u9999\u6E2F\u7279\u522B\
+      \u884C\u653F\u533A\uFF0C\u4E4C\u9C81\u6728\u9F50"
+    expect: (UTC+08:00) Beijing, Chongqing, Hong Kong, Urumqi
+    note: To check timezone is correct or not
+    result: fail
+    step_name: timezone_check
+  - actual: win10
+    expect: win10
+    note: To check os_type is correct or not
+    result: pass
+    step_name: os_type_check
+  - actual: L41 v01.11
+    expect: Q70 Ver. 01.04.02
+    note: To check bios is correct or not
+    result: fail
+    step_name: bios_check
+  uut_name: 15.83.250.20
+- case_name: print_hello
+  result: pass
+  steps:
+  - actual: hello_world
+    expect: hello_world
+    note: print hello world
+    result: pass
+    step_name: print_hello_step1
+  uut_name: 15.83.250.20
+- case_name: check_basic_info
+  result: fail
+  steps:
+  - actual: img/123.png
+    expect: img/123.jpg
+    note: Just test view image function, no other meaning
+    result: fail
+    step_name: image_test
+  - actual: 15.83.250.20
+    expect: 15.83.248.208
+    note: To check ip is correct or not
+    result: fail
+    step_name: ip_check
+  - actual: "(UTC+08:00) \u5317\u4EAC\uFF0C\u91CD\u5E86\uFF0C\u9999\u6E2F\u7279\u522B\
+      \u884C\u653F\u533A\uFF0C\u4E4C\u9C81\u6728\u9F50"
+    expect: (UTC+08:00) Beijing, Chongqing, Hong Kong, Urumqi
+    note: To check timezone is correct or not
+    result: fail
+    step_name: timezone_check
+  - actual: win10
+    expect: win10
+    note: To check os_type is correct or not
+    result: pass
+    step_name: os_type_check
+  - actual: L41 v01.11
+    expect: Q70 Ver. 01.04.02
+    note: To check bios is correct or not
+    result: fail
+    step_name: bios_check
+  uut_name: 15.83.250.20
+- case_name: print_hello
+  result: pass
+  steps:
+  - actual: hello_world
+    expect: hello_world
+    note: print hello world
+    result: pass
+    step_name: print_hello_step1
+  uut_name: 15.83.250.20
+- case_name: check_basic_info
+  result: fail
+  steps:
+  - actual: img/123.png
+    expect: img/123.jpg
+    note: Just test view image function, no other meaning
+    result: fail
+    step_name: image_test
+  - actual: 15.83.250.20
+    expect: 15.83.248.208
+    note: To check ip is correct or not
+    result: fail
+    step_name: ip_check
+  - actual: "(UTC+08:00) \u5317\u4EAC\uFF0C\u91CD\u5E86\uFF0C\u9999\u6E2F\u7279\u522B\
+      \u884C\u653F\u533A\uFF0C\u4E4C\u9C81\u6728\u9F50"
+    expect: (UTC+08:00) Beijing, Chongqing, Hong Kong, Urumqi
+    note: To check timezone is correct or not
+    result: fail
+    step_name: timezone_check
+  - actual: win10
+    expect: win10
+    note: To check os_type is correct or not
+    result: pass
+    step_name: os_type_check
+  - actual: L41 v01.11
+    expect: Q70 Ver. 01.04.02
+    note: To check bios is correct or not
+    result: fail
+    step_name: bios_check
+  uut_name: 15.83.250.20
+- case_name: print_hello
+  result: pass
+  steps:
+  - actual: hello_world
+    expect: hello_world
+    note: print hello world
+    result: pass
+    step_name: print_hello_step1
+  uut_name: 15.83.250.20
+- case_name: check_basic_info
+  result: fail
+  steps:
+  - actual: img/123.png
+    expect: img/123.jpg
+    note: Just test view image function, no other meaning
+    result: fail
+    step_name: image_test
+  - actual: 15.83.250.20
+    expect: 15.83.248.208
+    note: To check ip is correct or not
+    result: fail
+    step_name: ip_check
+  - actual: "(UTC+08:00) \u5317\u4EAC\uFF0C\u91CD\u5E86\uFF0C\u9999\u6E2F\u7279\u522B\
+      \u884C\u653F\u533A\uFF0C\u4E4C\u9C81\u6728\u9F50"
+    expect: (UTC+08:00) Beijing, Chongqing, Hong Kong, Urumqi
+    note: To check timezone is correct or not
+    result: pass
+    step_name: timezone_check
+  - actual: win10
+    expect: win10
+    note: To check os_type is correct or not
+    result: pass
+    step_name: os_type_check
+  - actual: L41 v01.11
+    expect: Q70 Ver. 01.04.02
+    note: To check bios is correct or not
+    result: fail
+    step_name: bios_check
+  uut_name: 15.83.250.20
+- case_name: print_hello
+  result: pass
+  steps:
+  - actual: hello_world
+    expect: hello_world
+    note: print hello world
+    result: pass
+    step_name: print_hello_step1
+  uut_name: 15.83.250.20
+- case_name: check_basic_info
+  result: fail
+  steps:
+  - actual: img/123.png
+    expect: img/123.jpg
+    note: Just test view image function, no other meaning
+    result: fail
+    step_name: image_test
+  - actual: 15.83.250.20
+    expect: 15.83.248.208
+    note: To check ip is correct or not
+    result: fail
+    step_name: ip_check
+  - actual: "(UTC+08:00) \u5317\u4EAC\uFF0C\u91CD\u5E86\uFF0C\u9999\u6E2F\u7279\u522B\
+      \u884C\u653F\u533A\uFF0C\u4E4C\u9C81\u6728\u9F50"
+    expect: (UTC+08:00) Beijing, Chongqing, Hong Kong, Urumqi
+    note: To check timezone is correct or not
+    result: pass
+    step_name: timezone_check
+  - actual: win10
+    expect: win10
+    note: To check os_type is correct or not
+    result: pass
+    step_name: os_type_check
+  - actual: L41 v01.11
+    expect: Q70 Ver. 01.04.02
+    note: To check bios is correct or not
+    result: fail
+    step_name: bios_check
+  uut_name: 15.83.250.20

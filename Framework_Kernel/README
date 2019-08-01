@@ -187,6 +187,7 @@
             __final_data(self)
             __final_data_2(self):
             __result(self)
+            remove_report_folder(task_report_path)
             
         class Email
             zip_result_package(self, result_path, name)

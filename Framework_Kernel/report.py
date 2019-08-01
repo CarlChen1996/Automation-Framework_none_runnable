@@ -16,6 +16,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.image import MIMEImage
 from email.header import Header
+import shutil
 
 
 class Report:
@@ -203,6 +204,10 @@ class Report:
                                'Report\\{}\\result.yaml'.format(self.__name)), 'w', encoding='utf-8') as g:
             yaml.dump(result, g)
             # print(g)
+
+    @staticmethod
+    def remove_report_folder(task_report_path):
+        shutil.rmtree(task_report_path)
 
 
 class Email:

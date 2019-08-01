@@ -1,10 +1,15 @@
+# -*- coding: utf-8 -*-
+# @Time    : 7/31/2019 6:00 PM
+# @Author  : Kit.Liu
+# @Email   : jie.liu1@hp.com
+# @File    : test_assemble_engine.py
+# @Project : Automation-Framework
 from Framework_Kernel import assemble_engine
 from Framework_Kernel.task import Task
 from multiprocessing import Pipe
 from unittest.mock import patch
 import unittest
 import os
-
 
 '''
 setUp: Instantiated pipe, instantiated Assemble Engine
@@ -27,6 +32,8 @@ class AssembleEngineTest(unittest.TestCase):
         self.assemble = assemble_engine.AssembleEngine(self.pipe[0], self.build_list)
         self.task_name = 'task_1'
         self.task = Task(name=self.task_name)
+        self.excel_name = '.\\Configuration\\test_plan\\TEST_PLAN_unittest.xlsx'
+        self.loaded_excel = '.\\Configuration\\test_plan\\Loaded_TEST_PLAN_unittest.xlsx'
 
     def scan_folder(self):
         excel_list = []
@@ -35,14 +42,12 @@ class AssembleEngineTest(unittest.TestCase):
         return excel_list
 
     def test_1_scan_folder(self):
-        if os.path.exists('.\\Configuration\\test_plan\\Loaded_TEST_PLAN_unittest.xlsx'):
-            os.rename('.\\Configuration\\test_plan\\Loaded_TEST_PLAN_unittest.xlsx',
-                      '.\\Configuration\\test_plan\\TEST_PLAN_unittest.xlsx')
-            self.assertIn('TEST_PLAN_unittest.xlsx', self.scan_folder())
-            os.rename('.\\Configuration\\test_plan\\TEST_PLAN_unittest.xlsx',
-                      '.\\Configuration\\test_plan\\Loaded_TEST_PLAN_unittest.xlsx')
+        if os.path.exists(self.loaded_excel):
+            os.rename(self.loaded_excel, self.excel_name)
+            self.assertIn(os.path.basename(self.excel_name), self.scan_folder())
+            os.rename(self.excel_name, self.loaded_excel)
         else:
-            self.assertIn('Loaded_TEST_PLAN_unittest.xlsx', self.scan_folder())
+            self.assertIn(os.path.basename(self.loaded_excel), self.scan_folder())
 
     @patch('Framework_Kernel.assemble_engine.AssembleEngine.generate_task')
     def test_2_get_task_when_task_exist(self, generate_task):
