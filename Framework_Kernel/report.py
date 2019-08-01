@@ -237,8 +237,8 @@ class Email:
         msg['From'] = self.sender
         msg['To'] = ";".join(self.receiver)
         #正文
-        text = """Hi,\n\nYour test has been completed, please refer to the attachment
-         for details.\n\nOpen the *.html to check result\n\nBest regards"""
+        text = """Hi,\n\nYour test has been completed, please refer to the attachment for details.
+Open the *.html to check result\n\nBest regards"""
         text_plain = MIMEText(text, 'plain', 'utf-8')
         msg.attach(text_plain)
         #附件
