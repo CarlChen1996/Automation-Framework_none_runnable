@@ -105,40 +105,39 @@ class Report:
         data_dict = {}
         test_uut_list = []
         final_data = []
-        f = open(file, encoding='utf-8')
-        source_data = yaml.safe_load(f.read())
+        with open(file, encoding='utf-8') as f:
+            source_data = yaml.safe_load(f)
 
-        for each_result in source_data:
-            if each_result['uut_name'] not in test_uut_list:
-                test_uut_list.append(each_result['uut_name'])
+            for each_result in source_data:
+                if each_result['uut_name'] not in test_uut_list:
+                    test_uut_list.append(each_result['uut_name'])
 
-        for uut_name in test_uut_list:
-            # [uut, case[], pass, fail, norun, total]
-            final_data.append([uut_name, [], 0, 0, 0, 0])
-        # print(test_uut_list)
-        for each_result in source_data:
-            # k = [uut_name , [], 0, 0, 0, 0]
-            for each_uut_result in final_data:
-                if each_result['uut_name'] == each_uut_result[0]:
-                    index = final_data.index(each_uut_result)
-                    final_data[index][1].append(each_result)
-                    if each_result['result'].upper() == 'PASS':
-                        final_data[index][2] += 1
-                        passed_case_number += 1
-                    if each_result['result'].upper() == 'FAIL':
-                        final_data[index][3] += 1
-                        failed_case_number += 1
-                    if each_result['result'].upper() == 'NORUN':
-                        final_data[index][4] += 1
-                        norun_case_number += 1
-                    final_data[index][5] += 1
-        total_case_number = passed_case_number + failed_case_number + norun_case_number
-        data_dict['final_data'] = final_data
-        data_dict['passCount'] = passed_case_number
-        data_dict['failCount'] = failed_case_number
-        data_dict['norunCount'] = norun_case_number
-        data_dict['count'] = total_case_number
-        f.close()
+            for uut_name in test_uut_list:
+                # [uut, case[], pass, fail, norun, total]
+                final_data.append([uut_name, [], 0, 0, 0, 0])
+            # print(test_uut_list)
+            for each_result in source_data:
+                # k = [uut_name , [], 0, 0, 0, 0]
+                for each_uut_result in final_data:
+                    if each_result['uut_name'] == each_uut_result[0]:
+                        index = final_data.index(each_uut_result)
+                        final_data[index][1].append(each_result)
+                        if each_result['result'].upper() == 'PASS':
+                            final_data[index][2] += 1
+                            passed_case_number += 1
+                        if each_result['result'].upper() == 'FAIL':
+                            final_data[index][3] += 1
+                            failed_case_number += 1
+                        if each_result['result'].upper() == 'NORUN':
+                            final_data[index][4] += 1
+                            norun_case_number += 1
+                        final_data[index][5] += 1
+            total_case_number = passed_case_number + failed_case_number + norun_case_number
+            data_dict['final_data'] = final_data
+            data_dict['passCount'] = passed_case_number
+            data_dict['failCount'] = failed_case_number
+            data_dict['norunCount'] = norun_case_number
+            data_dict['count'] = total_case_number
         return data_dict
 
     # group by case
@@ -150,41 +149,40 @@ class Report:
         data_dict_2 = {}
         test_case_list = []
         final_data_2 = []
-        f = open(file, encoding='utf-8')
-        source_data = yaml.safe_load(f.read())
+        with open(file, encoding='utf-8') as f:
+            source_data = yaml.safe_load(f)
 
-        for each_result in source_data:
-            if each_result['case_name'] not in test_case_list:
-                test_case_list.append(each_result['case_name'])
+            for each_result in source_data:
+                if each_result['case_name'] not in test_case_list:
+                    test_case_list.append(each_result['case_name'])
 
-        for case_name in test_case_list:
-            # [case_name, uut[], pass, fail, norun, total]
-            final_data_2.append([case_name, [], 0, 0, 0, 0])
-        # print(test_uut_list)
+            for case_name in test_case_list:
+                # [case_name, uut[], pass, fail, norun, total]
+                final_data_2.append([case_name, [], 0, 0, 0, 0])
+            # print(test_uut_list)
 
-        for each_result in source_data:
-            # print(each_result)
-            for each_case_result in final_data_2:
-                if each_result['case_name'] == each_case_result[0]:
-                    index = final_data_2.index(each_case_result)
-                    final_data_2[index][1].append(each_result)
-                    if each_result['result'].upper() == 'PASS' :
-                        final_data_2[index][2] += 1
-                        passed_case_number += 1
-                    if each_result['result'].upper() == 'FAIL' :
-                        final_data_2[index][3] += 1
-                        failed_case_number += 1
-                    if each_result['result'].upper() == 'NORUN' :
-                        final_data_2[index][4] += 1
-                        norun_case_number += 1
-                    final_data_2[index][5] += 1
-        total_case_number = passed_case_number + failed_case_number + norun_case_number
-        data_dict_2['final_data_2'] = final_data_2
-        data_dict_2['passCount'] = passed_case_number
-        data_dict_2['failCount'] = failed_case_number
-        data_dict_2['norunCount'] = norun_case_number
-        data_dict_2['count'] = total_case_number
-        f.close()
+            for each_result in source_data:
+                # print(each_result)
+                for each_case_result in final_data_2:
+                    if each_result['case_name'] == each_case_result[0]:
+                        index = final_data_2.index(each_case_result)
+                        final_data_2[index][1].append(each_result)
+                        if each_result['result'].upper() == 'PASS' :
+                            final_data_2[index][2] += 1
+                            passed_case_number += 1
+                        if each_result['result'].upper() == 'FAIL' :
+                            final_data_2[index][3] += 1
+                            failed_case_number += 1
+                        if each_result['result'].upper() == 'NORUN' :
+                            final_data_2[index][4] += 1
+                            norun_case_number += 1
+                        final_data_2[index][5] += 1
+            total_case_number = passed_case_number + failed_case_number + norun_case_number
+            data_dict_2['final_data_2'] = final_data_2
+            data_dict_2['passCount'] = passed_case_number
+            data_dict_2['failCount'] = failed_case_number
+            data_dict_2['norunCount'] = norun_case_number
+            data_dict_2['count'] = total_case_number
         return data_dict_2
 
     # get all uut result
