@@ -38,8 +38,7 @@ class ConfigurationEngine(Engine):
         env_host = os.path.join((os.path.abspath(r".\Configuration")),
                                 "env_host.yml")
         analyze = Analyzer([env_host])
-        env_host_res = analyze.load()
-        env_host_data = analyze.generate(env_host_res)
+        env_host_data = analyze.generate()
         build_host_data = env_host_data[0].get(env_host)[0]
         deploy_host_data = env_host_data[0].get(env_host)[1]
         b_ip = build_host_data.get("ip")
