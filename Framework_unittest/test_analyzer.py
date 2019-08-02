@@ -35,10 +35,10 @@ class AnalyzerTest(unittest.TestCase):
         os.rename(self.excel_name, self.loaded_excel)
 
     @patch('Common_Library.file.XlsxFile.read', return_value=excel_content)
-    def test_load_excel(self, excel_read):
+    def test_generate_excel(self, excel_read):
         file_list = [self.excel_name]
         excel_list = analyzer.Analyzer(file_list)
-        self.assertEqual(excel_list.load(), [{file_list[0]: excel_read.return_value}])
+        self.assertEqual(excel_list.generate(), [{file_list[0]: excel_read.return_value}])
 
     def test_read_excel(self):
         excel_file = file.XlsxFile(os.path.dirname(self.excel_name), os.path.basename(self.excel_name))

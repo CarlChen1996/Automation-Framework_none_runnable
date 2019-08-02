@@ -12,9 +12,9 @@ import unittest
 
 '''
 setUp: Instantiated pipe and send task, instantiated Execution Engine
-test_1_add_task_to_execution: when add task to queue in Execution Engine, insert_task can be called
-test_2_add_task_to_execution: add task to execution queue after pipe receive task
-test_3_send_signal: Execution Engine can send signal after pipe receive task
+test_add_task_to_execution_mock: when add task to queue in Execution Engine, insert_task can be called
+test_add_task_to_execution: add task to execution queue after pipe receive task
+test_send_signal: Execution Engine can send signal after pipe receive task
 '''
 
 
@@ -28,16 +28,16 @@ class ExecutionEngineTest(unittest.TestCase):
         self.pipe[1].send(self.task)
 
     @patch('Framework_Kernel.queue_task.Queue.insert_task')
-    def test_1_add_task_to_execution(self, insert_task):
+    def test_add_task_to_execution_mock(self, insert_task):
         self.execution.insert_task_to_queue()
         insert_task.assert_called_once()
 
-    def test_2_add_task_to_execution(self):
+    def test_add_task_to_execution(self):
         self.assertEqual(self.execution.execution_queue.get_task_list(), [])
         self.execution.insert_task_to_queue()
         self.assertEqual(self.execution.execution_queue.get_task_list()[0].get_name(), self.task_name)
 
-    def test_3_send_signal(self):
+    def test_send_signal(self):
         self.execution.insert_task_to_queue()
         self.assertEqual(self.pipe[1].recv(), self.task_name)
 

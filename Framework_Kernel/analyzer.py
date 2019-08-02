@@ -27,6 +27,7 @@ class Analyzer:
         else:
             assemble_log.info('Unknown file format {}'.format(file))
             res = False
+            return res
         f.close(file_handle)
         return res
 

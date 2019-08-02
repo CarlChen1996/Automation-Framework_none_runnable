@@ -138,7 +138,7 @@ class Report:
         data_dict['failCount'] = failed_case_number
         data_dict['norunCount'] = norun_case_number
         data_dict['count'] = total_case_number
-
+        f.close()
         return data_dict
 
     # group by case
@@ -184,7 +184,7 @@ class Report:
         data_dict_2['failCount'] = failed_case_number
         data_dict_2['norunCount'] = norun_case_number
         data_dict_2['count'] = total_case_number
-
+        f.close()
         return data_dict_2
 
     # get all uut result
