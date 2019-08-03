@@ -10,8 +10,8 @@
         
     Analyzer.py
         class Analyzer
-            load(self)
-            generate(self, res_list)
+            load(self, file)
+            generate(self)
             
             
     Assemble_engine.py
