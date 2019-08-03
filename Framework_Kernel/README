@@ -30,13 +30,12 @@
 
     Configuration_engine.py
         class ConfigurationEngine(Engine)
-            start(self, build_list=None, deploy_list=None)
-            start_thread(self, send_con)
+            start(self)
+            get_server_list(self)
+            __initial_server(self, server_item)
+            validate_server(self, server)
+            run(self)
             stop(self)
-
-    Configurator.py
-        class Configurator
-            config(self)
 
     Execution_engine.py
         class ExecutionEngine(Engine)
