@@ -26,7 +26,7 @@ def run_with_manual_mode():
     while True:
         if manual_mode_first_selection == "01":  # start config engine
             controller_log.info("start config")
-            instance_config_engine.start(build_server_list, deploy_list)
+            instance_config_engine.start()
             controller_log.info("config pid is {}".format(
                 instance_config_engine.status.pid))
             is_framework_configured = True
@@ -96,7 +96,7 @@ def run_with_manual_mode():
 def run_with_auto_mode():
     controller_log.info("Framework will be initialized automatically")
     controller_log.info('start configuration engine')
-    instance_config_engine.start(build_server_list, deploy_list)
+    instance_config_engine.start()
     controller_log.info("configurator  finished")
     print('==============start assemble engine======================')
     controller_log.info('start assemble engine')

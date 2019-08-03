@@ -1,5 +1,7 @@
 ---
 -   
+    os: windows
+    function: build
     hostname: windows_build_server1
     ip: 15.83.248.200
     mac: 27832784292
@@ -9,6 +11,8 @@
     domain: sh
     
 -   
+    os: windows
+    function: deploy
     hostname: windows_deploy_server1
     ip: 15.83.248.251
     mac: 5666666

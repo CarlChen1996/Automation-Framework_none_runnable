@@ -5,6 +5,7 @@
 # @File    : Validator.py
 # @Project : Automation-Framework
 
+
 class Validator:
     def validate(self, name):
         print('validate finished')
