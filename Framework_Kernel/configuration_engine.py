@@ -20,6 +20,7 @@ class ConfigurationEngine(Engine):
         self.receive_signal, self.send_signal = Pipe()
         self.config_server_list = os.path.join(
             (os.path.abspath(r".\Configuration")), "config_server_list.yml")
+        self.list_status = False
 
     def start(self):
         self.build_server_list.clear()
@@ -36,6 +37,8 @@ class ConfigurationEngine(Engine):
             elif isinstance(valid_server, WindowsDeployHost):
                 self.deploy_server_list.append(valid_server)
                 configuration_log.info("Add Windows Deploy Host {}".format(valid_server.get_hostname()))
+        self.list_status = True
+        return self.list_status
 
     def get_server_list(self):
         server_set_analyzer = Analyzer([self.config_server_list])

@@ -100,6 +100,10 @@ def run_with_auto_mode():
     controller_log.info("configurator  finished")
     print('==============start assemble engine======================')
     controller_log.info('start assemble engine')
+
+    while not instance_config_engine.list_status:
+        time.sleep(5)
+        controller_log.info('Server list not ready, wait for 5 seconds')
     instance_assemble_engine.start()
     controller_log.info('assemble finished')
     print('=================start execution engine=====================')
@@ -159,9 +163,10 @@ def keep_executor_alive():
 if __name__ == '__main__':
     pipe = Pipe()
     controller_log.info('Begin to start controller')
-    build_server_list = []
-    deploy_list = []
+
     instance_config_engine = configuration_engine.ConfigurationEngine()
+    build_server_list = instance_config_engine.build_server_list
+    deploy_list = instance_config_engine.deploy_server_list
     instance_assemble_engine = assemble_engine.AssembleEngine(
         pipe[0], build_server_list)
     instance_execution_engine = execution_engine.ExecutionEngine(
