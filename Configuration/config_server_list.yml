@@ -1,22 +1,19 @@
----
--   
-    os: windows
-    function: build
-    hostname: windows_build_server1
-    ip: 15.83.248.200
-    mac: 27832784292
-    version: 1.0
-    username: bamboo
-    password: 1177eafe586b4459f7410f9abb393e15f2
-    domain: sh
-    
--   
-    os: windows
-    function: deploy
-    hostname: windows_deploy_server1
-    ip: 15.83.248.251
-    mac: 5666666
-    version: 1.0
-    username: Administrator
-    password: Shanghai2010
-    domain:
+- os: windows
+  function: build
+  hostname: windows_build_server1
+  ip: 15.83.248.200
+  mac: 27832784292
+  version: 1.0
+  username: bamboo
+  password: 1177eafe586b4459f7410f9abb393e15f2
+  domain: sh  
+ 
+- os: windows
+  function: deploy
+  hostname: windows_deploy_server1
+  ip: 15.83.248.251
+  mac: 5666666
+  version: 1.0
+  username: Administrator
+  password: Shanghai2010
+  domain:
