@@ -1,0 +1,5 @@
+ftp_server:
+  server: '15.83.248.251'
+  username: 'automation'
+  password: 'Shanghai2010'
+  base_Path: '/Repository/Files/Captured'

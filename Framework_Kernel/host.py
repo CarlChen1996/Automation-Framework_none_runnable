@@ -4,9 +4,10 @@
 # @Email   : Bamboo.pan@hp.com
 # @File    : test.py
 # @Project : demo
-import sys
+import sys,os
 from Framework_Kernel.log import assemble_log,execution_log
-from Framework_Kernel import jenkins_class, QTPutils
+from Framework_Kernel import jenkins_class, QTPutils,ftp_tools
+from Common_Library import file
 
 
 class Host:
@@ -143,6 +144,20 @@ class Build:
         os_type=self.get_os_type(task)
         self.jenkins_build(task, os_type,self._Host__ip,self._Host__username,self._Host__password)
         self.log.info('build ' + task.get_name() + task.get_status())
+        self.generate_scripts_config(task)
+
+
+    def generate_scripts_config(self,task):
+        self.log.info("generate script config file")
+        scripts_config=os.path.join(os.getcwd(),'script.yml')
+        scripts=[{i.get_name():i.get_status()} for i in task.get_script_list()]
+        file.YamlFile.save(scripts,scripts_config)
+        store_dir=os.path.join(os.path.dirname(task.get_exe_file_list()[0]),'test_data')
+        self.log.info("upload script config file to {}".format(store_dir))
+        remote_base_path=store_dir
+        ftp1=ftp_tools.FTPUtils(base_Path=remote_base_path)
+        ftp1.upload(scripts_config,'script.yml')
+        ftp1.close()
 
 
 class Deploy:

@@ -125,6 +125,10 @@ class YamlFile(File):
     def close(self, file_handle):
         file_handle.close()
 
+    @staticmethod
+    def save(data,save_path):
+        with open(save_path , "w") as f:
+            yaml.safe_dump(data,f)
 
 class HtmlFile(File):
     pass
