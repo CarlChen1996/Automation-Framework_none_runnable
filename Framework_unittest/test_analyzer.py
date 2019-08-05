@@ -26,8 +26,8 @@ excel_content = {
 
 class AnalyzerTest(unittest.TestCase):
     def setUp(self):
-        self.excel_name = '.\\Configuration\\test_plan\\TEST_PLAN_unittest.xlsx'
-        self.loaded_excel = '.\\Configuration\\test_plan\\Loaded_TEST_PLAN_unittest.xlsx'
+        self.excel_name = '.\\Test_Plan\\TEST_PLAN_unittest.xlsx'
+        self.loaded_excel = '.\\Test_Plan\\Loaded_TEST_PLAN_unittest.xlsx'
         if os.path.exists(self.loaded_excel):
             os.rename(self.loaded_excel, self.excel_name)
 

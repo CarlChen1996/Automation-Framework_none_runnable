@@ -15,8 +15,8 @@ import os
 setUp: Instantiated pipe, instantiated Assemble Engine
 scan_folder: call assemble_engine to scan folder
 generate_excel_list: generate excel list to called
-test_scan_folder: scan test_plan folder
-test_get_task_when_task_exist: get task from test_plan when task exist
+test_scan_folder: scan Test_Plan folder
+test_get_task_when_task_exist: get task from Test_Plan when task exist
 test_get_task_when_task_not_exist: time.sleep was called when task not exist
 test_send_task_to_execution: sen task to execution engine by pipe
 test_get_ack_right_from_execution_engine: get right ack to remove task
@@ -34,8 +34,8 @@ class AssembleEngineTest(unittest.TestCase):
         self.assemble = assemble_engine.AssembleEngine(self.pipe[0], self.build_list)
         self.task_name = 'task_1'
         self.task = Task(name=self.task_name)
-        self.excel_name = '.\\Configuration\\test_plan\\TEST_PLAN_unittest.xlsx'
-        self.loaded_excel = '.\\Configuration\\test_plan\\Loaded_TEST_PLAN_unittest.xlsx'
+        self.excel_name = '.\\Test_Plan\\TEST_PLAN_unittest.xlsx'
+        self.loaded_excel = '.\\Test_Plan\\Loaded_TEST_PLAN_unittest.xlsx'
 
     def scan_folder(self):
         excel_list = []

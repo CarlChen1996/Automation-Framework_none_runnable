@@ -20,7 +20,7 @@ import os
 
 
 root = os.getcwd()
-plan_root = os.path.join(root, 'Configuration\\test_plan')
+plan_root = os.path.join(root, 'Test_Plan')
 
 
 class AssembleEngine(Engine):
@@ -74,9 +74,8 @@ class AssembleEngine(Engine):
         temp_list = os.listdir(plan_root)
         file_list = []
         for i in temp_list:
-            if 'loaded' in i.lower():
-                continue
-            file_list.append(os.path.join(plan_root, i))
+            if i[:10] == 'TEST_PLAN_':
+                file_list.append(os.path.join(plan_root, i))
         return file_list
 
     def get_task_from_folder(self, file_list):
