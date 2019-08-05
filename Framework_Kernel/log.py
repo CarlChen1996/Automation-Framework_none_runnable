@@ -50,7 +50,7 @@ class SafeLog(TimedRotatingFileHandler):
             self.stream = self._open()
 
     def getFilesToDelete(self):
-        #将源代码的 self.baseFilename 改为 self.origin_basename
+        #rename self.baseFilename to self.origin_basename
         dirName, baseName = os.path.split(self.origin_basename)
         fileNames = os.listdir(dirName)
         result = []
@@ -83,12 +83,12 @@ class Log:
         self.logger = logging.getLogger(name)
         '''
 
-                    name： 日志中将会打印的name，默认为''
-                    level： 设置日志的<打印>级别，默认为DEBUG
-                    log_path： 日志文件夹的路径
-                    use_console： 是否在控制台打印，默认为True
-                    separator: 自定义分隔符
-                    if_screenshot:写日志同时是否截图
+                    name： name will print in log，default:''
+                    level： set log print level，default:DEBUG
+                    log_path： log file folder path
+                    use_console： print on console or not, default:True
+                    separator: custom separator
+                    if_screenshot: take screenshot while print log
         '''
         if level.lower() == "critical":
             self.logger.setLevel(logging.CRITICAL)
