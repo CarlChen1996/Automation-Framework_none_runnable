@@ -5,18 +5,18 @@
 # @File    : ExecutionEngine.py
 # @Project : Automation-Framework
 import os
-import shutil
 from multiprocessing import Process
 import threading
 import time
 from Framework_Kernel.engine import Engine
 from Common_Library.file_transfer import FTPUtils
 from Framework_Kernel.queue_task import ExecuteQueue
+from Framework_Kernel.analyzer import Analyzer
 '''
 from Framework_Kernel.task import Task
 from Framework_Kernel.host import WindowsDeployHost, WindowsExecuteHost
 '''
-from Framework_Kernel.report import Report,Email
+from Framework_Kernel.report import Report, Email
 from Framework_Kernel.log import execution_log
 
 
@@ -85,16 +85,22 @@ class ExecutionEngine(Engine):
         # --------需要得到返回值 ------------------
         # self.__execution_queue.check_status(i)
         self.execution_queue.collect_result(i)
-
-        ftp_util = FTPUtils()
-        task_list = ftp_util.get_list()
+        # Retrive FTP Settings from configuration file
+        config_file = os.path.join(os.getcwd(), r'.\Configuration\config_framework_list.yml')
+        file_list = [config_file]
+        analyze_handler = Analyzer(file_list)
+        ftp_settings = analyze_handler.load(config_file)['ftp_settings']
+        ftp_util = FTPUtils(ftp_settings['server_address'], ftp_settings['username'], ftp_settings['password'])
+        ftp_util.change_dir(ftp_settings['result_file_path'])
+        task_list = ftp_util.get_item_list()
         for folder in task_list:
-            ftp_util.download_dir(os.path.join('.\\Report', folder), folder)
+            ftp_util.download_dir(folder, os.path.join('.\\Report', folder))
+            ftp_util.delete_dir(folder)
         ftp_util.close()
         r = Report(i.get_name(), i.get_uut_list())
         task_report_path = r.generate()
         e = Email(i.get_email())
-        e.zip_result_package(task_report_path,i.get_name())
+        e.zip_result_package(task_report_path, i.get_name())
         e.send()
         r.remove_report_folder(task_report_path)
         self.execution_queue.remove_task(i)

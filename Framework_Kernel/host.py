@@ -4,9 +4,10 @@
 # @Email   : Bamboo.pan@hp.com
 # @File    : test.py
 # @Project : demo
-import sys,os
-from Framework_Kernel.log import assemble_log,execution_log
+import sys, os
+from Framework_Kernel.log import assemble_log, execution_log
 from Framework_Kernel import jenkins_class, QTPutils
+from Framework_Kernel.analyzer import Analyzer
 from Common_Library import file, file_transfer
 
 
@@ -155,9 +156,15 @@ class Build:
         store_dir=os.path.join(os.path.dirname(task.get_exe_file_list()[0]),'test_data')
         self.log.info("upload script config file to {}".format(store_dir))
         remote_base_path=store_dir
-        ftp1=file_transfer.FTPUtils(base_Path=remote_base_path)
-        ftp1.upload(scripts_config,'script.yml')
-        ftp1.close()
+        # Retrive FTP Settings from configuration file
+        config_file = os.path.join(os.getcwd(), r'.\Configuration\config_framework_list.yml')
+        file_list = [config_file]
+        analyze_handler = Analyzer(file_list)
+        ftp_settings = analyze_handler.load(config_file)['ftp_settings']
+        ftp_util = file_transfer.FTPUtils(ftp_settings['server_address'], ftp_settings['username'], ftp_settings['password'])
+        ftp_util.change_dir(ftp_settings['result_file_path'])
+        ftp_util.upload_file(scripts_config, 'script.yml')
+        ftp_util.close()
 
 
 class Deploy:

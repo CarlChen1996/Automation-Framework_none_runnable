@@ -1,15 +1,6 @@
-ftp_server:
-  server: '15.83.248.251'
+ftp_settings:
+  server_address: '15.83.248.251'
   username: 'automation'
   password: 'Shanghai2010'
-  base_Path: '/Repository/Files/Captured'
-  package_Path: '/jenkins'
-  report_Path: '/Repository/Files/Captured'
-interval: 10
-execute_wait_cycles: 50
-
-jenkins:
-  - config_linux.xml
-  - config_win.xml
-server_list: config_server_list.yml
-log: settings.py
+  executable_package_path: '/jenkins'
+  result_file_path: '/Repository/Files/Captured'
