@@ -91,8 +91,7 @@ class ExecutionEngine(Engine):
         analyze_handler = Analyzer(file_list)
         ftp_settings = analyze_handler.load(config_file)['ftp_settings']
         ftp_util = FTPUtils(ftp_settings['server_address'], ftp_settings['username'], ftp_settings['password'])
-        ftp_util.change_dir(ftp_settings['result_file_path'])
-        task_list = ftp_util.get_item_list()
+        task_list = ftp_util.get_item_list(ftp_settings['result_file_path'])
         for folder in task_list:
             ftp_util.download_dir(folder, os.path.join('.\\Report', folder))
             ftp_util.delete_dir(folder)

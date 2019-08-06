@@ -162,7 +162,7 @@ class Build:
         analyze_handler = Analyzer(file_list)
         ftp_settings = analyze_handler.load(config_file)['ftp_settings']
         ftp_util = file_transfer.FTPUtils(ftp_settings['server_address'], ftp_settings['username'], ftp_settings['password'])
-        ftp_util.change_dir(ftp_settings['result_file_path'])
+        ftp_util.change_dir(remote_base_path)
         ftp_util.upload_file(scripts_config, 'script.yml')
         ftp_util.close()
 
