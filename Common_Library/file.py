@@ -73,7 +73,7 @@ class XlsxFile(File):
         uut_list = []
         for i in range(2, self.get_rows(uut_sheet) + 1):
             uut_dic = {}
-            for j in range(1, self.get_rows(uut_sheet) + 1):
+            for j in range(1, self.get_cols(uut_sheet) + 1):
                 uut_dic[uut_sheet.cell(row=1, column=j).value.lower()] = uut_sheet.cell(row=i, column=j).value.lower()
             uut_list.append(uut_dic)
         dic['uutlist'] = uut_list
