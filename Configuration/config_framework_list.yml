@@ -3,3 +3,13 @@ ftp_server:
   username: 'automation'
   password: 'Shanghai2010'
   base_Path: '/Repository/Files/Captured'
+  package_Path: '/jenkins'
+  report_Path: '/Repository/Files/Captured'
+interval: 10
+execute_wait_cycles: 50
+
+jenkins:
+  - config_linux.xml
+  - config_win.xml
+server_list: config_server_list.yml
+log: settings.py
