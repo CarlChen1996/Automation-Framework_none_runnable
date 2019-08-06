@@ -30,7 +30,6 @@ class AssembleEngine(Engine):
         self.tasklist = []
         self.__build_list = build_list
 
-
     def start(self):
         self.__assembler = Process(target=self.start_thread,
                                    name='framework_Assembler',
@@ -43,7 +42,6 @@ class AssembleEngine(Engine):
         self.__assembler.terminate()
 
     def start_thread(self):
-
         refreshQ_thread = threading.Thread(target=self.__fresh_queue_testplan,
                                            name='fresh_queue_testplan',
                                            args=())
