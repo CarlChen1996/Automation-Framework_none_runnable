@@ -126,7 +126,7 @@ if __name__ == '__main__':
     # ftp.new_dir('test_new_dir')
     # ftp.download_file('test2.txt', r'c:\test\test2.txt')
     # ftp.download_dir('test1', r'c:\test\test1_new')
-    # ftp.change_dir('test1/test1-1')  
+    # ftp.change_dir('test1/test1-1')
     # ftp.change_directory('test1-1')
     # print(ftp.get_working_dir())
     # for item in ftp.get_item_list(''):

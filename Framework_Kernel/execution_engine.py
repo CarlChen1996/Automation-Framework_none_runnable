@@ -108,6 +108,3 @@ class ExecutionEngine(Engine):
         execution_log.info('[thread_executor] remove {} from execute queue'.format(i.get_name()))
         execution_log.info('[thread_executor] task left in execute queue: {}'.format(len(self.execution_queue.get_task_list())))
         print('---------------------------------------------------------------')
-
-
-
