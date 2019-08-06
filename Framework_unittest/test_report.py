@@ -18,8 +18,8 @@ test_generate_report: generate a .html file based on the result.yaml
 
 class ReportTest(unittest.TestCase):
     def setUp(self):
-        self.static_folder = '.\\Report\\task_for_unittest\\static'
-        self.html = '.\\Report\\task_for_unittest\\task_for_unittest.html'
+        self.static_folder = '.\\Report\\report_for_unittest\\static'
+        self.html = '.\\Report\\report_for_unittest\\report_for_unittest.html'
         if os.path.exists(self.static_folder):
             shutil.rmtree(self.static_folder)
         if os.path.exists(self.html):
@@ -33,6 +33,6 @@ class ReportTest(unittest.TestCase):
         os.remove(self.html)
 
     def test_generate_report(self):
-        test_report = report.Report("task_for_unittest", self.host_list)
+        test_report = report.Report("report_for_unittest", self.host_list)
         test_report.generate()
-        self.assertIn("task_for_unittest.html", os.listdir(".\\Report\\task_for_unittest"))
+        self.assertIn("report_for_unittest.html", os.listdir(".\\Report\\report_for_unittest"))

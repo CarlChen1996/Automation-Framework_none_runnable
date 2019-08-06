@@ -74,7 +74,11 @@ class XlsxFile(File):
         for i in range(2, self.get_rows(uut_sheet) + 1):
             uut_dic = {}
             for j in range(1, self.get_cols(uut_sheet) + 1):
+                if uut_sheet.cell(row=i, column=j).value is None:
+                    continue
                 uut_dic[uut_sheet.cell(row=1, column=j).value.lower()] = uut_sheet.cell(row=i, column=j).value.lower()
+            if len(uut_dic) != self.get_cols(uut_sheet):
+                continue
             uut_list.append(uut_dic)
         dic['uutlist'] = uut_list
         scripts_sheet = excel_handle['scripts']
@@ -85,7 +89,7 @@ class XlsxFile(File):
         for key in scripts_dic.keys():
             if scripts_dic[key] == 'Y':
                 scripts_list.append(key)
-        dic['testscripts'] = scripts_list
+        dic['testscripts'] = list(filter(None, scripts_list))
         return dic
 
 
