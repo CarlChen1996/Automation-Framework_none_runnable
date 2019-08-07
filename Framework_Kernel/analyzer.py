@@ -5,8 +5,8 @@
 # @File    : Analyzer.py
 # @Project : demo
 import os
-from Common_Library.file import YamlFile
-from Common_Library.file import XlsxFile
+from Common_Library.file_operator import YamlFile
+from Common_Library.file_operator import XlsxFile
 from Framework_Kernel.log import assemble_log
 
 

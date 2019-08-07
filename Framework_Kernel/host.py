@@ -8,7 +8,7 @@ import sys, os
 from Framework_Kernel.log import assemble_log, execution_log
 from Framework_Kernel import jenkins_class, QTPutils
 from Framework_Kernel.analyzer import Analyzer
-from Common_Library import file, file_transfer
+from Common_Library import file_operator, file_transfer
 
 
 class Host:

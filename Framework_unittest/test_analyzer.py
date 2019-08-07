@@ -5,7 +5,7 @@
 # @File    : test_analyzer.py
 # @Project : Automation-Framework
 from Framework_Kernel import analyzer
-from Common_Library import file
+from Common_Library import file_operator
 from unittest.mock import patch
 import os
 import unittest
