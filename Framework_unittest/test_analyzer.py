@@ -19,8 +19,7 @@ test_read_excel: read excel by function file.XlsxFile.read
 
 excel_content = {
     'name': 'task_1', 'email': ['jie.liu1@hp.com'], 'needbuild': True, 'repository': 'https://hp.com',
-    'uutlist': [{'ip': '15.83.250.1', 'mac': '13354k31sa', 'os': 'wes7p'},
-                {'ip': '15.83.250.2', 'mac': '13354k31sb', 'os': 'wes7p'}],
+    'uutlist': [{'ip': '15.83.250.1', 'mac': '13354k31sa', 'os': 'wes7p'}],
     'testscripts': ['script2', 'script4', 'script3', 'script6']}
 
 
