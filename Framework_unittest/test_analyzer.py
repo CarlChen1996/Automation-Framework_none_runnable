@@ -33,11 +33,11 @@ class AnalyzerTest(unittest.TestCase):
     def tearDown(self):
         os.rename(self.excel_name, self.loaded_excel)
 
-    @patch('Common_Library.file.XlsxFile.read', return_value=excel_content)
+    @patch('Common_Library.file_operator.XlsxFile.read', return_value=excel_content)
     def test_generate_excel(self, excel_read):
         file_list = [self.excel_name]
-        excel_list = analyzer.Analyzer(file_list)
-        self.assertEqual(excel_list.generate(), [{file_list[0]: excel_read.return_value}])
+        excel_list = analyzer.Analyzer()
+        self.assertEqual(excel_list.analyze_files_in_list(file_list), [{file_list[0]: excel_read.return_value}])
 
     def test_read_excel(self):
         excel_file = file_operator.XlsxFile(os.path.dirname(self.excel_name), os.path.basename(self.excel_name))

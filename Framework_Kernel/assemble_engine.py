@@ -19,7 +19,6 @@ import time
 import threading
 import os
 
-
 root = os.getcwd()
 plan_root = os.path.join(root, 'Test_Plan')
 
@@ -153,10 +152,12 @@ class AssembleEngine(Engine):
                     time.sleep(1)
                     continue
             elif task.get_status() != '':
-                    self.assembleQueue.remove_task(task)
-                    e = Email(task.get_email())
-                    e.send_message()
-                    assemble_log.error('[send_task_to_execution] !!!ERROR ERROR!!!, {} is removed from assemble queue'.format(task.get_name()))
+                self.assembleQueue.remove_task(task)
+                e = Email(task.get_email())
+                e.send_message()
+                assemble_log.error(
+                    '[send_task_to_execution] !!!ERROR ERROR!!!, {} is removed from assemble queue'.format(
+                        task.get_name()))
         time.sleep(3)
 
     def get_signal_after_send(self, task):
@@ -187,13 +188,13 @@ class AssembleEngine(Engine):
                             h_validator.validate_uut(uut)
                         s_validator.validate(task)
                         self.assembleQueue.assemble(task, b_host)
-                        print(20*'*')
-                        print(task.get_status(),task.get_exe_file_list())
+                        print(20 * '*')
+                        print(task.get_status(), task.get_exe_file_list())
                         print(20 * '*')
                         task.set_state('Assemble Finished')
                         assemble_log.info(
-                            '[thread_assemble_task] **************{} assemble finished****************'.
-                                format(task.get_name()))
+                            '[thread_assemble_task] **************{} assemble finished****************'.format(
+                                task.get_name()))
             except Exception as e:
                 print(e)
             # print(

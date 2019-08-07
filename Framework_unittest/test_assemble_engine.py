@@ -18,12 +18,14 @@ generate_excel_list: generate excel list to called
 test_scan_folder: scan Test_Plan folder
 test_get_task_when_task_exist: get task from Test_Plan when task exist
 test_get_task_when_task_not_exist: time.sleep was called when task not exist
-test_send_task_to_execution: sen task to execution engine by pipe
+test_send_task_to_execution_true: send task to execution engine by pipe while task was assembled finish
+test_send_task_to_execution_false: remove task while task was assembled fail
 test_get_ack_right_from_execution_engine: get right ack to remove task
 test_get_ack_wrong_from_execution_engine: get wrong ack will do nothing
 test_remove_task_from_assemble_queue: remove task from assemble queue after get right ack
 test_initial_task: initial_task after task has been load
 test_add_task_to_assemble_queue: add task to assemble queue after initial task
+test_send_task_to_execution_true
 '''
 
 
@@ -72,13 +74,21 @@ class AssembleEngineTest(unittest.TestCase):
         sleep_mock.assert_called_once()
 
     @patch('Framework_Kernel.assemble_engine.AssembleEngine.get_signal_after_send')
-    def test_send_task_to_execution(self, send_task):
+    def test_send_task_to_execution_true(self, send_task):
+        self.task.set_status('SUCCESS')
         self.task.set_state("ASSEMBLE FINISHED")
         self.assemble.assembleQueue.insert_task(task=self.task)
         self.assemble.send_task_to_execution()
         send_task.assert_called_once_with(self.task)
         receive_task = self.pipe[1].recv()
         self.assertEqual(receive_task.get_name(), self.task_name)
+
+    @patch('Framework_Kernel.queue_task.Queue.remove_task')
+    def test_send_task_to_execution_false(self, remove_task):
+        self.task.set_status('SUCCES')
+        self.assemble.assembleQueue.insert_task(task=self.task)
+        self.assemble.send_task_to_execution()
+        remove_task.assert_called_once_with(self.task)
 
     @patch('Framework_Kernel.queue_task.Queue.remove_task')
     def test_get_ack_right_from_execution_engine(self, remove):
