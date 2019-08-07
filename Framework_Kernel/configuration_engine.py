@@ -80,11 +80,11 @@ class ConfigurationEngine(Engine):
     def validate_server(self, server):
         validator = HostValidator()
         validation_result = False
+        if isinstance(server, WindowsBuildHost):
+            validation_result = validator.validate_build_server(server)
+        elif isinstance(server, WindowsDeployHost):
+            validation_result = validator.validate_deploy_server(server)
         # TODO Need to check more here
-        if validator.validate(server):
-            server.status = "on"
-            validation_result = True
-        validator = None
         return validation_result
 
     def run(self):

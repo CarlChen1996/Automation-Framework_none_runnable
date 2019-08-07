@@ -188,18 +188,20 @@ class Report:
     # get all uut result
     def __result(self):
         result = []
+        result_file = os.path.join(os.getcwd(), 'Report\\{}\\result.yaml'.format(self.__name))
         for i in self.__uut_list:
             uut_result_file = os.path.join(os.getcwd(), 'Report\\{}\\{}\\test_report\\{}.yaml'.format(self.__name, i.get_ip(), i.get_ip()))
             if not os.path.exists(uut_result_file):
-                a = [{'uut_name':i,'case_name':'Error','steps':[],'result':'Fail'}]
+                if not os.path.exists(os.path.dirname(result_file)):
+                    os.makedirs(os.path.dirname(result_file))
+                a = [{'uut_name': i, 'case_name': 'Error', 'steps': [], 'result':'Fail'}]
                 result.extend(a)
                 continue
             with open(uut_result_file, encoding='utf-8') as f:
                 a = yaml.safe_load(f.read())
                 result.extend(a)
 
-        with open(os.path.join(os.getcwd(),
-                               'Report\\{}\\result.yaml'.format(self.__name)), 'w', encoding='utf-8') as g:
+        with open(result_file, 'w', encoding='utf-8') as g:
             yaml.dump(result, g)
             # print(g)
 

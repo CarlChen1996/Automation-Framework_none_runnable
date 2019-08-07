@@ -177,7 +177,7 @@ class AssembleEngine(Engine):
                         task.set_state('ASSEMBLING')
                         b_host = self.__build_list[0]
                         for uut in task.get_uut_list():
-                            h_validator.validate(uut)
+                            h_validator.validate_uut(uut)
                         s_validator.validate(task)
                         self.assembleQueue.assemble(task, b_host)
                         print(20*'*')
