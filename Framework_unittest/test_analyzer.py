@@ -40,5 +40,5 @@ class AnalyzerTest(unittest.TestCase):
         self.assertEqual(excel_list.generate(), [{file_list[0]: excel_read.return_value}])
 
     def test_read_excel(self):
-        excel_file = file.XlsxFile(os.path.dirname(self.excel_name), os.path.basename(self.excel_name))
+        excel_file = file_operator.XlsxFile(os.path.dirname(self.excel_name), os.path.basename(self.excel_name))
         self.assertEqual(excel_file.read(excel_file.open()), excel_content)

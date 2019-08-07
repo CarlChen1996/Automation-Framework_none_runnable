@@ -158,7 +158,7 @@ class Build:
         self.log.info("generate script config file")
         scripts_config=os.path.join(os.getcwd(),'script.yml')
         scripts=[{i.get_name():i.get_status()} for i in task.get_script_list()]
-        file.YamlFile.save(scripts,scripts_config)
+        file_operator.YamlFile.save(scripts,scripts_config)
         store_dir=os.path.join(os.path.dirname(task.get_exe_file_list()[0]),'test_data')
         self.log.info("upload script config file to {}".format(store_dir))
         remote_base_path=store_dir
