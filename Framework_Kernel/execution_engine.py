@@ -87,9 +87,8 @@ class ExecutionEngine(Engine):
         self.execution_queue.collect_result(i)
         # Retrive FTP Settings from configuration file
         config_file = os.path.join(os.getcwd(), r'.\Configuration\config_framework_list.yml')
-        file_list = [config_file]
-        analyze_handler = Analyzer(file_list)
-        ftp_settings = analyze_handler.load(config_file)['ftp_settings']
+        analyze_hanlder = Analyzer()
+        ftp_settings = analyze_hanlder.analyze_file(config_file)['ftp_settings']
         ftp_util = FTPUtils(ftp_settings['server_address'], ftp_settings['username'], ftp_settings['password'])
         task_list = ftp_util.get_item_list(ftp_settings['result_file_path'])
         for folder in task_list:

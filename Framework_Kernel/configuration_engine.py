@@ -41,9 +41,8 @@ class ConfigurationEngine(Engine):
         return self.list_status
 
     def get_server_list(self):
-        server_set_analyzer = Analyzer([self.config_server_list])
-        server_set = server_set_analyzer.generate()
-        server_list = server_set[0][self.config_server_list]
+        server_list_analyzer = Analyzer()
+        server_list = server_list_analyzer.analyze_file(self.config_server_list)
         return server_list
 
     def __initial_server(self, server_item):

@@ -164,9 +164,8 @@ class Build:
         remote_base_path=store_dir
         # Retrive FTP Settings from configuration file
         config_file = os.path.join(os.getcwd(), r'.\Configuration\config_framework_list.yml')
-        file_list = [config_file]
-        analyze_handler = Analyzer(file_list)
-        ftp_settings = analyze_handler.load(config_file)['ftp_settings']
+        analyze_hanlder = Analyzer()
+        ftp_settings = analyze_hanlder.analyze_file(config_file)['ftp_settings']
         ftp_util = file_transfer.FTPUtils(ftp_settings['server_address'], ftp_settings['username'], ftp_settings['password'])
         ftp_util.change_dir(remote_base_path)
         ftp_util.upload_file(scripts_config, 'script.yml')

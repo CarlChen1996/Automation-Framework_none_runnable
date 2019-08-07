@@ -84,8 +84,8 @@ class AssembleEngine(Engine):
             self.generate_task(file_list)
 
     def generate_task(self, file_list):
-        analyzer = Analyzer(file_list)
-        task_data = analyzer.generate()
+        analyzer = Analyzer()
+        task_data = analyzer.analyze_files_in_list(file_list)
         # ********* put filepath into taskitem dict: key:file_path, value: file path
         task_source_list = []
         for i in task_data:
