@@ -152,11 +152,11 @@ class AssembleEngine(Engine):
                 else:
                     time.sleep(1)
                     continue
-            else:
-                self.assembleQueue.remove_task(task)
-                e = Email(task.get_email())
-                e.send_message()
-                assemble_log.error('[send_task_to_execution] !!!ERROR ERROR!!!, {} is removed from assemble queue'.format(task.get_name()))
+            elif task.get_status() != '':
+                    self.assembleQueue.remove_task(task)
+                    e = Email(task.get_email())
+                    e.send_message()
+                    assemble_log.error('[send_task_to_execution] !!!ERROR ERROR!!!, {} is removed from assemble queue'.format(task.get_name()))
         time.sleep(3)
 
     def get_signal_after_send(self, task):
