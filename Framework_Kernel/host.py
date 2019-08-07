@@ -143,6 +143,12 @@ class Build:
 
     def build_task(self, task):
         os_type=self.get_os_type(task)
+        '''
+        check scripts empty
+        '''
+        if not task.get_script_list():
+            task.set_status("FAIL")
+            return
         self.jenkins_build(task, os_type,self._Host__ip,self._Host__username,self._Host__password)
         self.log.info('build ' + task.get_name() + task.get_status())
         self.generate_scripts_config(task)
