@@ -142,14 +142,18 @@ class AssembleEngine(Engine):
 
     def send_task_to_execution(self):
         for task in self.assembleQueue.get_task_list()[:]:
-            assemble_log.info(task.get_state() + '*************************')
-            if task.get_state().upper() == "ASSEMBLE FINISHED":
-                self.__pipe.send(task)
-                assemble_log.info('[fresh_queue_execution]-Send {} to execution engine'.format(task.get_name()))
-                self.get_signal_after_send(task)
+            if task.get_status() == 'SUCCESS':
+                assemble_log.info(task.get_state() + '*************************')
+                if task.get_state().upper() == "ASSEMBLE FINISHED":
+                    self.__pipe.send(task)
+                    assemble_log.info('[send_task_to_execution]-Send {} to execution engine'.format(task.get_name()))
+                    self.get_signal_after_send(task)
+                else:
+                    time.sleep(1)
+                    continue
             else:
-                time.sleep(1)
-                continue
+                self.assembleQueue.remove_task(task)
+                assemble_log.error('[send_task_to_execution] !!!ERROR ERROR!!!, {} is removed from assemble queue'.format(task.get_name()))
         time.sleep(3)
 
     def get_signal_after_send(self, task):
