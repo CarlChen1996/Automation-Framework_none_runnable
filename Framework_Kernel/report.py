@@ -7,7 +7,7 @@
 import zipfile
 
 from jinja2 import Environment, FileSystemLoader
-from Framework_Kernel.log import execution_log
+from Framework_Kernel.log import execution_log,assemble_log
 import yaml
 import os
 import shutil
@@ -260,16 +260,34 @@ Open the *.html to check result\n\nBest regards"""
         except smtplib.SMTPException as e:
             print("Error: %s" % e)
 
+    def send_message(self,):
+        text = '''!!!BUILD ERROR!!!'''
+        msg = MIMEText(text, 'plain', 'utf-8')
+        msg['Subject'] = self.subject
+        msg['From'] = self.sender
+        msg['To'] = ";".join(self.receiver)
+        try:
+            smtp = smtplib.SMTP()
+            smtp.connect(self.smtpserver, 25)
+            smtp.sendmail(self.sender, self.receiver, msg.as_string())
+            assemble_log.info('send email success')
+            smtp.quit()
+        except smtplib.SMTPException as e:
+            print("Error: %s" % e)
+
 
 if __name__ == '__main__':
     # debug in this module should change os.getcwd() to os.path.dirname(os.getcwd()) and i.get_ip() to i
-    uut_list = ['15.83.248.208', '15.83.250.20', '15.15.15.15',]
-    r = Report(name='task_2',uut_list=uut_list)
-    r.generate()
+    # uut_list = ['15.83.248.208', '15.83.250.20', '15.15.15.15',]
+    # r = Report(name='task_2',uut_list=uut_list)
+    # r.generate()
     # e = Email('carl.chen@hp.com')
     # e.zip_result_package(r.generate(), 'task_1')
     # zip_result_package(r'E:\PycharmProjects\Automation-Framework\Report\task_1','task_1.zip')
     #
     # e=Email(receiver=['carl.chen@hp.com'],attachments_rar='E:\\PycharmProjects\\test\\log_module\\task_1.rar')
     # e.send()
+    e = Email(['carl.chen@hp.com'])
+    e.send_message()
     # pass
+

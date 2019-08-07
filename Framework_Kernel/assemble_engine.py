@@ -7,6 +7,7 @@
 from Framework_Kernel.engine import Engine
 from Framework_Kernel.queue_task import AssembleQueue
 from Framework_Kernel.analyzer import Analyzer
+from Framework_Kernel.report import Email
 from Framework_Kernel.task import Task
 from Framework_Kernel.host import WindowsExecuteHost
 from Framework_Kernel.validator import HostValidator
@@ -153,6 +154,8 @@ class AssembleEngine(Engine):
                     continue
             else:
                 self.assembleQueue.remove_task(task)
+                e = Email(task.get_email())
+                e.send_message()
                 assemble_log.error('[send_task_to_execution] !!!ERROR ERROR!!!, {} is removed from assemble queue'.format(task.get_name()))
         time.sleep(3)
 
