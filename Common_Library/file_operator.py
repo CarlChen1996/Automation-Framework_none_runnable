@@ -22,9 +22,7 @@ class File:
         print(sys._getframe().f_code.co_name + "  finished")
 
     def open(self):
-        f = open(self.file)
-        # print("open {} pass".format(file_name))
-        return f
+        print(sys._getframe().f_code.co_name + "  finished")
 
     def read(self):
         print(sys._getframe().f_code.co_name + "  finished")
