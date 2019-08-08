@@ -13,6 +13,7 @@ from lxml import etree as et
 import datetime
 import logging
 from Framework_Kernel.log import assemble_log
+from Framework_Kernel.analyzer import Analyzer
 
 
 class OS_type:
@@ -31,12 +32,19 @@ def timer(func):
 
 class Jenkins_Server():
     def __init__(self,url,id,token):
+        self.settings = self.__load_settings()
         self.url=url
         self.id=id
         self.token=token
         self.connection:jenkins.Jenkins=None
-        self.config_module_win=os.path.join(os.getcwd(),'Configuration',"config_win.xml")
-        self.config_module_linux=os.path.join(os.getcwd(),'Configuration',"config_linux.xml")
+        self.config_module_win=os.path.join(os.getcwd(), self.settings['build_job_windows'])
+        self.config_module_linux=os.path.join(os.getcwd(), self.settings['build_job_linux'])
+
+    def __load_settings(self):
+        config_file = os.path.join(os.getcwd(), r'.\Configuration\config_framework_list.yml')
+        analyer = Analyzer()
+        jenkins_settings = analyer.analyze_file(config_file)['jenkins_settings']
+        return jenkins_settings
 
     def connect(self):
         try:

@@ -4,3 +4,8 @@ ftp_settings:
   password: 'Shanghai2010'
   executable_package_path: '/jenkins'
   result_file_path: '/Repository/Files/Captured'
+
+jenkins_settings:
+  build_job_linux: 'Configuration\config_jenkins_build_job_linux.xml'
+  build_job_windows: 'Configuration\config_jenkins_build_job_windows.xml'
+  
