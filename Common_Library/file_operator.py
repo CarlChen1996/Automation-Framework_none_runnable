@@ -6,6 +6,7 @@
 # @Project : demo
 import sys
 import os
+import shutil
 import yaml
 from openpyxl import load_workbook
 
@@ -17,16 +18,11 @@ class File:
         self.file = os.path.join(self.folder_path, self.name)
         self.size = size
 
-    # TODO
-    def is_file_exist(self):
-        pass
-
     def new(self):
-        pass
+        print(sys._getframe().f_code.co_name + "  finished")
 
     def open(self):
-        file_name = os.path.join(self.folder_path, self.name)
-        f = open(file_name)
+        f = open(self.file)
         # print("open {} pass".format(file_name))
         return f
 
@@ -37,23 +33,30 @@ class File:
         print(sys._getframe().f_code.co_name + "  finished")
 
     def close(self):
-
         print(sys._getframe().f_code.co_name + " " + self.name + "  finished")
 
-    def copy(self):
-        print(sys._getframe().f_code.co_name + "  finished")
+    def copy(self, des):
+        new_file = shutil.copyfile(self.file, des)
+        return new_file
 
-    def move(self):
-        print(sys._getframe().f_code.co_name + "  finished")
+    def move(self, des):
+        new_file = shutil.move(self.file, des)
+        return new_file
 
     def delete(self):
-        print(sys._getframe().f_code.co_name + "  finished")
+        os.remove(self.file)
+        if not self.exist():
+            return True
+        else:
+            return False
 
-    def rename(self):
-        print(sys._getframe().f_code.co_name + "  finished")
+    def rename(self, new_name):
+        new_file = os.rename(self.file, os.path.join(self.folder_path, new_name))
+        return new_file
 
     def exist(self):
-        print(sys._getframe().f_code.co_name + "  finished")
+        result = os.path.isfile(self.file)
+        return result
 
 
 class XlsxFile(File):
@@ -188,37 +191,12 @@ class TxtFile(File):
 
 if __name__ == "__main__":
 
-    folder_path = "c:\\test"
-    name = "123.txt"
-    size = 0
+    folder_path = r"C:\Users\sich\Desktop\test_folder\1"
+    # tar = r"C:\Users\sich\Desktop\test_folder\1\123.txt"
+    tar = r"C:\Users\sich\Desktop\test_folder\2\1233.xlsx"
+    # name = "text_file.txt"
+    name = "test.xlsx"
 
-    # f=File(folder_path,name,size)
-    # f.open()
-    # f.read()
-    # f.close()
-
-    # sheetname="a"
-    # colum=1
-    # row=2
-    # xx=XLSX(folder_path,name,size,sheetname,row,colum)
-    # xx.open()
-    # xx._()
-    # xx.getRows()
-    # xx.close()
-
-    # subject="bamboo's mail"
-    # receiver="bamboo.pan@hp.com"
-    # sender="bamboo1@hp.com"
-    # senddate="20190501"
-    # content="test mail"
-    # attachment="123.txt"
-    #
-    # msg=MSG(folder_path,name,size,subject,receiver,sender,senddate,content,attachment)
-    # msg.open()
-    # msg.getAttanchment()
-    # msg.close()
-
-    txt = TxtFile(folder_path, name, size)
-    txt.open()
-    txt.read()
-    txt.close()
+    f = File(folder_path, name)
+    newf = f.rename('test2.xlsx')
+    print(newf)
