@@ -19,9 +19,6 @@ import time
 import threading
 import os
 
-root = os.getcwd()
-plan_root = os.path.join(root, 'Test_Plan')
-
 
 class AssembleEngine(Engine):
     def __init__(self, pipe, build_list):
@@ -29,6 +26,7 @@ class AssembleEngine(Engine):
         self.assembleQueue = AssembleQueue()
         self.tasklist = []
         self.__build_list = build_list
+        self.test_plan_folder = os.path.join(os.getcwd(), 'Test_Plan')
 
     def start(self):
         self.__assembler = Process(target=self.start_thread,
@@ -47,7 +45,8 @@ class AssembleEngine(Engine):
                                            args=())
         refreshQ_thread.setDaemon(True)
         refreshQ_thread.start()
-        refreshQ_execute = threading.Thread(target=self.__fresh_queue_execution)
+        refreshQ_execute = threading.Thread(
+            target=self.__fresh_queue_execution)
         refreshQ_execute.setDaemon(True)
         refreshQ_execute.start()
         assembler_thread = threading.Thread(target=self.__assemble,
@@ -66,14 +65,15 @@ class AssembleEngine(Engine):
             file_list = self.scan_folder()
             self.get_task_from_folder(file_list)
 
-    @staticmethod
-    def scan_folder():
-        assemble_log.info('[Thread_fresh_testplan] ***************begin to refresh queue *****************')
-        temp_list = os.listdir(plan_root)
+    def scan_folder(self):
+        assemble_log.info(
+            '[Thread_fresh_testplan] ***************begin to refresh queue *****************'
+        )
+        temp_list = os.listdir(self.test_plan_folder)
         file_list = []
         for i in temp_list:
             if i[:10] == 'TEST_PLAN_':
-                file_list.append(os.path.join(plan_root, i))
+                file_list.append(os.path.join(self.test_plan_folder, i))
         return file_list
 
     def get_task_from_folder(self, file_list):
@@ -107,7 +107,8 @@ class AssembleEngine(Engine):
         # ************************************************************************
         """
         for taskitem in task_source_list:
-            task = Task(taskitem['name'], taskitem['email'], taskitem['repository'], taskitem['needbuild'])
+            task = Task(taskitem['name'], taskitem['email'],
+                        taskitem['repository'], taskitem['needbuild'])
             task.set_state('Wait Assemble')
             for script in taskitem['testscripts']:
                 task.insert_script(Script(name=script))
@@ -117,27 +118,33 @@ class AssembleEngine(Engine):
                                          version=uutitem['os'],
                                          mac=uutitem['mac'])
                 task.insert_uut_list(uut)
-            assemble_log.info('[Thread_fresh_testplan]--insert {} to assemble queue list'.format(
-                task.get_name()))
+            assemble_log.info(
+                '[Thread_fresh_testplan]--insert {} to assemble queue list'.
+                format(task.get_name()))
             self.assembleQueue.insert_task(task=task)
             # -------------------rename task plan name -------------------------
-            os.rename(taskitem['file_path'],
-                      taskitem['file_path'][:taskitem['file_path'].index('TEST_PLAN')] +
-                      'Loaded_' + taskitem['file_path'][taskitem['file_path'].index('TEST_PLAN'):])
-            assemble_log.info('rename finished' +
-                              taskitem['file_path'][:taskitem['file_path'].index('TEST_PLAN')] +
-                              'Loaded_' + taskitem['file_path'][taskitem['file_path'].index('TEST_PLAN'):])
+            os.rename(
+                taskitem['file_path'], taskitem['file_path']
+                [:taskitem['file_path'].index('TEST_PLAN')] + 'Loaded_' + taskitem['file_path']
+                [taskitem['file_path'].index('TEST_PLAN'):])
+            assemble_log.info('rename finished' + taskitem['file_path']
+                              [:taskitem['file_path'].index('TEST_PLAN')] + 'Loaded_' + taskitem['file_path']
+                              [taskitem['file_path'].index('TEST_PLAN'):])
         assemble_log.info(
             '[Thread_fresh_testplan] ***************finish refresh queue *****************'
         )
-        assemble_log.info('[Thread_fresh_testplan] left task in assemble queue: {}'.format(
-            len(self.assembleQueue.get_task_list())))
+        assemble_log.info(
+            '[Thread_fresh_testplan] left task in assemble queue: {}'.format(
+                len(self.assembleQueue.get_task_list())))
         time.sleep(3)
 
     def __fresh_queue_execution(self):
         while True:
-            assemble_log.info('[fresh_queue_execution]-------begin to refresh----fresh_queue_execution----------------')
-            assemble_log.info('task_list left:{}'.format(len(self.assembleQueue.get_task_list())))
+            assemble_log.info(
+                '[fresh_queue_execution]-------begin to refresh----fresh_queue_execution----------------'
+            )
+            assemble_log.info('task_list left:{}'.format(
+                len(self.assembleQueue.get_task_list())))
             self.send_task_to_execution()
 
     def send_task_to_execution(self):
@@ -146,7 +153,9 @@ class AssembleEngine(Engine):
                 assemble_log.info(task.get_state() + '*************************')
                 if task.get_state().upper() == "ASSEMBLE FINISHED":
                     self.__pipe.send(task)
-                    assemble_log.info('[send_task_to_execution]-Send {} to execution engine'.format(task.get_name()))
+                    assemble_log.info(
+                        '[send_task_to_execution]-Send {} to execution engine'.
+                        format(task.get_name()))
                     self.get_signal_after_send(task)
                 else:
                     time.sleep(1)
@@ -156,8 +165,8 @@ class AssembleEngine(Engine):
                 e = Email(task.get_email())
                 e.send_message()
                 assemble_log.error(
-                    '[send_task_to_execution] !!!ERROR ERROR!!!, {} is removed from assemble queue'.format(
-                        task.get_name()))
+                    '[send_task_to_execution] !!!ERROR ERROR!!!, {} is removed from assemble queue'
+                    .format(task.get_name()))
         time.sleep(3)
 
     def get_signal_after_send(self, task):
@@ -165,12 +174,15 @@ class AssembleEngine(Engine):
         if send_status == task.get_name():
             self.assembleQueue.remove_task(task)
             assemble_log.info(
-                '[fresh_queue_execution] {} is removed from assemble queue'.format(task.get_name()))
-            assemble_log.info('[fresh_queue_execution]task left in assemble queue: %d' %
-                              len(self.assembleQueue.get_task_list()))
+                '[fresh_queue_execution] {} is removed from assemble queue'.
+                format(task.get_name()))
+            assemble_log.info(
+                '[fresh_queue_execution]task left in assemble queue: %d' %
+                len(self.assembleQueue.get_task_list()))
         else:
             assemble_log.info(
-                '[fresh_queue_execution]-----send task and received task is not the same one- ----------')
+                '[fresh_queue_execution]-----send task and received task is not the same one- ----------'
+            )
 
     def __assemble(self):
         while True:
@@ -193,8 +205,8 @@ class AssembleEngine(Engine):
                         print(20 * '*')
                         task.set_state('Assemble Finished')
                         assemble_log.info(
-                            '[thread_assemble_task] **************{} assemble finished****************'.format(
-                                task.get_name()))
+                            '[thread_assemble_task] **************{} assemble finished****************'
+                            .format(task.get_name()))
             except Exception as e:
                 print(e)
             # print(
