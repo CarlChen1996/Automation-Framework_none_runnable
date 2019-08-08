@@ -14,7 +14,15 @@ class File:
     def __init__(self, folder_path, name, size=0):
         self.folder_path = folder_path
         self.name = name
+        self.file = os.path.join(self.folder_path, self.name)
         self.size = size
+
+    # TODO
+    def is_file_exist(self):
+        pass
+
+    def new(self):
+        pass
 
     def open(self):
         file_name = os.path.join(self.folder_path, self.name)
@@ -49,8 +57,15 @@ class File:
 
 
 class XlsxFile(File):
-    def __init__(self, folder_path, name, size=0, sheet_name='Sheet1', rows=1, cols=1):
+    def __init__(self,
+                 folder_path,
+                 name,
+                 size=0,
+                 sheet_name='Sheet1',
+                 rows=1,
+                 cols=1):
         File.__init__(self, folder_path, name, size)
+        self.active_sheet = ''
         self.sheet_name = sheet_name
         self.rows = rows
         self.cols = cols
@@ -63,7 +78,9 @@ class XlsxFile(File):
         config_sheet = excel_handle['config']
         dic = {}
         for i in range(2, self.get_rows(config_sheet) + 1):
-            dic[config_sheet.cell(row=i, column=1).value.lower()] = config_sheet.cell(row=i, column=2).value.lower()
+            dic[config_sheet.cell(row=i,
+                                  column=1).value.lower()] = config_sheet.cell(
+                                      row=i, column=2).value.lower()
         dic['email'] = dic['email'].split(';')
         if dic['needbuild'] == 'y':
             dic['needbuild'] = True
@@ -76,7 +93,9 @@ class XlsxFile(File):
             for j in range(1, self.get_cols(uut_sheet) + 1):
                 if uut_sheet.cell(row=i, column=j).value is None:
                     continue
-                uut_dic[uut_sheet.cell(row=1, column=j).value.lower()] = uut_sheet.cell(row=i, column=j).value.lower()
+                uut_dic[uut_sheet.cell(
+                    row=1, column=j).value.lower()] = uut_sheet.cell(
+                        row=i, column=j).value.lower()
             if len(uut_dic) != self.get_cols(uut_sheet):
                 continue
             uut_list.append(uut_dic)
@@ -85,13 +104,14 @@ class XlsxFile(File):
         scripts_list = []
         scripts_dic = {}
         for i in range(2, self.get_rows(scripts_sheet) + 1):
-            scripts_dic[scripts_sheet.cell(row=i, column=1).value] = scripts_sheet.cell(row=i, column=2).value
+            scripts_dic[scripts_sheet.cell(
+                row=i, column=1).value] = scripts_sheet.cell(row=i,
+                                                             column=2).value
         for key in scripts_dic.keys():
             if scripts_dic[key] == 'Y':
                 scripts_list.append(key)
         dic['testscripts'] = list(filter(None, scripts_list))
         return dic
-
 
     def close(self, sheet_handle):
         sheet_handle.save(os.path.join(self.folder_path, self.name))
@@ -104,6 +124,29 @@ class XlsxFile(File):
 
     def get_cols(self, sheet_handle):
         return sheet_handle.max_column
+
+    # TODO Excel Sheet
+    def is_sheet_exist(self, sheet_name):
+        pass
+
+    def get_sheet(self, sheet_name):
+        pass
+
+    def add_sheet(self, sheet_name):
+        pass
+
+    def del_sheet(self, sheet_name):
+        pass
+
+    def rename_sheet(self, old_name, new_name):
+        pass
+
+    # TODO Excel Cell
+    def read_cell(self, x, y):
+        pass
+
+    def write_cell(self, x, y):
+        pass
 
 
 class MsgFile(File):
@@ -130,9 +173,10 @@ class YamlFile(File):
         file_handle.close()
 
     @staticmethod
-    def save(data,save_path):
-        with open(save_path , "w") as f:
-            yaml.safe_dump(data,f)
+    def save(data, save_path):
+        with open(save_path, "w") as f:
+            yaml.safe_dump(data, f)
+
 
 class HtmlFile(File):
     pass
