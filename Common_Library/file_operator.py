@@ -22,7 +22,8 @@ class File:
         print(sys._getframe().f_code.co_name + "  finished")
 
     def open(self):
-        print(sys._getframe().f_code.co_name + "  finished")
+        f = open(self.file)
+        return f
 
     def read(self):
         print(sys._getframe().f_code.co_name + "  finished")
@@ -166,6 +167,7 @@ class MsgFile(File):
 
 
 class YamlFile(File):
+
     def read(self, file_handle):
         res = yaml.safe_load(file_handle)
         return res
