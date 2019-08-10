@@ -254,11 +254,15 @@ class WindowsExecuteHost(WindowsHost, Execute):
     pass
 
 
-class LinuxBuild(LinuxHost, Build):
+class LinuxBuildHost(LinuxHost, Build):
     pass
 
 
-class LinuxExecute(LinuxHost, Execute):
+class LinuxDeployHost(LinuxHost, Deploy):
+    pass
+
+
+class LinuxExecuteHost(LinuxHost, Execute):
     pass
 
 
