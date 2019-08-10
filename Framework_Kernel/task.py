@@ -5,7 +5,7 @@
 # @File    : Task.py
 # @Project : framework
 from Framework_Kernel import QTPutils
-import ftplib
+
 
 class Task:
     def __init__(self, name, email='', repository='', need_build=True):

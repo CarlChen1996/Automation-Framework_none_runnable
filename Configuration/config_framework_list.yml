@@ -6,6 +6,9 @@ ftp_settings:
   result_file_path: '/Repository/Files/Captured'
 
 jenkins_settings:
-  build_job_linux: 'Configuration\config_jenkins_build_job_linux.xml'
-  build_job_windows: 'Configuration\config_jenkins_build_job_windows.xml'
+  server_address: 'http://15.83.248.200:8080'
+  username: 'bamboo'
+  token: '1177eafe586b4459f7410f9abb393e15f2'
+  build_job_linux: 'Configuration\template_jenkins_build_job_linux.xml'
+  build_job_windows: 'Configuration\template_jenkins_build_job_windows.xml'
   

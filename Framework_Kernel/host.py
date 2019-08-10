@@ -4,11 +4,13 @@
 # @Email   : Bamboo.pan@hp.com
 # @File    : test.py
 # @Project : demo
-import sys, os
+import sys
+import os
+import time
 from Framework_Kernel.log import assemble_log, execution_log
-from Framework_Kernel import jenkins_class, QTPutils
+from Framework_Kernel import QTPutils
 from Framework_Kernel.analyzer import Analyzer
-from Common_Library import file_operator, file_transfer
+from Common_Library import file_operator, file_transfer, jenkins_operator
 
 
 class Host:
@@ -88,80 +90,76 @@ class Build:
             pass
         self.log.info('get  {} scripts PASS'.format(task.get_name()))
 
-    def jenkins_build(self,task,target_os,ip,user_name,password,py_entry="run.py",output_name = "run"):
-        # my_url = "http://15.83.248.200:8080"
-        my_url= "http://"+ip+":8080"
-        # my_id = "bamboo"
-        my_id=user_name
-        # my_token = "1177eafe586b4459f7410f9abb393e15f2"
-        my_token=password
-        server1 = jenkins_class.Jenkins_Server(my_url, my_id, my_token)
-        server1.connect()
-        if target_os==jenkins_class.OS_type.win:
-            """job info"""
-            my_job_name = "job_test_win"
-            my_job_os_type = jenkins_class.OS_type.win
-            my_job_repository = task.get_repository()
-            my_job_py_entry = py_entry
-            my_job_output_name = output_name
-            my_remote_folder_name = task.get_name()
-            my_mail_list=task.get_email()
-            job_win = jenkins_class.JOB(my_job_name, my_job_os_type, my_job_repository, my_job_py_entry, my_job_output_name, my_remote_folder_name ,server1,my_mail_list)
-            job_win.creare_job()
-            job_win.build_job()
-            if job_win.build_result=='SUCCESS':
-                task.insert_exe_file_list(r'/jenkins/windows/'+my_remote_folder_name+r'/'+my_job_output_name+'.exe')
-                task.set_status(job_win.build_result)
-            else:
-                task.set_status(job_win.build_result)
-            job_win.remove()
-        elif target_os==jenkins_class.OS_type.linux:
-            """job info"""
-            my_job_name1 = "job_test_linux"
-            my_job_os_type1 = jenkins_class.OS_type.linux
-            my_job_repository1 = task.get_repository()
-            my_job_py_entry1 = py_entry
-            my_job_output_name1 = output_name
-            my_remote_folder_name1=task.get_name()
-            my_mail_list = task.get_email()
-            job_linux = jenkins_class.JOB(my_job_name1, my_job_os_type1, my_job_repository1, my_job_py_entry1, my_job_output_name1,my_remote_folder_name1,server1,my_mail_list)
-            job_linux.creare_job()
-            job_linux.build_job()
-            if job_linux.build_result=='SUCCESS':
-                task.insert_exe_file_list(r'/jenkins/linux/'+my_remote_folder_name1+r'/'+my_job_output_name1)
-                task.set_status(job_linux.build_result)
-            else:
-                task.set_status(job_linux.build_result)
-            job_linux.remove()
+    def jenkins_build(self, task):
+        jenkins_host = jenkins_operator.JenkinsServer()
+        jenkins_host.connect()
+        job_os = self.get_os_type(task)
+        job_name = task.get_name()
+        last_build_number = jenkins_host.get_last_build_number(job_name)
+        if job_os == 'windows':
+            jenkins_host.job_params = {
+                'os_type': job_os,
+                'repository': task.get_repository(),
+                'build_node': 'Build_Node_W_1',
+                'template_file': './Configuration/template_jenkins_build_job_windows.xml',
+                'entry_file': 'run.py',
+                'result_file': 'run',
+                'publish_path': task.get_name(),
+                'email_to': task.get_email()
+            }
+        elif job_os == 'linux':
+            jenkins_host.job_params = {
+                'os_type': job_os,
+                'repository': task.get_repository(),
+                'build_node': 'Build_Node_TP_1',
+                'template_file': './Configuration/template_jenkins_build_job_linux.xml',
+                'entry_file': 'run.py',
+                'result_file': 'run',
+                'publish_path': task.get_name(),
+                'email_to': task.get_email()
+            }
+        if jenkins_host.build_job(job_name):
+            while last_build_number == jenkins_host.get_last_build_number(job_name):
+                self.log.inro('New build record is not available, wait 5 seconds')
+                time.sleep(5)
+            current_build_number = jenkins_host.get_last_build_number(job_name)
+            build_result = jenkins_host.get_build_result(job_name, current_build_number)
+            task.set_status(build_result)
+            jenkins_host.delete_job(job_name)
+            if build_result == 'SUCCESS':
+                if job_os == 'windows':
+                    task.insert_exe_file_list(r'/jenkins/windows/' + jenkins_host.job_params['publish_path'] + r'/' + jenkins_host.job_params['result_file'] + '.exe')
+                elif job_os == 'linux':
+                    task.insert_exe_file_list(r'/jenkins/linux/' + jenkins_host.job_params['publish_path'] + r'/' + jenkins_host.job_params['result_file'])
+        return task
 
-    def get_os_type(self,task):
+    def get_os_type(self, task):
+        build_server_os = ''
         for i in task.get_uut_list():
             if 'wes' in i._Host__version.lower():
-                return jenkins_class.OS_type.win
+                build_server_os = 'windows'
             elif 'tp' in i._Host__version.lower():
-                return jenkins_class.OS_type.linux
+                build_server_os = 'linux'
+        return build_server_os
 
     def build_task(self, task):
-        os_type=self.get_os_type(task)
-        '''
-        check scripts empty
-        '''
+        # Check if script empty
         if not task.get_script_list():
             task.set_status("FAIL")
-            return
-        self.jenkins_build(task, os_type,self._Host__ip,self._Host__username,self._Host__password)
+            return False
+        self.jenkins_build(task)
         self.log.info('build ' + task.get_name() + task.get_status())
         self.generate_scripts_config(task)
+        return task
 
-
-    def generate_scripts_config(self,task):
+    def generate_scripts_config(self, task):
         self.log.info("generate script config file")
-        scripts_config=os.path.join(os.getcwd(),'script.yml')
-        scripts=[{i.get_name():i.get_status()} for i in task.get_script_list()]
-        file_operator.YamlFile.save(scripts,scripts_config)
-        store_dir=os.path.join(os.path.dirname(task.get_exe_file_list()[0]),'test_data')
+        scripts_config = os.path.join(os.getcwd(), 'script.yml')
+        scripts = [{i.get_name(): i.get_status()} for i in task.get_script_list()]
+        file_operator.YamlFile.save(scripts, scripts_config)
+        store_dir = os.path.join(os.path.dirname(task.get_exe_file_list()[0]), 'test_data')
         self.log.info("upload script config file to {}".format(store_dir))
-        remote_base_path=store_dir
+        remote_base_path = store_dir
         # Retrive FTP Settings from configuration file
         config_file = os.path.join(os.getcwd(), r'.\Configuration\config_framework_list.yml')
         analyze_hanlder = Analyzer()
