@@ -142,3 +142,12 @@ class JenkinsServer():
         except Exception as e:
             assemble_log.info(str(e))
             return False
+
+    def is_node_exist(self, node_name):
+        return self.connection.node_exists(node_name)
+
+    def is_node_online(self, node_name):
+        node_info = self.connection.get_node_info(node_name, 0)
+        is_off = node_info['offline']
+        status = not is_off
+        return status
