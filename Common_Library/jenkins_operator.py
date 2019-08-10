@@ -31,7 +31,6 @@ class JenkinsServer():
             'publish_path': None,
             'email_to': None
         }
-        self.build_result = None
         self.config_module_win = os.path.join(os.getcwd(), self.settings['build_job_windows'])
         self.config_module_linux = os.path.join(os.getcwd(), self.settings['build_job_linux'])
 
