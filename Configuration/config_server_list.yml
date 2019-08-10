@@ -1,4 +1,5 @@
-- os: windows
+- name: Build_Node_W_1
+  os: windows
   function: build
   hostname: windows_build_server1
   ip: 15.83.248.200
@@ -6,9 +7,21 @@
   version: 1.0
   username: bamboo
   password: 1177eafe586b4459f7410f9abb393e15f2
-  domain: sh  
+  domain: sh
+
+- name: Build_Node_TP_1
+  os: linux
+  function: build
+  hostname: windows_build_server1
+  ip: 15.83.248.200
+  mac: 27832784292
+  version: 1.0
+  username: bamboo
+  password: 1177eafe586b4459f7410f9abb393e15f2
+  domain: sh 
  
-- os: windows
+- name: windows_deploy_server1
+  os: windows
   function: deploy
   hostname: windows_deploy_server1
   ip: 15.83.248.251
