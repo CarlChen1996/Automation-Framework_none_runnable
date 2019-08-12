@@ -11,8 +11,11 @@ import datetime
 import logging
 from logging.handlers import TimedRotatingFileHandler
 from PIL import ImageGrab
-from Configuration.settings import *
+import yaml
+
 lock = multiprocessing.Lock()
+with open(os.path.join(os.getcwd() + r'/Configuration/config_log.yml'), 'r', encoding='utf-8') as f:
+    config = yaml.safe_load(f.read())
 
 
 class SafeLog(TimedRotatingFileHandler):
@@ -70,7 +73,7 @@ class SafeLog(TimedRotatingFileHandler):
 
 
 class Log:
-    def __init__(self, name=NAME, log_type=LOG_TYPE, level=LEVEL, separator=SEPARATOR, use_console=USE_CONSOLE, if_screenshot=IF_SCREENSHOT, log_path=LOG_PATH):
+    def __init__(self, name=config['NAME'], log_type=config['LOG_TYPE'], level=config['LEVEL'], separator=config['SEPARATOR'], use_console=config['USE_CONSOLE'], if_screenshot=config['IF_SCREENSHOT'], log_path=config['LOG_PATH']):
         self.__name = name
         self.__type = log_type
         self.__level = level
@@ -169,20 +172,9 @@ configuration_log = Log(name='configuration_engine')
 assemble_log = Log(name='assemble_engine')
 
 if __name__ == '__main__':
-    l = Log(name='test',if_screenshot=False)
-    l.info('213124')
-    for i in range(5):
-        l.info('test')
-        time.sleep(1)
-    l.if_screenshot=True
-    l.log(10,'cnm')
-    assemble_log.if_screenshot=True
-    for i in range(3):
-        assemble_log.log(20,'hhhhahahaahahaha')
-        assemble_log.info('test')
-        time.sleep(1)
-    l.screenshot(True)
-
+    with open(os.path.join(os.getcwd()+'\\Configuration\\config_log.yml'),'r',encoding='utf-8') as f:
+        d = yaml.safe_load(f.read())
+    print(d)
 
 
 

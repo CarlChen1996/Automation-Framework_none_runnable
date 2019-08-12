@@ -24,11 +24,11 @@ class HostValidator(Validator):
     def validate_build_server(host):
         result = ping(host.get_ip())
         if result:
-            configuration_log.info('validate ' + host.get_ip() + ' pass')
+            configuration_log.info('validate_build_server ' + host.get_ip() + ' pass')
             host.status = 'on'
             return True
         else:
-            configuration_log.info('validate ' + host.get_ip() + ' fail')
+            configuration_log.info('validate_build_server ' + host.get_ip() + ' fail')
             host.status = 'off'
             return False
 
@@ -36,11 +36,11 @@ class HostValidator(Validator):
     def validate_deploy_server(host):
         result = ping(host.get_ip())
         if result:
-            configuration_log.info('validate ' + host.get_ip() + ' pass')
+            configuration_log.info('validate_deploy_server ' + host.get_ip() + ' pass')
             host.status = 'on'
             return True
         else:
-            configuration_log.info('validate ' + host.get_ip() + ' fail')
+            configuration_log.info('validate_deploy_server ' + host.get_ip() + ' fail')
             host.status = 'off'
             return False
 
@@ -48,11 +48,11 @@ class HostValidator(Validator):
     def validate_uut(host):
         result = ping(host.get_ip())
         if result:
-            assemble_log.info('validate ' + host.get_ip() + ' pass')
+            assemble_log.info('validate_uut ' + host.get_ip() + ' pass')
             host.status = 'on'
             return True
         else:
-            assemble_log.info('validate ' + host.get_ip() + ' fail')
+            assemble_log.info('validate_uut ' + host.get_ip() + ' fail')
             host.status = 'off'
             return False
 
