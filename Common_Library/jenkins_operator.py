@@ -137,7 +137,7 @@ class JenkinsServer():
                     return result
                 else:
                     assemble_log.info("wait {} build {} result".format(job_name, build_number))
-                    time.sleep(1)
+                    time.sleep(5)
         except Exception as e:
             assemble_log.info(str(e))
             return False

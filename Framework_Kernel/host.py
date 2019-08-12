@@ -118,19 +118,20 @@ class Build:
                 'publish_path': task.get_name(),
                 'email_to': task.get_email()
             }
-        if jenkins_host.build_job(job_name):
-            while last_build_number == jenkins_host.get_last_build_number(job_name):
-                self.log.inro('New build record is not available, wait 5 seconds')
-                time.sleep(5)
-            current_build_number = jenkins_host.get_last_build_number(job_name)
-            build_result = jenkins_host.get_build_result(job_name, current_build_number)
-            task.set_status(build_result)
-            jenkins_host.delete_job(job_name)
-            if build_result == 'SUCCESS':
-                if job_os == 'windows':
-                    task.insert_exe_file_list(r'/jenkins/windows/' + jenkins_host.job_params['publish_path'] + r'/' + jenkins_host.job_params['result_file'] + '.exe')
-                elif job_os == 'linux':
-                    task.insert_exe_file_list(r'/jenkins/linux/' + jenkins_host.job_params['publish_path'] + r'/' + jenkins_host.job_params['result_file'])
+        if jenkins_host.create_job(job_name, jenkins_host.initial_job_configuration()):
+            if jenkins_host.build_job(job_name):
+                while last_build_number == jenkins_host.get_last_build_number(job_name):
+                    self.log.info('New build record is not available, wait 5 seconds')
+                    time.sleep(5)
+                current_build_number = jenkins_host.get_last_build_number(job_name)
+                build_result = jenkins_host.get_build_result(job_name, current_build_number)
+                task.set_status(build_result)
+                jenkins_host.delete_job(job_name)
+                if build_result == 'SUCCESS':
+                    if job_os == 'windows':
+                        task.insert_exe_file_list(r'/jenkins/windows/' + jenkins_host.job_params['publish_path'] + r'/' + jenkins_host.job_params['result_file'] + '.exe')
+                    elif job_os == 'linux':
+                        task.insert_exe_file_list(r'/jenkins/linux/' + jenkins_host.job_params['publish_path'] + r'/' + jenkins_host.job_params['result_file'])
         return task
 
     def get_os_type(self, task):
@@ -168,6 +169,7 @@ class Build:
         ftp_util.change_dir(remote_base_path)
         ftp_util.upload_file(scripts_config, 'script.yml')
         ftp_util.close()
+        os.remove(scripts_config)
 
 
 class Deploy:
