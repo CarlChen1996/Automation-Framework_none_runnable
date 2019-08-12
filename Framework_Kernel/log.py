@@ -16,7 +16,8 @@ import yaml
 lock = multiprocessing.Lock()
 with open(os.path.join(os.getcwd() + r'/Configuration/config_log.yml'), 'r', encoding='utf-8') as f:
     config = yaml.safe_load(f.read())
-
+# with open(os.path.join(os.path.dirname(os.getcwd()) + r'/Configuration/config_log.yml'), 'r', encoding='utf-8') as f:
+#     config = yaml.safe_load(f.read())
 
 class SafeLog(TimedRotatingFileHandler):
     def __init__(self, *args, **kwargs):
@@ -109,7 +110,7 @@ class Log:
         if not os.path.exists(self.log_path):
             os.makedirs(self.log_path)
         # log_file_path = self.log_path + '{}.log'.format(self.__name)
-        log_handler = SafeLog(self.log_path+self.__name, when=WHEN, interval=INTERVAL, backupCount=BACKUP_COUNT, encoding='utf-8')
+        log_handler = SafeLog(self.log_path+self.__name, when=config['WHEN'], interval=config['INTERVAL'], backupCount=config['BACKUP_COUNT'], encoding='utf-8')
         # log_handler.suffix = "%Y-%m-%d_%H-%M-%S.log"
         log_handler.setFormatter(
             logging.Formatter("[%(asctime)s] {} %(name)s {} [%(levelname)s] {} %(message)s".format(self.separator, self.separator, self.separator)))
