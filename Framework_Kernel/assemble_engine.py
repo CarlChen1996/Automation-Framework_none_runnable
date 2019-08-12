@@ -78,7 +78,7 @@ class AssembleEngine(Engine):
 
     def get_task_from_folder(self, file_list):
         if len(file_list) == 0:
-            time.sleep(3)
+            time.sleep(10)
         else:
             self.generate_task(file_list)
 
@@ -136,7 +136,7 @@ class AssembleEngine(Engine):
         assemble_log.info(
             '[Thread_fresh_testplan] left task in assemble queue: {}'.format(
                 len(self.assembleQueue.get_task_list())))
-        time.sleep(3)
+        time.sleep(10)
 
     def __fresh_queue_execution(self):
         while True:
@@ -167,7 +167,7 @@ class AssembleEngine(Engine):
                 assemble_log.error(
                     '[send_task_to_execution] !!!ERROR ERROR!!!, {} is removed from assemble queue'
                     .format(task.get_name()))
-        time.sleep(3)
+        time.sleep(10)
 
     def get_signal_after_send(self, task):
         send_status = self.__pipe.recv()
@@ -212,4 +212,4 @@ class AssembleEngine(Engine):
             # print(
             #     '[thread_assemble_task]--------------------------------------------------------------------------------'
             # )
-            time.sleep(5)
+            time.sleep(10)

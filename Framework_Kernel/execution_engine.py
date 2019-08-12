@@ -65,7 +65,6 @@ class ExecutionEngine(Engine):
 
     def __execute(self):
         while True:
-            time.sleep(1)
             execution_log.info('[thread_executor] task_list left: {}'.format(len(self.execution_queue.get_task_list())))
             if self.execution_queue.get_task_list():
                 self.__deploy()
@@ -74,7 +73,7 @@ class ExecutionEngine(Engine):
                                    format(list(map(lambda i: i.get_name(), self.execution_queue.get_task_list()))))
             else:
                 execution_log.info('[thread_executor]************************ wait for new task to execute **********************')
-            time.sleep(5)
+            time.sleep(10)
 
     def __deploy(self):
         d = self.__deploy_list[0]
