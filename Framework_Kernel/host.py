@@ -169,6 +169,7 @@ class Build:
         ftp_util.change_dir(remote_base_path)
         ftp_util.upload_file(scripts_config, 'script.yml')
         ftp_util.close()
+        os.remove(scripts_config)
 
 
 class Deploy:
