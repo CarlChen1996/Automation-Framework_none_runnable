@@ -31,8 +31,37 @@
 	        test_add_task_to_execution(self)
 	        test_send_signal(self)
 
+    Test_log.py
+        class LogTest(unittest.TestCase)
+            read_log(self, log_name)
+            get_log_file(self, log_name)
+            get_newest_file(log_path)
+            test_lower_level_log(self)
+            test_equal_level_log(self)
+            test_higher_level_log(self)
+            test_custom_level(self)
+            test_custom_separator(self)
+            test_log_critical(self, critical_mock)
+            test_log_error(self, error_mock)
+            test_log_warning(self, warning_mock)
+            test_log_info(self, info_mock)
+            test_log_debug(self, debug_mock)
+            test_custom_console_False(self, separator_mock)
+            test_custom_console_True(self, separator_mock)
+
     Test_report.py
         class ReportTest(unittest.TestCase)
             setUp(self)
             tearDown(self)
             test_generate_report(self)
+
+    Test_validator.py
+        class ValidatorTest(unittest.TestCase)
+            setUp(self)
+            test_build_server(self)
+            test_unavailable_build_server(self)
+            test_deploy_server(self)
+            test_unavailable_deploy_server(self)
+            test_UUT(self)
+            test_unavailable_UUT(self)
+            test_http(self, validate_mock)
