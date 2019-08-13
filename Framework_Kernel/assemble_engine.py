@@ -9,7 +9,7 @@ from Framework_Kernel.queue_task import AssembleQueue
 from Framework_Kernel.analyzer import Analyzer
 from Framework_Kernel.report import Email
 from Framework_Kernel.task import Task
-from Framework_Kernel.host import WindowsExecuteHost
+from Framework_Kernel.host import WindowsExecuteHost, LinuxExecuteHost
 from Framework_Kernel.validator import HostValidator
 from Framework_Kernel.validator import ScriptValidator
 from Framework_Kernel.script import Script
@@ -113,11 +113,20 @@ class AssembleEngine(Engine):
             for script in taskitem['testscripts']:
                 task.insert_script(Script(name=script))
             for uutitem in taskitem['uutlist']:
-                # ------需要根据 uut的os 来实例，目前没实现，只考虑windows------------
-                uut = WindowsExecuteHost(ip=uutitem['ip'],
-                                         version=uutitem['os'],
-                                         mac=uutitem['mac'])
-                task.insert_uut_list(uut)
+                """
+                generate UUT instance according os of uut，if str(os)
+                contains Win or WES(support by tester), use windowhost, else use linux host
+                """
+                if 'WIN' in uutitem['os'].upper() or 'WES' in uutitem['os'].upper():
+                    uut = WindowsExecuteHost(ip=uutitem['ip'],
+                                             version=uutitem['os'],
+                                             mac=uutitem['mac'])
+                    task.insert_uut_list(uut)
+                else:
+                    uut = LinuxExecuteHost(ip=uutitem['ip'],
+                                             version=uutitem['os'],
+                                             mac=uutitem['mac'])
+                    task.insert_uut_list(uut)
             assemble_log.info(
                 '[Thread_fresh_testplan]--insert {} to assemble queue list'.
                 format(task.get_name()))

@@ -11,4 +11,23 @@ jenkins_settings:
   token: '1177eafe586b4459f7410f9abb393e15f2'
   build_job_linux: 'Configuration\template_jenkins_build_job_linux.xml'
   build_job_windows: 'Configuration\template_jenkins_build_job_windows.xml'
-  
+
+qtp_settings:
+  server_address: 15.83.248.251
+  username: Administrator
+  password: Shanghai2010
+  scripts_path:
+    create_filter: 'c:\ScriptsCopy\CreateFilter'
+    send_command: 'c:\ScriptsCopy\SendCommand'
+    send_packages: 'c:\ScriptsCopy\SendPackages'
+    get_result: 'c:\ScriptsCopy\CaptureFiles'
+    discover_devices: 'c:\ScriptsCopy\DiscoverDevices'
+  test_data: 'test_data.xlsx'
+
+hpdm_settings:
+  repository_path: 'c:/inetpub/ftproot'
+  os_list:
+    THINPRO7: HP ThinPro 7
+    WES7P: WES7P-64
+    WES10: Win10IoT-64
+    WES7E: WES7E
