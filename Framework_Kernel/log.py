@@ -171,6 +171,7 @@ execution_log = Log(name='execution_engine')
 # # execution_log = Log(name='execution_engine',if_screenshot=True,separator='?')
 configuration_log = Log(name='configuration_engine')
 assemble_log = Log(name='assemble_engine')
+error_handler_log=Log(name="error_handler")
 
 if __name__ == '__main__':
     with open(os.path.join(os.getcwd()+'\\Configuration\\config_log.yml'),'r',encoding='utf-8') as f:
