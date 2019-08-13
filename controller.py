@@ -3,6 +3,7 @@ from Framework_Kernel.log import controller_log
 from Framework_Kernel import configuration_engine
 from Framework_Kernel import assemble_engine
 from Framework_Kernel import execution_engine
+from Framework_Kernel.error_handler import ERROR_MSG,ERROR_LEVEL,ErrorHandler,ENGINE_CODE
 from Common_Library.functions import get_keyboard_input
 from multiprocessing import Process
 import threading
@@ -124,40 +125,61 @@ def keep_assemble_alive():
     while True:
         time.sleep(5)
         if not isinstance(instance_assemble_engine.status, Process):
-            instance_assemble_engine.start()
+            error_msg_instance = ERROR_MSG(ENGINE_CODE().controller,
+                                           ERROR_LEVEL().reset_engine,
+                                           'reset assemble_engine for process instance check fail')
+            error_handle_instance = ErrorHandler(error_msg_instance)
+            error_handle_instance.handle(engine=instance_assemble_engine)
+            # instance_assemble_engine.start()
         if not instance_assemble_engine.status.is_alive():
-            instance_assemble_engine.start()
-            if instance_assemble_engine.status.is_alive():
-                controller_log.info(
-                    "[watch_assemble_thread] start assemble engine successfully"
-                )
-            else:
-                controller_log.info(
-                    "[watch_assemble_thread] can't start assemble engine")
-        controller_log.info(
-            "[watch_assemble_thread] assemble engine pid {} current status is {}"
-            .format(instance_assemble_engine.status.pid,
-                    str(instance_assemble_engine.status.is_alive())))
+            error_msg_instance = ERROR_MSG(ENGINE_CODE().controller,
+                                           ERROR_LEVEL().reset_engine,
+                                           'reset assemble_engine for process alive check fail')
+            error_handle_instance = ErrorHandler(error_msg_instance)
+            error_handle_instance.handle(engine=instance_assemble_engine)
+
+            # instance_assemble_engine.start()
+        #     if instance_assemble_engine.status.is_alive():
+        #         controller_log.info(
+        #             "[watch_assemble_thread] start assemble engine successfully"
+        #         )
+        #     else:
+        #         controller_log.info(
+        #             "[watch_assemble_thread] can't start assemble engine")
+        # controller_log.info(
+        #     "[watch_assemble_thread] assemble engine pid {} current status is {}"
+        #     .format(instance_assemble_engine.status.pid,
+        #             str(instance_assemble_engine.status.is_alive())))
 
 
 def keep_executor_alive():
     while True:
         time.sleep(5)
         if not isinstance(instance_execution_engine.status, Process):
-            instance_execution_engine.start()
+            error_msg_instance = ERROR_MSG(ENGINE_CODE().controller,
+                                           ERROR_LEVEL().reset_engine,
+                                           'reset execution_engine for process instance check fail')
+            error_handle_instance = ErrorHandler(error_msg_instance)
+            error_handle_instance.handle(engine=instance_execution_engine)
+            # instance_execution_engine.start()
         if not instance_execution_engine.status.is_alive():
-            instance_execution_engine.start()
-            if instance_execution_engine.status.is_alive():
-                controller_log.info(
-                    "[watch_executor_thread] start execution engine successfully"
-                )
-            else:
-                controller_log.info(
-                    "[watch_executor_thread] can't start execution engine")
-        controller_log.info(
-            "[watch_executor_thread] execution engine pid {} current status is {}"
-            .format(instance_execution_engine.status.pid,
-                    str(instance_execution_engine.status.is_alive())))
+            error_msg_instance = ERROR_MSG(ENGINE_CODE().controller,
+                                           ERROR_LEVEL().reset_engine,
+                                           'reset execution_engine for process alive check fail')
+            error_handle_instance = ErrorHandler(error_msg_instance)
+            error_handle_instance.handle(engine=instance_execution_engine)
+        #     instance_execution_engine.start()
+        #     if instance_execution_engine.status.is_alive():
+        #         controller_log.info(
+        #             "[watch_executor_thread] start execution engine successfully"
+        #         )
+        #     else:
+        #         controller_log.info(
+        #             "[watch_executor_thread] can't start execution engine")
+        # controller_log.info(
+        #     "[watch_executor_thread] execution engine pid {} current status is {}"
+        #     .format(instance_execution_engine.status.pid,
+        #             str(instance_execution_engine.status.is_alive())))
 
 
 if __name__ == '__main__':
