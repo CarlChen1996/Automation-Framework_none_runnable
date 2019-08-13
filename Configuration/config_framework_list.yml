@@ -25,7 +25,7 @@ qtp_settings:
   test_data: 'test_data.xlsx'
 
 hpdm_settings:
-  repository_path: 'c:/inetpub/ftproot'
+  repository_path: 'c:\inetpub\ftproot'
   os_list:
     THINPRO7: HP ThinPro 7
     WES7P: WES7P-64
