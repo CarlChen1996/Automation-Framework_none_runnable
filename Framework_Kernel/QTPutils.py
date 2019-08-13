@@ -44,7 +44,7 @@ class QTP_HPDM:
         self.__get_result_path = config_qtp_script['get_result']
         # ---------HPDM settings ----------------------
         self.__os_list = config_res['hpdm_settings']['os_list']
-        self.__repository_path = config_res['hpdm_settings']['repository_path']
+        self.__repository_path = config_res['hpdm_settings']['repository_path'].replace('\\', '/')
         f.close(handle)
 
     def set_test_data(self, task):
