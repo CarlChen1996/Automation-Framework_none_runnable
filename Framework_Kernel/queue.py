@@ -4,7 +4,7 @@
 # @Email   : balance.cheng@hp.com
 # @File    : Queue.py
 # @Project : framework
-from Framework_Kernel.log import assemble_log,execution_log
+from Framework_Kernel.log import assemble_log, execution_log
 
 
 class Queue:
@@ -63,8 +63,7 @@ class ExecuteQueue(Queue):
         #     self.log.info('execute_queue execute {} on {}'.format(
         #         task.get_name(), host.get_hostname()))
         #     task.execute(host)
-        self.log.info('execute_queue execute {}'.format(
-                    task.get_name()))
+        self.log.info('execute_queue execute {}'.format(task.get_name()))
         task.execute()
 
     def check_status(self, task):
@@ -79,5 +78,4 @@ class ExecuteQueue(Queue):
         #         task.get_name(), host.get_hostname()))
         #     task.collect_result()
         task.collect_result()
-        self.log.info('execute_queue collect result {}'.format(
-                task.get_name()))
+        self.log.info('execute_queue collect result {}'.format(task.get_name()))
