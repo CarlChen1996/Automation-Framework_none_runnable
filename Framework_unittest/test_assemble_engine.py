@@ -83,20 +83,20 @@ class AssembleEngineTest(unittest.TestCase):
         receive_task = self.pipe[1].recv()
         self.assertEqual(receive_task.get_name(), self.task_name)
 
-    @patch('Framework_Kernel.queue_task.Queue.remove_task')
+    @patch('Framework_Kernel.task_queue.Queue.remove_task')
     def test_send_task_to_execution_false(self, remove_task):
         self.task.set_status('SUCCES')
         self.assemble.assembleQueue.insert_task(task=self.task)
         self.assemble.send_task_to_execution()
         remove_task.assert_called_once_with(self.task)
 
-    @patch('Framework_Kernel.queue_task.Queue.remove_task')
+    @patch('Framework_Kernel.task_queue.Queue.remove_task')
     def test_get_ack_right_from_execution_engine(self, remove):
         self.pipe[1].send(self.task_name)
         self.assemble.get_signal_after_send(self.task)
         remove.assert_called_once_with(self.task)
 
-    @patch('Framework_Kernel.queue_task.Queue.remove_task')
+    @patch('Framework_Kernel.task_queue.Queue.remove_task')
     def test_get_ack_wrong_from_execution_engine(self, remove):
         self.pipe[1].send(self.task)
         self.assemble.get_signal_after_send(self.task)
@@ -111,7 +111,7 @@ class AssembleEngineTest(unittest.TestCase):
         self.assertNotIn(self.task, self.assemble.assembleQueue.get_task_list())
 
     @patch('Framework_Kernel.task.Task.set_state')
-    @patch('Framework_Kernel.queue_task.Queue.insert_task')
+    @patch('Framework_Kernel.task_queue.Queue.insert_task')
     def test_initial_task(self, insert_task, set_state):
         self.assemble.generate_task(self.generate_excel_list())
         set_state.assert_called_once()
