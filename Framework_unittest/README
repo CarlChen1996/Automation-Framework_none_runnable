@@ -30,6 +30,11 @@
 	        test_add_task_to_execution(self, insert_task)
 	        test_add_task_to_execution(self)
 	        test_send_signal(self)
+	        test_send_email(self, email_mock, report_mock, result_mock, remove_folder_mock)
+	        test_remove_task_from_execution_queue_mock(self, remove_task_mock, email_mock, report_mock, result_mock,
+                                              remove_folder_mock)
+            test_remove_task_from_execution_queue(self, email_mock, report_mock, result_mock,
+                                              remove_folder_mock)
 
     Test_log.py
         class LogTest(unittest.TestCase)

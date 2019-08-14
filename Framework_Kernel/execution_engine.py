@@ -12,6 +12,7 @@ from Framework_Kernel.engine import Engine
 from Common_Library.file_transfer import FTPUtils
 from Framework_Kernel.task_queue import ExecuteQueue
 from Framework_Kernel.analyzer import Analyzer
+
 '''
 from Framework_Kernel.task import Task
 from Framework_Kernel.host import WindowsDeployHost, WindowsExecuteHost
@@ -67,33 +68,44 @@ class ExecutionEngine(Engine):
         while True:
             execution_log.info('[thread_executor] task_list left: {}'.format(len(self.execution_queue.get_task_list())))
             if self.execution_queue.get_task_list():
-                self.__deploy()
+                d = self.__deploy_list[0]
+                i = self.execution_queue.get_task_list()[0]
+                self.deploy(d, i)
+                self.download_result()
+                self.send_report(i)
+                execution_log.info('[thread_executor] task left in execute queue: {}'.format(
+                    len(self.execution_queue.get_task_list())))
                 time.sleep(3)
+                print('---------------------------------------------------------------')
                 execution_log.info('[thread_executor] task_list now is : {}'.
                                    format(list(map(lambda i: i.get_name(), self.execution_queue.get_task_list()))))
             else:
-                execution_log.info('[thread_executor]************************ wait for new task to execute **********************')
+                execution_log.info(
+                    '[thread_executor]************************ wait for new task to execute **********************')
             time.sleep(10)
 
-    def __deploy(self):
-        d = self.__deploy_list[0]
-        i = self.execution_queue.get_task_list()[0]
+    def deploy(self, d, i):
         # ----------循环里面添加 刷新list的方法 ---------------------
         self.execution_queue.deploy(i, d)
         self.execution_queue.execute(i)
         # --------需要得到返回值 ------------------
         # self.__execution_queue.check_status(i)
         self.execution_queue.collect_result(i)
+
+    @staticmethod
+    def download_result():
         # Retrive FTP Settings from configuration file
         config_file = os.path.join(os.getcwd(), r'.\Configuration\config_framework_list.yml')
-        analyze_hanlder = Analyzer()
-        ftp_settings = analyze_hanlder.analyze_file(config_file)['ftp_settings']
+        analyze_handler = Analyzer()
+        ftp_settings = analyze_handler.analyze_file(config_file)['ftp_settings']
         ftp_util = FTPUtils(ftp_settings['server_address'], ftp_settings['username'], ftp_settings['password'])
         task_list = ftp_util.get_item_list(ftp_settings['result_file_path'])
         for folder in task_list:
             ftp_util.download_dir(folder, os.path.join('.\\Report', folder))
             ftp_util.delete_dir(folder)
         ftp_util.close()
+
+    def send_report(self, i):
         r = Report(i.get_name(), i.get_uut_list())
         task_report_path = r.generate()
         e = Email(i.get_email())
@@ -103,5 +115,3 @@ class ExecutionEngine(Engine):
         self.execution_queue.remove_task(i)
         execution_log.info("[thread_executor] remove {} from task_list".format(i.get_name()))
         execution_log.info('[thread_executor] remove {} from execute queue'.format(i.get_name()))
-        execution_log.info('[thread_executor] task left in execute queue: {}'.format(len(self.execution_queue.get_task_list())))
-        print('---------------------------------------------------------------')

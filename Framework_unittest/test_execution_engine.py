@@ -15,6 +15,9 @@ setUp: Instantiated pipe and send task, instantiated Execution Engine
 test_add_task_to_execution_mock: when add task to queue in Execution Engine, insert_task can be called
 test_add_task_to_execution: add task to execution queue after pipe receive task
 test_send_signal: Execution Engine can send signal after pipe receive task
+test_send_email: send email can be called
+test_remove_task_from_execution_queue_mock: remove task can be called by mock
+test_remove_task_from_execution_queue: remove task can be called
 '''
 
 
@@ -23,11 +26,11 @@ class ExecutionEngineTest(unittest.TestCase):
         self.pipe = Pipe()
         self.deploy_list = []
         self.execution = execution_engine.ExecutionEngine(self.deploy_list, self.pipe[0])
-        self.task_name = 'task_1'
+        self.task_name = 'report_for_unittest'
         self.task = Task(name=self.task_name)
         self.pipe[1].send(self.task)
 
-    @patch('Framework_Kernel.queue_task.Queue.insert_task')
+    @patch('Framework_Kernel.task_queue.Queue.insert_task')
     def test_add_task_to_execution_mock(self, insert_task):
         self.execution.insert_task_to_queue()
         insert_task.assert_called_once()
@@ -40,6 +43,38 @@ class ExecutionEngineTest(unittest.TestCase):
     def test_send_signal(self):
         self.execution.insert_task_to_queue()
         self.assertEqual(self.pipe[1].recv(), self.task_name)
+
+    @patch('Framework_Kernel.report.Report.remove_report_folder')
+    @patch('Framework_Kernel.report.Email.zip_result_package')
+    @patch('Framework_Kernel.report.Report.generate')
+    @patch('Framework_Kernel.report.Email.send')
+    def test_send_email(self, email_mock, report_mock, result_mock, remove_folder_mock):
+        self.execution.execution_queue.insert_task(task=self.task)
+        self.execution.send_report(self.task)
+        email_mock.assert_called_once()
+
+    @patch('Framework_Kernel.report.Report.remove_report_folder')
+    @patch('Framework_Kernel.report.Email.zip_result_package')
+    @patch('Framework_Kernel.report.Report.generate')
+    @patch('Framework_Kernel.report.Email.send')
+    @patch('Framework_Kernel.task_queue.Queue.remove_task')
+    def test_remove_task_from_execution_queue_mock(self, remove_task_mock, email_mock, report_mock, result_mock,
+                                              remove_folder_mock):
+        self.execution.execution_queue.insert_task(task=self.task)
+        self.assertIn(self.task, self.execution.execution_queue.get_task_list())
+        self.execution.send_report(self.task)
+        remove_task_mock.assert_called_once_with(self.task)
+
+    @patch('Framework_Kernel.report.Report.remove_report_folder')
+    @patch('Framework_Kernel.report.Email.zip_result_package')
+    @patch('Framework_Kernel.report.Report.generate')
+    @patch('Framework_Kernel.report.Email.send')
+    def test_remove_task_from_execution_queue(self, email_mock, report_mock, result_mock,
+                                              remove_folder_mock):
+        self.execution.execution_queue.insert_task(task=self.task)
+        self.assertIn(self.task, self.execution.execution_queue.get_task_list())
+        self.execution.send_report(self.task)
+        self.assertNotIn(self.task, self.execution.execution_queue.get_task_list())
 
 
 if __name__ == '__main__':
