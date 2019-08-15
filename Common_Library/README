@@ -1,16 +1,25 @@
 # The folder is used to store those common libraries not only be used in framework Kernel but also be used by test script, like File, etc.
 
 # Code outline
-    File.py
+    Email_operator.py
+        class Email
+            __load_settings(self)
+            __init_connection(self)
+            send_email(self, subject, to_list, content, content_type, cc_list=None, attachment=None)
+            __get_attachment(self, attached_file)
+            disconnect(self)
+
+    File_operator.py
         class File
+            new(self)
             open(self)
             read(self)
             write(self)
             close(self)
-            copy(self)
-            move(self)
+            copy(self, des)
+            move(self, des)
             delete(self)
-            rename(self)
+            rename(self, new_name)
             exist(self)
 
         class XlsxFile(File)
@@ -20,17 +29,43 @@
             get_sheet_name(self, excel_handle)
             get_rows(self, sheet_handle)
             get_cols(self, sheet_handle)
+            is_sheet_exist(self, sheet_name)
+            get_sheet(self, sheet_name)
+            add_sheet(self, sheet_name)
+            del_sheet(self, sheet_name)
+            rename_sheet(self, old_name, new_name)
+            read_cell(self, x, y)
+            write_cell(self, x, y)
 
         class MsgFile(File)
-            get_attanchment(self)
+            get_attachment(self)
 
         YamlFile(File)
             read(self, file_handle)
             close(self, file_handle)
+            save(data, save_path)
 
         HtmlFile(File)
 
         TxtFile(File)
 
+    File_transfer.py
+        class FTPUtils
+            change_dir(self, work_dir)
+            get_working_dir(self)
+            get_item_list(self, work_dir)
+            is_item_file(self, item)
+            download_file(self, file_name, save_as_name)
+            download_dir(self, dir_name, save_as_dir)
+            upload_file(self, file_name, save_as_name)
+            new_dir(self, dir_name)
+            upload_dir(self, dir_path, save_as_dir)
+            delete_file(self, file_name)
+            delete_dir(self, dir_name)
+            close(self)
+
     Functions.py
         get_keyboard_input(timeout)
+        zip_file(source_file, result_file)
+        zip_dir(source_dir, result_file, include_root_folder=False)
+        unzip(source_zip, result_path)

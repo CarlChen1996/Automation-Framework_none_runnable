@@ -16,6 +16,8 @@ import yaml
 lock = multiprocessing.Lock()
 with open(os.path.join(os.getcwd() + r'/Configuration/config_log.yml'), 'r', encoding='utf-8') as f:
     config = yaml.safe_load(f.read())
+
+
 # with open(os.path.join(os.path.dirname(os.getcwd()) + r'/Configuration/config_log.yml'), 'r', encoding='utf-8') as f:
 #     config = yaml.safe_load(f.read())
 
@@ -25,10 +27,10 @@ class SafeLog(TimedRotatingFileHandler):
         self.suffix_time = ""
         self.origin_basename = self.baseFilename
 
-
     def shouldRollover(self, record):
         timeTuple = time.localtime()
-        if self.suffix_time != time.strftime(self.suffix, timeTuple) or not os.path.exists(self.origin_basename+'.'+self.suffix_time):
+        if self.suffix_time != time.strftime(self.suffix, timeTuple) or not os.path.exists(
+                self.origin_basename + '.' + self.suffix_time):
             return 1
         else:
             return 0
@@ -54,7 +56,7 @@ class SafeLog(TimedRotatingFileHandler):
             self.stream = self._open()
 
     def getFilesToDelete(self):
-        #rename self.baseFilename to self.origin_basename
+        # rename self.baseFilename to self.origin_basename
         dirName, baseName = os.path.split(self.origin_basename)
         fileNames = os.listdir(dirName)
         result = []
@@ -74,16 +76,18 @@ class SafeLog(TimedRotatingFileHandler):
 
 
 class Log:
-    def __init__(self, name=config['NAME'], log_type=config['LOG_TYPE'], level=config['LEVEL'], separator=config['SEPARATOR'], use_console=config['USE_CONSOLE'], if_screenshot=config['IF_SCREENSHOT'], log_path=config['LOG_PATH']):
+    def __init__(self, name=config['NAME'], log_type=config['LOG_TYPE'], level=config['LEVEL'],
+                 separator=config['SEPARATOR'], use_console=config['USE_CONSOLE'],
+                 if_screenshot=config['IF_SCREENSHOT'], log_path=config['LOG_PATH']):
         self.__name = name
         self.__type = log_type
         self.__level = level
         self.separator = separator
         self.if_screenshot = if_screenshot
         self.log_path = os.path.join(
-                                    os.getcwd(),
-                                    'Log\\{}\\{}\\'.format(time.strftime(log_path, time.localtime()),self.__name)
-                                    )
+            os.getcwd(),
+            'Log\\{}\\{}\\'.format(time.strftime(log_path, time.localtime()), self.__name)
+        )
         self.logger = logging.getLogger(name)
         '''
 
@@ -110,20 +114,25 @@ class Log:
         if not os.path.exists(self.log_path):
             os.makedirs(self.log_path)
         # log_file_path = self.log_path + '{}.log'.format(self.__name)
-        log_handler = SafeLog(self.log_path+self.__name, when=config['WHEN'], interval=config['INTERVAL'], backupCount=config['BACKUP_COUNT'], encoding='utf-8')
+        log_handler = SafeLog(self.log_path + self.__name, when=config['WHEN'], interval=config['INTERVAL'],
+                              backupCount=config['BACKUP_COUNT'], encoding='utf-8')
         # log_handler.suffix = "%Y-%m-%d_%H-%M-%S.log"
         log_handler.setFormatter(
-            logging.Formatter("[%(asctime)s] {} %(name)s {} [%(levelname)s] {} %(message)s".format(self.separator, self.separator, self.separator)))
+            logging.Formatter(
+                "[%(asctime)s] {} %(name)s {} [%(levelname)s] {} %(message)s".format(self.separator, self.separator,
+                                                                                     self.separator)))
         self.logger.addHandler(log_handler)
         if use_console:
             console_handler = logging.StreamHandler()
-            console_handler.setFormatter(logging.Formatter("[%(asctime)s] {} %(name)s {} [%(levelname)s] {} %(message)s".format(self.separator, self.separator, self.separator)))
+            console_handler.setFormatter(logging.Formatter(
+                "[%(asctime)s] {} %(name)s {} [%(levelname)s] {} %(message)s".format(self.separator, self.separator,
+                                                                                     self.separator)))
             self.logger.addHandler(console_handler)
 
-    def screenshot(self,screenshot=False):
-        if screenshot==True:
+    def screenshot(self, screenshot=False):
+        if screenshot == True:
             screenshot = ImageGrab.grab()
-            snap_path = os.path.join(self.log_path +'screenshot')
+            snap_path = os.path.join(self.log_path + 'screenshot')
             if not os.path.exists(snap_path):
                 os.makedirs(snap_path)
             snap_file_path = snap_path + '\\{}.jpg'.format(datetime.datetime.now().strftime('%H-%M-%S.%f'))
@@ -136,32 +145,32 @@ class Log:
         self.logger.removeHandler(hdlr)
 
     def critical(self, msg, *args, **kwargs):
-        if self.if_screenshot==True:
+        if self.if_screenshot == True:
             self.screenshot(screenshot=True)
         self.logger.critical(msg, *args, **kwargs)
 
     def warning(self, msg, *args, **kwargs):
-        if self.if_screenshot==True:
+        if self.if_screenshot == True:
             self.screenshot(screenshot=True)
         self.logger.warning(msg, *args, **kwargs)
 
     def error(self, msg, *args, **kwargs):
-        if self.if_screenshot==True:
+        if self.if_screenshot == True:
             self.screenshot(screenshot=True)
         self.logger.error(msg, *args, **kwargs)
 
     def info(self, msg, *args, **kwargs):
-        if self.if_screenshot==True:
+        if self.if_screenshot == True:
             self.screenshot(screenshot=True)
         self.logger.info(msg, *args, **kwargs)
 
     def debug(self, msg, *args, **kwargs):
-        if self.if_screenshot==True:
+        if self.if_screenshot == True:
             self.screenshot(screenshot=True)
         self.logger.debug(msg, *args, **kwargs)
 
-    def log(self, level, msg,  *args, **kwargs):
-        if self.if_screenshot==True:
+    def log(self, level, msg, *args, **kwargs):
+        if self.if_screenshot == True:
             self.screenshot(screenshot=True)
         self.logger.log(level, msg, *args, **kwargs)
 
@@ -171,13 +180,9 @@ execution_log = Log(name='execution_engine')
 # # execution_log = Log(name='execution_engine',if_screenshot=True,separator='?')
 configuration_log = Log(name='configuration_engine')
 assemble_log = Log(name='assemble_engine')
-error_handler_log=Log(name="error_handler")
+error_handler_log = Log(name="error_handler")
 
 if __name__ == '__main__':
-    with open(os.path.join(os.getcwd()+'\\Configuration\\config_log.yml'),'r',encoding='utf-8') as f:
+    with open(os.path.join(os.getcwd() + '\\Configuration\\config_log.yml'), 'r', encoding='utf-8') as f:
         d = yaml.safe_load(f.read())
     print(d)
-
-
-
-

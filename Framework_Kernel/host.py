@@ -129,9 +129,12 @@ class Build:
                 jenkins_host.delete_job(job_name)
                 if build_result == 'SUCCESS':
                     if job_os == 'windows':
-                        task.insert_exe_file_list(r'/jenkins/windows/' + jenkins_host.job_params['publish_path'] + r'/' + jenkins_host.job_params['result_file'] + '.exe')
+                        task.insert_exe_file_list(
+                            r'/jenkins/windows/' + jenkins_host.job_params['publish_path'] + r'/' +
+                            jenkins_host.job_params['result_file'] + '.exe')
                     elif job_os == 'linux':
-                        task.insert_exe_file_list(r'/jenkins/linux/' + jenkins_host.job_params['publish_path'] + r'/' + jenkins_host.job_params['result_file'])
+                        task.insert_exe_file_list(r'/jenkins/linux/' + jenkins_host.job_params['publish_path'] + r'/' +
+                                                  jenkins_host.job_params['result_file'])
         return task
 
     def get_os_type(self, task):
@@ -165,7 +168,8 @@ class Build:
         config_file = os.path.join(os.getcwd(), r'.\Configuration\config_framework_list.yml')
         analyze_hanlder = Analyzer()
         ftp_settings = analyze_hanlder.analyze_file(config_file)['ftp_settings']
-        ftp_util = file_transfer.FTPUtils(ftp_settings['server_address'], ftp_settings['username'], ftp_settings['password'])
+        ftp_util = file_transfer.FTPUtils(ftp_settings['server_address'], ftp_settings['username'],
+                                          ftp_settings['password'])
         ftp_util.change_dir(remote_base_path)
         ftp_util.upload_file(scripts_config, 'script.yml')
         ftp_util.close()

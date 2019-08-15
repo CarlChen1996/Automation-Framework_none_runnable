@@ -7,12 +7,10 @@
         keep_assemble_alive()
         keep_executor_alive()
         
-        
     Analyzer.py
         class Analyzer
-            load(self, file)
-            generate(self)
-            
+            analyze_file(self, file)
+            analyze_files_in_list(self, file_list)
             
     Assemble_engine.py
         class AssembleEngine(Engine)
@@ -45,7 +43,9 @@
             __add_task_to_queue(self)
             insert_task_to_queue(self)
             __execute(self)
-            __deploy(self)
+            deploy(self, d, i)
+            download_result()
+            send_report(self, i)
             
     Engine.py
         class Engine:
@@ -53,21 +53,21 @@
             stop(self)
 
     Error_handler.py
-        class ErrorHandler
-            handle(self, error_code)
-            exit(self)
-            reset_framework(self)
-            reset(self, engine)
-            continue_work(self)
+        class ENGINE_CODE
 
-    Ftp_tools.py
-        class FTPUtils
-            get_list(self)
-            is_ftp_file(self)
-            download(self, localfile, remotefile)
-            download_dir(self, local, remote)
-            upload(self, localfile, remotefile)
-            close(self)
+        class ERROR_LEVEL
+
+        class ERROR_MSG
+            create_error_msg(self)
+
+        class ErrorHandler
+            handle(self, engine=None)
+            terminate_framework(self)
+            reset_framework(self)
+            reset_engine(self, engine)
+            rerun_task(self)
+            drop_task(self)
+            continue_task(self)
 
     Host.py
         class Host
@@ -88,9 +88,10 @@
         
         class Build
             get_scripts(self, task)
-            jenkins_build(self, task, target_os, ip, user_name, password, py_entry="run.py", output_name="run")
+            jenkins_build(self, task)
             get_os_type(self, task)
             build_task(self, task)
+            generate_scripts_config(self, task)
         
         class Deploy
             deploy_task(self, task)
@@ -106,32 +107,11 @@
         
         class WindowsExecuteHost(WindowsHost, Execute)
         
-        class LinuxBuild(LinuxHost, Build)
+        class LinuxBuildHost(LinuxHost, Build)
 
-        class LinuxExecute(LinuxHost, Execute)
+        class LinuxDeployHost(LinuxHost, Deploy)
 
-    Jenkins_class.py
-        class OS_type
-
-        timer(func)
-            calculate(*args,**kwargs)
-
-        class Jenkins_Server
-            connect(self)
-            build_job(self, job_name)
-            get_job_list(self)
-            get_last_build_number(self, job_name)
-            get_build_result(self,job_name, last_build_number)
-            create_job(self, new_job_name, new_job_config)
-            process_config(self, config_file, repository, py_entry, output_name, remote_folder_name, build_node, job_os_type, mail_list)
-            create_job_params(self, job_name, job_os_type, repository, py_entry, output_name, remote_folder_name, mail_list)
-            remove_job(self, job_name)
-            check_job_exists(self, job_name)
-
-        class JOB
-            creare_job(self)
-            build_job(self)
-            remove(self)
+        class LinuxExecuteHost(LinuxHost, Execute)
 
     Log.py
         class SafeLog(TimedRotatingFileHandler)
@@ -140,7 +120,7 @@
             getFilesToDelete(self)
 
         class Log
-            screenshot(self,screenshot=False)
+            screenshot(self, screenshot=False)
             addHandler(self, hdlr)
             removeHandler(self, hdlr)
             critical(self, msg, *args, **kwargs)
@@ -152,18 +132,17 @@
 
     QTPutils.py
         class QTP_HPDM
+            __load_config(self)
             set_test_data(self, task)
-            set_execute_data(self, host, task)
             __upload_test_data(self)
             __run_qtp_script(self, testPath)
             __create_filter(self)
             discover_devices(self, task)
-            create_template(self)
             deploy_task(self, task, deploy_host)
             execute_task(self)
             get_result(self)
             
-    Queue_task.py
+    Task_queue.py
         class Queue
             insert_task(self, index=0, task='')
             remove_task(self, task)
@@ -191,6 +170,7 @@
         class Email
             zip_result_package(self, result_path, name)
             send(self)
+            send_message(self,)
 
     Script.py
         class Script
@@ -227,9 +207,14 @@
     Validator.py
         class Validator
             validate(self, name)
+            ping(self, ip)
         
         Class HostValidator(Validator)
             validate(self, host)
+            validate_build_server(self, host)
+            validate_deploy_server(self, host)
+            validate_uut(self, host)
+            validate_http(self)
             
         Class ScriptValidator(Validator)
             validate(self, task)
