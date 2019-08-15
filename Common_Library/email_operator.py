@@ -38,7 +38,8 @@ class Email:
         msg['Subject'] = subject
         msg['From'] = self.sender
         msg['To'] = ','.join(to_list)
-        msg['cc'] = ','.join(cc_list)
+        if cc_list is not None:
+            msg['cc'] = ','.join(cc_list)
         if attachment is not None:
             msg.attach(self.__get_attachment(attachment))
         try:
