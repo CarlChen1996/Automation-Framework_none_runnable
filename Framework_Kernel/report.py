@@ -7,7 +7,7 @@
 import zipfile
 
 from jinja2 import Environment, FileSystemLoader
-from Framework_Kernel.log import execution_log,assemble_log
+from Framework_Kernel.log import execution_log, assemble_log
 import yaml
 import os
 import shutil
@@ -80,15 +80,15 @@ class Report:
                                task_name=self.__name,
                                encoding='utf-8')  # unicode string
         task_folder_path = os.path.join(os.getcwd(), 'Report\\' + self.__name)
-        with open(task_folder_path + '\\'+self.__name+'.html',
+        with open(task_folder_path + '\\' + self.__name + '.html',
                   'w',
                   encoding='utf-8') as f:
             f.write(html)
 
         # copy static folder
-        static_path = os.path.join(os.getcwd(),'Report\\templates\\static')
-        if not os.path.exists(task_folder_path+'\\'+'static'):
-            shutil.copytree(static_path, task_folder_path+'\\'+'static')
+        static_path = os.path.join(os.getcwd(), 'Report\\templates\\static')
+        if not os.path.exists(task_folder_path + '\\' + 'static'):
+            shutil.copytree(static_path, task_folder_path + '\\' + 'static')
             execution_log.info('copy static folder finished')
         else:
             execution_log.info('target folder exist, copy static folder failed')
@@ -167,13 +167,13 @@ class Report:
                     if each_result['case_name'] == each_case_result[0]:
                         index = final_data_2.index(each_case_result)
                         final_data_2[index][1].append(each_result)
-                        if each_result['result'].upper() == 'PASS' :
+                        if each_result['result'].upper() == 'PASS':
                             final_data_2[index][2] += 1
                             passed_case_number += 1
-                        if each_result['result'].upper() == 'FAIL' :
+                        if each_result['result'].upper() == 'FAIL':
                             final_data_2[index][3] += 1
                             failed_case_number += 1
-                        if each_result['result'].upper() == 'NORUN' :
+                        if each_result['result'].upper() == 'NORUN':
                             final_data_2[index][4] += 1
                             norun_case_number += 1
                         final_data_2[index][5] += 1
@@ -190,11 +190,13 @@ class Report:
         result = []
         result_file = os.path.join(os.getcwd(), 'Report\\{}\\result.yaml'.format(self.__name))
         for i in self.__uut_list:
-            uut_result_file = os.path.join(os.getcwd(), 'Report\\{}\\{}\\test_report\\{}.yaml'.format(self.__name, i.get_ip(), i.get_ip()))
+            uut_result_file = os.path.join(os.getcwd(),
+                                           'Report\\{}\\{}\\test_report\\{}.yaml'.format(self.__name, i.get_ip(),
+                                                                                         i.get_ip()))
             if not os.path.exists(uut_result_file):
                 if not os.path.exists(os.path.dirname(result_file)):
                     os.makedirs(os.path.dirname(result_file))
-                a = [{'uut_name': i, 'case_name': 'Error', 'steps': [], 'result':'Fail'}]
+                a = [{'uut_name': i, 'case_name': 'Error', 'steps': [], 'result': 'Fail'}]
                 result.extend(a)
                 continue
             with open(uut_result_file, encoding='utf-8') as f:
@@ -219,7 +221,7 @@ class Email:
 
     def zip_result_package(self, result_path, name):
         result_path = result_path
-        self.send_file_name = name+'.zip'
+        self.send_file_name = name + '.zip'
         self.send_file = result_path + '.zip'
         """
         压缩指定文件夹
@@ -236,17 +238,17 @@ class Email:
                 zip.write(os.path.join(path, filename), os.path.join(fpath, filename))
         zip.close()
 
-    def send(self,):
+    def send(self, ):
         msg = MIMEMultipart('mixed')
         msg['Subject'] = self.subject
         msg['From'] = self.sender
         msg['To'] = ";".join(self.receiver)
-        #正文
+        # 正文
         text = """Hi,\n\nYour test has been completed, please refer to the attachment for details.
 Open the *.html to check result\n\nBest regards"""
         text_plain = MIMEText(text, 'plain', 'utf-8')
         msg.attach(text_plain)
-        #附件
+        # 附件
         sendfile = open(self.send_file, 'rb').read()
         text_attachment = MIMEText(sendfile, 'base64', 'utf-8')
         text_attachment["Content-Disposition"] = 'attachment; filename="{}"'.format(self.send_file_name)
@@ -260,7 +262,7 @@ Open the *.html to check result\n\nBest regards"""
         except smtplib.SMTPException as e:
             print("Error: %s" % e)
 
-    def send_message(self,):
+    def send_message(self, ):
         text = '''!!!BUILD ERROR!!!'''
         msg = MIMEText(text, 'plain', 'utf-8')
         msg['Subject'] = self.subject
@@ -290,4 +292,3 @@ if __name__ == '__main__':
     e = Email(['carl.chen@hp.com'])
     e.send_message()
     # pass
-

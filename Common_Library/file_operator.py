@@ -82,7 +82,7 @@ class XlsxFile(File):
         for i in range(2, self.get_rows(config_sheet) + 1):
             dic[config_sheet.cell(row=i,
                                   column=1).value.lower()] = config_sheet.cell(
-                                      row=i, column=2).value.lower()
+                row=i, column=2).value.lower()
         dic['email'] = dic['email'].split(';')
         if dic['needbuild'] == 'y':
             dic['needbuild'] = True
@@ -97,7 +97,7 @@ class XlsxFile(File):
                     continue
                 uut_dic[uut_sheet.cell(
                     row=1, column=j).value.lower()] = uut_sheet.cell(
-                        row=i, column=j).value.lower()
+                    row=i, column=j).value.lower()
             if len(uut_dic) != self.get_cols(uut_sheet):
                 continue
             uut_list.append(uut_dic)
@@ -162,7 +162,7 @@ class MsgFile(File):
         self.content = content
         self.attachment = attachment
 
-    def get_attanchment(self):
+    def get_attachment(self):
         print(sys._getframe().f_code.co_name + "  finished")
 
 
@@ -190,7 +190,6 @@ class TxtFile(File):
 
 
 if __name__ == "__main__":
-
     folder_path = r"C:\Users\sich\Desktop\test_folder\1"
     # tar = r"C:\Users\sich\Desktop\test_folder\1\123.txt"
     tar = r"C:\Users\sich\Desktop\test_folder\2\1233.xlsx"
