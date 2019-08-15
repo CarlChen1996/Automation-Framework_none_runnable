@@ -1,0 +1,64 @@
+<style type="text/css">
+  @font-face {
+    margin: auto;
+    font-family: 'HP Simplified Light';
+    font-style: normal;
+    src: url('fonts/HPSimplified_Lt.ttf')
+  }
+  .project_name {
+    font-family: 'HP Simplified Light';
+    font-weight: bold;
+    font-size: 14pt;
+    color: black;
+  }
+  .project_info {
+    font-family: 'HP Simplified Light';
+    font-weight: bold;
+    font-size: 12pt;
+    color: black;
+  }
+  .project_detail {
+    font-family: 'HP Simplified Light';
+    font-weight: normal;
+    font-size: 10pt;
+    color: black;
+  }
+  table { border:2px solid white; width: 400px; min-height: 25px; line-height: 25px; text-align: center; border-collapse: collapse; padding:2px;}   
+  table tr th { border:2px solid white; background-color: #0096d6; color: white}
+  table tr td { border:2px solid white; background-color: #f2f2f2; color: black}  
+</style>
+
+<div class="project_name">
+  Project Name: {{ vars['project_name']}}<br><br>
+</div>
+
+<div class="project_info">
+  Framework Version:&nbsp;&nbsp;&nbsp;&nbsp;{{ vars['version'] }}<br><br>
+  From:&nbsp;&nbsp;&nbsp;&nbsp;{{ vars['start'] }}<br><br>
+  To:&nbsp;&nbsp;&nbsp;&nbsp;{{ vars['end'] }}<br><br>
+  Summary:
+</div>
+
+<div class="project_detail">
+  <table class = "project_detail">
+      <tr>
+        <th>Planned Case</th>
+        <th>Passed Case</th>
+        <th>Failed Case</th>
+        <th>Pass Rate</th>
+      </tr>
+      <tr>
+        <td>{{ vars['planned'] }}</td>
+        <td>{{ vars['passed'] }}</td>
+        <td>{{ vars['failed'] }}</td>
+        <td>{{ vars['pass_rate'] }}</td>
+      </tr>
+  </table>
+</div>
+
+<div class="project_info">
+  <br><br>
+  Refer to attachment for more execution details.
+</div>
+
+

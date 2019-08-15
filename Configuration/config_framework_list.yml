@@ -33,6 +33,7 @@ hpdm_settings:
     WES7E: WES7E
   
 email_settings:
-  smtp_server: '15.73.212.81'
+  smtp_server: 'smtp1.hp.com'
   smtp_port: 25
   default_sender: tcqa.automationframework@hp.com
+  report_summary: 'template_email_report_summary.html'

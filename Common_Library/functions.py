@@ -2,6 +2,8 @@ import time
 import msvcrt
 import zipfile
 import os
+import jinja2
+import sys
 
 
 def get_keyboard_input(timeout):
@@ -39,7 +41,7 @@ def zip_dir(source_dir, result_file, include_root_folder=False):
         else:
             archive_path = dirpath.replace(source_dir, '')
             for filename in filenames:
-                zip.write(os.path.join(dirpath, filename), os.path.join(archive_path, filename))           
+                zip.write(os.path.join(dirpath, filename), os.path.join(archive_path, filename))
     zip.close()
     return result_file
 
@@ -54,3 +56,14 @@ def unzip(source_zip, result_path):
         file_handler.close()
     zip.close()
     return result_path
+
+
+def render_template(template, **kwargs):  # render jinja2 template into html
+    template_path = os.path.join(os.getcwd(), 'Configuration')
+    if not os.path.exists(os.path.join(template_path, template)):
+        print('No template file present: %s' % template)
+        sys.exit()
+    templateLoader = jinja2.FileSystemLoader(searchpath=template_path)
+    templateEnv = jinja2.Environment(loader=templateLoader)
+    templ = templateEnv.get_template(template)
+    return templ.render(**kwargs)
