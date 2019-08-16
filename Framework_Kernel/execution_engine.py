@@ -8,8 +8,11 @@ import os
 from multiprocessing import Process
 import threading
 import time
+import datetime
 from Framework_Kernel.engine import Engine
 from Common_Library.file_transfer import FTPUtils
+from Common_Library.email_operator import Email
+from Common_Library.functions import render_template, zip_dir
 from Framework_Kernel.task_queue import ExecuteQueue
 from Framework_Kernel.analyzer import Analyzer
 
@@ -17,7 +20,7 @@ from Framework_Kernel.analyzer import Analyzer
 from Framework_Kernel.task import Task
 from Framework_Kernel.host import WindowsDeployHost, WindowsExecuteHost
 '''
-from Framework_Kernel.report import Report, Email
+from Framework_Kernel.report import Report
 from Framework_Kernel.log import execution_log
 
 
@@ -71,6 +74,7 @@ class ExecutionEngine(Engine):
                 d = self.__deploy_list[0]
                 i = self.execution_queue.get_task_list()[0]
                 self.deploy(d, i)
+                i.end = datetime.datetime.now()
                 self.download_result()
                 self.send_report(i)
                 execution_log.info('[thread_executor] task left in execute queue: {}'.format(
@@ -108,9 +112,30 @@ class ExecutionEngine(Engine):
     def send_report(self, i):
         r = Report(i.get_name(), i.get_uut_list())
         task_report_path = r.generate()
-        e = Email(i.get_email())
-        e.zip_result_package(task_report_path, i.get_name())
-        e.send()
+        email_to = i.get_email()
+        email_subject = 'Thin Client QA Automation Test Report'
+        email_vars = {
+            'status': 'Normal',
+            'start': i.start(),
+            'end': i.end(),
+            'pass_rate': '50%',
+            'planned': 2,
+            'passed': 1,
+            'failed': 1
+        }
+        # Zip Attachment
+        att_file = os.path.basename(os.path.normpath(task_report_path)) + '.zip'
+        result_path = os.path.join(task_report_path, att_file)
+        att_zip = zip_dir(task_report_path, result_path)
+        # Render Email
+        analyze_handler = Analyzer()
+        setting_file = r'.\Configuration\config_framework_list.yml'
+        settings = analyze_handler.analyze_file(setting_file)
+        template_file = settings['email_settings']['report_summary']
+        html = render_template(template_file, vars=email_vars)
+        # Send Email
+        email_handler = Email()
+        email_handler.send_email(email_subject, email_to, html.encode('utf-8'), 'html', attachment=att_zip)
         r.remove_report_folder(task_report_path)
         self.execution_queue.remove_task(i)
         execution_log.info("[thread_executor] remove {} from task_list".format(i.get_name()))

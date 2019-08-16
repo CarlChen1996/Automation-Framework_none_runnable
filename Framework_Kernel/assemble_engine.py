@@ -18,6 +18,7 @@ from multiprocessing import Process
 import time
 import threading
 import os
+import datetime
 
 
 class AssembleEngine(Engine):
@@ -109,6 +110,7 @@ class AssembleEngine(Engine):
         for taskitem in task_source_list:
             task = Task(taskitem['name'], taskitem['email'],
                         taskitem['repository'], taskitem['needbuild'])
+            task.start_time = datetime.datetime.now()
             task.set_state('Wait Assemble')
             for script in taskitem['testscripts']:
                 task.insert_script(Script(name=script))
@@ -123,9 +125,7 @@ class AssembleEngine(Engine):
                                              mac=uutitem['mac'])
                     task.insert_uut_list(uut)
                 else:
-                    uut = LinuxExecuteHost(ip=uutitem['ip'],
-                                             version=uutitem['os'],
-                                             mac=uutitem['mac'])
+                    uut = LinuxExecuteHost(ip=uutitem['ip'], version=uutitem['os'], mac=uutitem['mac'])
                     task.insert_uut_list(uut)
             assemble_log.info(
                 '[Thread_fresh_testplan]--insert {} to assemble queue list'.

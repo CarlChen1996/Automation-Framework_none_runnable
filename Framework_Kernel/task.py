@@ -19,6 +19,8 @@ class Task:
         self.__status = ''
         self.__state = ''
         self.__need_build = need_build
+        self.start_time = ''
+        self.end = ''
 
     # ------Below is set/get function for member-----------
     def insert_script(self, script):
