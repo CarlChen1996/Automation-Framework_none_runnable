@@ -118,10 +118,10 @@ class ExecutionEngine(Engine):
             'status': 'Normal',
             'start': i.start_time,
             'end': i.end_time,
-            'pass_rate': '50%',
-            'planned': 2,
-            'passed': 1,
-            'failed': 1
+            'pass_rate': r.total['Passing rate']+'%',
+            'planned': r.total['Count'],
+            'passed': r.total['Pass'],
+            'failed': r.total['Fail']
         }
         # Zip Attachment
         att_file = os.path.basename(os.path.normpath(task_report_path)) + '.zip'
