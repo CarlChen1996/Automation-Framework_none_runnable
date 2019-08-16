@@ -74,7 +74,7 @@ class ExecutionEngine(Engine):
                 d = self.__deploy_list[0]
                 i = self.execution_queue.get_task_list()[0]
                 self.deploy(d, i)
-                i.end = datetime.datetime.now()
+                i.end_time = datetime.datetime.now()
                 self.download_result()
                 self.send_report(i)
                 execution_log.info('[thread_executor] task left in execute queue: {}'.format(
@@ -116,8 +116,8 @@ class ExecutionEngine(Engine):
         email_subject = 'Thin Client QA Automation Test Report'
         email_vars = {
             'status': 'Normal',
-            'start': i.start(),
-            'end': i.end(),
+            'start': i.start_time,
+            'end': i.end_time,
             'pass_rate': '50%',
             'planned': 2,
             'passed': 1,
