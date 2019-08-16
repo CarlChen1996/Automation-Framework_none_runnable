@@ -46,7 +46,7 @@ class Report:
             'Note': '为了RC的最后一次回归测试',
         }
         # total=[PassingRate,Pass,Fail,NoRun,Count]
-        total = {
+        self.total = {
             'Passing rate': '%.2f' % (100 * self.__data['passCount'] / self.__data['count']),
             'Pass': self.__data['passCount'],
             'Fail': self.__data['failCount'],
@@ -56,14 +56,14 @@ class Report:
         # the canvas data
         data = [
             {
-                'value': total['Pass'],
+                'value': self.total['Pass'],
                 'name': 'Pass',
                 'itemStyle': {
                     'color': '#5cb85c'
                 }
             },
             {
-                'value': total['Fail'],
+                'value': self.total['Fail'],
                 'name': 'Fail',
                 'itemStyle': {
                     'color': '#d9534f'
@@ -76,7 +76,7 @@ class Report:
                                final_data=self.__data['final_data'],
                                final_data_2=self.__data_2['final_data_2'],
                                data=data,
-                               total=total,
+                               total=self.total,
                                task_name=self.__name,
                                encoding='utf-8')  # unicode string
         task_folder_path = os.path.join(os.getcwd(), 'Report\\' + self.__name)
@@ -210,72 +210,6 @@ class Report:
     @staticmethod
     def remove_report_folder(task_report_path):
         shutil.rmtree(task_report_path)
-
-
-class Email:
-    def __init__(self, receiver, ):
-        self.receiver = receiver
-        self.smtpserver = '15.73.212.81'
-        self.sender = 'AutomationFramework@hp.com'
-        self.subject = Header('Test report', 'utf-8').encode()
-
-    def zip_result_package(self, result_path, name):
-        result_path = result_path
-        self.send_file_name = name + '.zip'
-        self.send_file = result_path + '.zip'
-        """
-        压缩指定文件夹
-        :param result_path: 目标文件夹路径
-        :param send_file: 压缩文件保存路径+xxxx.zip
-        :return: 无
-        """
-        zip = zipfile.ZipFile(self.send_file, "w", zipfile.ZIP_DEFLATED)
-        for path, dirnames, filenames in os.walk(result_path):
-            # 去掉目标跟路径，只对目标文件夹下边的文件及文件夹进行压缩
-            fpath = path.replace(result_path, '')
-
-            for filename in filenames:
-                zip.write(os.path.join(path, filename), os.path.join(fpath, filename))
-        zip.close()
-
-    def send(self, ):
-        msg = MIMEMultipart('mixed')
-        msg['Subject'] = self.subject
-        msg['From'] = self.sender
-        msg['To'] = ";".join(self.receiver)
-        # 正文
-        text = """Hi,\n\nYour test has been completed, please refer to the attachment for details.
-Open the *.html to check result\n\nBest regards"""
-        text_plain = MIMEText(text, 'plain', 'utf-8')
-        msg.attach(text_plain)
-        # 附件
-        sendfile = open(self.send_file, 'rb').read()
-        text_attachment = MIMEText(sendfile, 'base64', 'utf-8')
-        text_attachment["Content-Disposition"] = 'attachment; filename="{}"'.format(self.send_file_name)
-        msg.attach(text_attachment)
-        try:
-            smtp = smtplib.SMTP()
-            smtp.connect(self.smtpserver, 25)
-            smtp.sendmail(self.sender, self.receiver, msg.as_string())
-            execution_log.info('send email success')
-            smtp.quit()
-        except smtplib.SMTPException as e:
-            print("Error: %s" % e)
-
-    def send_message(self, ):
-        text = '''!!!BUILD ERROR!!!'''
-        msg = MIMEText(text, 'plain', 'utf-8')
-        msg['Subject'] = self.subject
-        msg['From'] = self.sender
-        msg['To'] = ";".join(self.receiver)
-        try:
-            smtp = smtplib.SMTP()
-            smtp.connect(self.smtpserver, 25)
-            smtp.sendmail(self.sender, self.receiver, msg.as_string())
-            assemble_log.info('send email success')
-            smtp.quit()
-        except smtplib.SMTPException as e:
-            print("Error: %s" % e)
 
 
 if __name__ == '__main__':
