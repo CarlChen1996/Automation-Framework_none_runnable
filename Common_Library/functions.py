@@ -62,7 +62,7 @@ def render_template(template, **kwargs):  # render jinja2 template into html
     template_path = os.path.join(os.getcwd(), 'Configuration')
     if not os.path.exists(os.path.join(template_path, template)):
         print('No template file present: %s' % template)
-        sys.exit()
+        return False
     templateLoader = jinja2.FileSystemLoader(searchpath=template_path)
     templateEnv = jinja2.Environment(loader=templateLoader)
     templ = templateEnv.get_template(template)
