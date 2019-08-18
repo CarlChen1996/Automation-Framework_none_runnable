@@ -1,0 +1,39 @@
+@font-face {
+    margin: auto;
+    font-family: 'HP Simplified Light';
+    font-style: normal;
+    src: url('/Configuration/fonts/HPSimplified_Lt.ttf')
+}
+.project_name {
+    font-family: 'HP Simplified Light';
+    font-weight: bold;
+    font-size: 14pt;
+    color: black;
+}
+.project_info {
+    font-family: 'HP Simplified Light';
+    font-weight: bold;
+    font-size: 12pt;
+    color: black;
+}
+.project_detail {
+    font-family: 'HP Simplified Light';
+    font-weight: normal;
+    font-size: 10pt;
+    color: black;
+}
+.project_error_summary{
+    font-family: 'HP Simplified Light';
+    font-size: 12pt;
+    font-weight: bold;
+    color: red
+}
+.project_error_detail{
+    font-family: 'HP Simplified Light';
+    font-size: 10pt;
+    font-weight: normal;
+    color: red   
+}
+table.project_detail { border:2px solid white; width: 400px; min-height: 25px; line-height: 25px; text-align: center; border-collapse: collapse; padding:2px;}   
+table.project_detail tr th { border:2px solid white; background-color: #0096d6; color: white}
+table.project_detail tr td { border:2px solid white; background-color: #f2f2f2; color: black}  
