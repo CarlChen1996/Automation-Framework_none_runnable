@@ -7,7 +7,7 @@
 from Framework_Kernel.engine import Engine
 from Framework_Kernel.task_queue import AssembleQueue
 from Framework_Kernel.analyzer import Analyzer
-from Framework_Kernel.report import Email
+from Common_Library.email_operator import Email
 from Framework_Kernel.task import Task
 from Framework_Kernel.host import WindowsExecuteHost, LinuxExecuteHost
 from Framework_Kernel.validator import HostValidator
@@ -171,8 +171,9 @@ class AssembleEngine(Engine):
                     continue
             elif task.get_status() != '':
                 self.assembleQueue.remove_task(task)
-                e = Email(task.get_email())
-                e.send_message()
+                e = Email()
+                e.send_email('send_task_to_execution', task.get_email(),
+                             '[send_task_to_execution] !!!ERROR ERROR!!!, {} is removed from assemble queue', 'html')
                 assemble_log.error(
                     '[send_task_to_execution] !!!ERROR ERROR!!!, {} is removed from assemble queue'
                     .format(task.get_name()))

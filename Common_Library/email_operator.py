@@ -10,7 +10,8 @@ from email.mime.text import MIMEText
 class Email:
     def __init__(self):
         self.settings = self.__load_settings()
-        self.smtp_server = self.settings['smtp_server']
+        # self.smtp_server = self.settings['smtp_server']
+        self.smtp_server = '15.73.96.123'
         self.smtp_port = self.settings['smtp_port']
         self.smtp = self.__init_connection()
         self.sender = self.settings['default_sender']

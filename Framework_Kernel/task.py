@@ -8,7 +8,7 @@ from Framework_Kernel import QTPutils
 
 
 class Task:
-    def __init__(self, name, email='', repository='', need_build=True):
+    def __init__(self, name, email=[], repository='', need_build=True):
         self.__email = email
         self.__repository = repository
         self.__script_list = []
