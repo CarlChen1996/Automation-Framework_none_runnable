@@ -50,22 +50,23 @@ class ErrorHandler:
         self.error_level = self.error_msg[2:4]
         self.error_details = self.error_msg[4:]
         if self.error_level == ERROR_LEVEL().terminate_framework:
-            self.terminate_framework()
+            return self.terminate_framework()
         elif self.error_level == ERROR_LEVEL().reset_framework:
-            self.reset_framework()
+            return self.reset_framework()
         elif self.error_level == ERROR_LEVEL().reset_engine:
-            self.reset_engine(engine)
+            return self.reset_engine(engine)
         elif self.error_level == ERROR_LEVEL().rerun_task:
-            self.rerun_task()
+            return self.rerun_task()
         elif self.error_level == ERROR_LEVEL().drop_task:
-            self.drop_task()
+            return self.drop_task()
         elif self.error_level == ERROR_LEVEL().continue_task:
-            self.continue_task()
+            return self.continue_task()
 
     def terminate_framework(self):
         error_handler_log.critical(self.error_msg)
         print("terminate_framework")
         print(self.engine_code, ':', self.error_level, ':', self.error_details)
+        return 0
 
     def reset_framework(self):
         error_handler_log.critical(self.error_msg)
@@ -79,8 +80,10 @@ class ErrorHandler:
             error_handler_log.info("[watch_executor_thread] start execution engine successfully")
             error_handler_log.info("[watch_executor_thread] execution engine pid {} current status is {}"
                                    .format(engine.status.pid, str(engine.status.is_alive())))
+            return 1
         else:
             error_handler_log.info("[watch_executor_thread] can't start execution engine")
+            return 0
 
     def rerun_task(self):
         error_handler_log.critical(self.error_msg)
