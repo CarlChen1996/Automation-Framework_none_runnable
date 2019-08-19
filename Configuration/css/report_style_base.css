@@ -7,30 +7,36 @@
 .project_name {
     font-family: 'HP Simplified Light';
     font-weight: bold;
-    font-size: 14pt;
+    font-size: 14px;
     color: black;
 }
 .project_info {
     font-family: 'HP Simplified Light';
     font-weight: bold;
-    font-size: 12pt;
+    font-size: 12px;
     color: black;
 }
 .project_detail {
     font-family: 'HP Simplified Light';
     font-weight: normal;
-    font-size: 10pt;
+    font-size: 10px;
     color: black;
 }
 .project_error_summary{
     font-family: 'HP Simplified Light';
-    font-size: 12pt;
+    font-size: 12px;
     font-weight: bold;
     color: red
 }
 .project_error_detail{
     font-family: 'HP Simplified Light';
-    font-size: 10pt;
+    font-size: 10px;
+    font-weight: normal;
+    color: red   
+}
+.foot{
+    font-family: 'HP Simplified Light';
+    font-size: 10px;
     font-weight: normal;
     color: red   
 }
