@@ -1,6 +1,48 @@
 <!-- link to external css file -->
 <head>
-  <link rel="stylesheet" type="text/css" href="./css/report_style_base.css">
+  <style>
+    @font-face {
+    margin: auto;
+    font-family: 'HP Simplified Light';
+    font-style: normal;
+    src: url('/Configuration/fonts/HPSimplified_Lt.ttf')
+  }
+  .project_name {
+      font-family: 'HP Simplified Light';
+      font-weight: bold;
+      margin-bottom: 20px;
+      font-size: 14px;
+      color: black;
+  }
+  .project_info {
+      font-family: 'HP Simplified Light';
+      font-weight: bold;
+      margin-bottom: 8px;
+      font-size: 12px;
+      color: black;
+  }
+  .project_detail {
+      font-family: 'HP Simplified Light';
+      font-weight: normal;
+      font-size: 10px;
+      color: black;
+  }
+  .project_error_summary{
+      font-family: 'HP Simplified Light';
+      font-size: 12px;
+      font-weight: bold;
+      color: red
+  }
+  .project_error_detail{
+      font-family: 'HP Simplified Light';
+      font-size: 10px;
+      font-weight: normal;
+      color: red
+  }
+  table.project_detail { border:2px solid white; width: 400px; min-height: 25px; line-height: 25px; text-align: center; border-collapse: collapse; padding:2px;}
+  table.project_detail tr th { border:2px solid white; background-color: #0096d6; color: white}
+  table.project_detail tr td { border:2px solid white; background-color: #f2f2f2; color: black}
+  </style>
 </head>
 
 <div class="project_name">
