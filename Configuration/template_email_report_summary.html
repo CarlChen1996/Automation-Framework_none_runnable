@@ -4,14 +4,14 @@
 </head>
 
 <div class="project_name">
-  Project Name: {{ vars['project_name']}}<br><br>
+  <p>Project Name: {{ vars['project_name']}}</p>
 </div>
 
 <div class="project_info">
-  Framework Version:&nbsp;&nbsp;&nbsp;&nbsp;{{ vars['framework_version'] }}<br><br>
-  Script Version:&nbsp;&nbsp;&nbsp;&nbsp;{{ vars['script_version'] }}<br><br>
-  From:&nbsp;&nbsp;&nbsp;&nbsp;{{ vars['start'] }}<br><br>
-  To:&nbsp;&nbsp;&nbsp;&nbsp;{{ vars['end'] }}<br><br>
+  Framework Version:&nbsp;&nbsp;&nbsp;&nbsp;{{ vars['framework_version'] }}<br/><br/>
+  Script Version:&nbsp;&nbsp;&nbsp;&nbsp;{{ vars['script_version'] }}<br/><br/>
+  From:&nbsp;&nbsp;&nbsp;&nbsp;{{ vars['start'] }}<br/><br/>
+  To:&nbsp;&nbsp;&nbsp;&nbsp;{{ vars['end'] }}<br/><br/>
   Summary:
 </div>
 
@@ -33,13 +33,13 @@
 </table>
 
 <div class="project_info">
-  <br><br>
+  <br/><br/>
   Refer to attachment for more execution details.
 </div>
 <!-- Show Error Details for status 'Error' -->
 {% elif vars['status'] == 'Error' %}
   <div class="project_error_summary">
-    Automation Framework execution error, please refer to below information for more details. <br><br><br>
+    Automation Framework execution error, please refer to below information for more details. <br/><br/><br/>
     <div class="project_error_detail">
       {{ vars['err_details'] }}
     </div>
