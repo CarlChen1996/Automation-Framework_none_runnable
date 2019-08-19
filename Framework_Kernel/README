@@ -46,6 +46,7 @@
             deploy(self, d, i)
             download_result()
             send_report(self, i)
+            email_parameter(r, i)
             
     Engine.py
         class Engine:

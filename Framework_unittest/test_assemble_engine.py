@@ -73,8 +73,9 @@ class AssembleEngineTest(unittest.TestCase):
         generate_task.assert_not_called()
         sleep_mock.assert_called_once()
 
+    @patch('time.sleep')
     @patch('Framework_Kernel.assemble_engine.AssembleEngine.get_signal_after_send')
-    def test_send_task_to_execution_true(self, send_task):
+    def test_send_task_to_execution_true(self, send_task, sleep_mock):
         self.task.set_status('SUCCESS')
         self.task.set_state("ASSEMBLE FINISHED")
         self.assemble.assembleQueue.insert_task(task=self.task)
@@ -83,8 +84,10 @@ class AssembleEngineTest(unittest.TestCase):
         receive_task = self.pipe[1].recv()
         self.assertEqual(receive_task.get_name(), self.task_name)
 
+    @patch('time.sleep')
+    @patch('Common_Library.email_operator.Email.send_email')
     @patch('Framework_Kernel.task_queue.Queue.remove_task')
-    def test_send_task_to_execution_false(self, remove_task):
+    def test_send_task_to_execution_false(self, remove_task, email_mock, sleep_mock):
         self.task.set_status('SUCCES')
         self.assemble.assembleQueue.insert_task(task=self.task)
         self.assemble.send_task_to_execution()

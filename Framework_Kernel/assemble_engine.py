@@ -174,6 +174,7 @@ class AssembleEngine(Engine):
                 e = Email()
                 e.send_email('send_task_to_execution', task.get_email(),
                              '[send_task_to_execution] !!!ERROR ERROR!!!, {} is removed from assemble queue', 'html')
+                e.disconnect()
                 assemble_log.error(
                     '[send_task_to_execution] !!!ERROR ERROR!!!, {} is removed from assemble queue'
                     .format(task.get_name()))
