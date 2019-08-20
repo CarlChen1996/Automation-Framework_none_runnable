@@ -162,7 +162,6 @@ class QTP_HPDM:
         self.__run_qtp_script(self.__create_filter_path)
 
     def discover_devices(self, task):
-        self.set_test_data(task)
         self.__run_qtp_script(self.__discover_devices_path)
 
     # def create_template(self):

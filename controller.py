@@ -3,7 +3,7 @@ from Framework_Kernel.log import controller_log
 from Framework_Kernel import configuration_engine
 from Framework_Kernel import assemble_engine
 from Framework_Kernel import execution_engine
-from Framework_Kernel.error_handler import ERROR_MSG,ERROR_LEVEL,ErrorHandler,ENGINE_CODE
+from Framework_Kernel.error_handler import ERROR_MSG, ERROR_LEVEL, ErrorHandler, ENGINE_CODE
 from Common_Library.functions import get_keyboard_input
 from multiprocessing import Process
 import threading
@@ -109,11 +109,11 @@ def run_with_auto_mode():
     check build server not empty
     """
     if not build_server_list:
-        error_msg_instance_build=ERROR_MSG(ENGINE_CODE().config_engine,
-                                           ERROR_LEVEL().terminate_framework,
-                                           'build server list is empty')
+        error_msg_instance_build = ERROR_MSG(ENGINE_CODE().config_engine,
+                                             ERROR_LEVEL().terminate_framework,
+                                             'build server list is empty')
         error_handle_instance_build = ErrorHandler(error_msg_instance_build)
-        res=error_handle_instance_build.handle()
+        res = error_handle_instance_build.handle()
         if not res:
             return
     """
@@ -121,10 +121,10 @@ def run_with_auto_mode():
     """
     if not deploy_list:
         error_msg_instance_execute = ERROR_MSG(ENGINE_CODE().config_engine,
-                                             ERROR_LEVEL().terminate_framework,
-                                             'execute server list is empty')
+                                               ERROR_LEVEL().terminate_framework,
+                                               'execute server list is empty')
         error_handle_instance_execute = ErrorHandler(error_msg_instance_execute)
-        res=error_handle_instance_execute.handle()
+        res = error_handle_instance_execute.handle()
         if not res:
             return
 
