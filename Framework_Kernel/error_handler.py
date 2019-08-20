@@ -45,7 +45,7 @@ class ErrorHandler:
         self.error_level = ''
         self.error_details = ''
 
-    def handle(self, engine=None):
+    def handle(self, engine=None,task=None,task_queue=None):
         self.engine_code = self.error_msg[:2]
         self.error_level = self.error_msg[2:4]
         self.error_details = self.error_msg[4:]
@@ -58,7 +58,7 @@ class ErrorHandler:
         elif self.error_level == ERROR_LEVEL().rerun_task:
             return self.rerun_task()
         elif self.error_level == ERROR_LEVEL().drop_task:
-            return self.drop_task()
+            return self.drop_task(task,task_queue)
         elif self.error_level == ERROR_LEVEL().continue_task:
             return self.continue_task()
 
@@ -90,10 +90,12 @@ class ErrorHandler:
         print("rerun_task")
         print(self.engine_code, ':', self.error_level, ':', self.error_details)
 
-    def drop_task(self):
+    def drop_task(self,task,task_queue):
         error_handler_log.critical(self.error_msg)
         print("drop_task")
         print(self.engine_code, ':', self.error_level, ':', self.error_details)
+        task_queue.remove_task(task)
+        return 0
 
     def continue_task(self):
         error_handler_log.info(self.error_msg)

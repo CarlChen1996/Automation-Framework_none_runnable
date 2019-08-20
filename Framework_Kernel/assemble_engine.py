@@ -14,6 +14,7 @@ from Framework_Kernel.validator import HostValidator
 from Framework_Kernel.validator import ScriptValidator
 from Framework_Kernel.script import Script
 from Framework_Kernel.log import assemble_log
+from Framework_Kernel.error_handler import ERROR_MSG, ERROR_LEVEL, ErrorHandler, ENGINE_CODE
 from multiprocessing import Process
 import time
 import threading
@@ -209,7 +210,19 @@ class AssembleEngine(Engine):
                         b_host = self.__build_list[0]
                         for uut in task.get_uut_list():
                             h_validator.validate_uut(uut)
-                        s_validator.validate(task)
+                        res = s_validator.validate(task)
+                        """
+                        check task is ok
+                        """
+                        if not res:
+                            error_msg_instance = ERROR_MSG(ENGINE_CODE().assembly_engine,
+                                                            ERROR_LEVEL().drop_task,
+                                                            "check task fail,drop it")
+                            error_handle_instance = ErrorHandler(error_msg_instance)
+                            handle_res = error_handle_instance.handle(task=Task, task_queue=self.assembleQueue)
+                            if not handle_res:
+                                continue
+
                         self.assembleQueue.assemble(task, b_host)
                         print(20 * '*')
                         print(task.get_status(), task.get_exe_file_list())
