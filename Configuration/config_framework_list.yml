@@ -37,3 +37,8 @@ email_settings:
   smtp_port: 25
   default_sender: tcqa.automationframework@hp.com
   report_summary: 'template_email_report_summary.html'
+
+report_settings:
+  template_folder: 'Configuration'
+  template_name: 'template_report_content.html'
+  static_src: 'Configuration\static'

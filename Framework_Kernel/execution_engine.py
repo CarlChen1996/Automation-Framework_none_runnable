@@ -110,7 +110,7 @@ class ExecutionEngine(Engine):
         ftp_util.close()
 
     def send_report(self, i):
-        r = Report(i.get_name(), i.get_uut_list())
+        r = Report(i)
         # Send Email
         email_subject, email_to, html, att_zip, task_report_path = self.email_parameter(r, i)
         if html is not False:
