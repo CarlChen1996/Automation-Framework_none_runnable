@@ -44,7 +44,7 @@
   <builders>
     <hudson.tasks.BatchFile>
       <command>echo &quot;start build&quot;&#xd;
-C:\Users\automation\AppData\Local\Programs\Python\Python37-32\Scripts\pyinstaller -F --distpath . %WORKSPACE%/hello.py -n output_name &#xd;
+C:\Users\automation\AppData\Local\Programs\Python\Python37-32\Scripts\pyinstaller -F --clean --distpath . %WORKSPACE%/hello.py -n output_name &#xd;
 echo &quot;build finish&quot;%JOB_NAME%</command>
     </hudson.tasks.BatchFile>
   </builders>

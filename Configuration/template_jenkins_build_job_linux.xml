@@ -44,7 +44,7 @@
   <builders>
     <hudson.tasks.Shell>
       <command>echo &quot;start build &quot;${JOB_NAME}
-pyinstaller -F --distpath . ${WORKSPACE}/hello.py -n output_name 
+pyinstaller -F --clean --distpath . ${WORKSPACE}/hello.py -n output_name 
 echo &quot;build finish&quot;${JOB_NAME}</command>
     </hudson.tasks.Shell>
   </builders>
