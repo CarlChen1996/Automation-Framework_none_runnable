@@ -10,23 +10,44 @@ from Framework_Kernel.analyzer import Analyzer
 import yaml
 import os
 import shutil
+import pandas
 
 
 class Report:
     def __init__(self, task):
         self.settings = self.__load_settings()
-        self.__name = task.get_name()
         self.__template_folder = self.settings['template_folder']
         self.__template_name = self.settings['template_name']
         self.__static_src = self.settings['static_src']
+        self.__name = task.get_name()
         self.__uut_list = task.get_uut_list()
+        self.__start_time = task.start_time
+        self.__end_time = task.end_time
+        self.__test_report_root = os.path.join(os.getcwd(), 'Report\\' + self.__name)
         self.__result()
-        self.__data = self.__final_data()
-        self.__data_2 = self.__final_data_2()
+        self.__data_by_uut = self.__generate_table('uut_name')
+        self.__data_by_case = self.__generate_table('case_name')
+        self.__total = {
+            'Passing rate': '%.2f' % (100 * self.__data_by_uut['passCount'] / self.__data_by_uut['count']),
+            'Pass': self.__data_by_uut['passCount'],
+            'Fail': self.__data_by_uut['failCount'],
+            'NoRun': self.__data_by_uut['norunCount'],
+            'Count': self.__data_by_uut['count']
+        }
+        self.pie_chart_data = [
+            {
+                'value': self.__total['Pass'],
+                'name': 'Pass',
+                'itemStyle': {'color': '#5cb85c'}
+            },
+            {
+                'value': self.__total['Fail'],
+                'name': 'Fail',
+                'itemStyle': {'color': '#d9534f'}
+            },
+        ]
         self.framework_version = '1.0'
         self.script_version = '1.0'
-        self.start_time = task.start_time
-        self.end_time = task.end_time
 
     def __load_settings(self):
         config_file = os.path.join(os.getcwd(), r'.\Configuration\config_framework_list.yml')
@@ -38,161 +59,70 @@ class Report:
     def generate(self):
         env = Environment(loader=FileSystemLoader(
             os.path.join(os.getcwd(), self.__template_folder), encoding='utf-8'))
-        self.total = {
-            'Passing rate':
-            '%.2f' % (100 * self.__data['passCount'] / self.__data['count']),
-            'Pass':
-            self.__data['passCount'],
-            'Fail':
-            self.__data['failCount'],
-            'NoRun':
-            self.__data['norunCount'],
-            'Count':
-            self.__data['count']
-        }
-        # the canvas data
-        data = [
-            {
-                'value': self.total['Pass'],
-                'name': 'Pass',
-                'itemStyle': {
-                    'color': '#5cb85c'
-                }
-            },
-            {
-                'value': self.total['Fail'],
-                'name': 'Fail',
-                'itemStyle': {
-                    'color': '#d9534f'
-                }
-            },
-        ]
         template = env.get_template(self.__template_name)
         html = template.render(task_name=self.__name,
                                framework_version=self.framework_version,
                                script_version=self.script_version,
-                               start=self.start_time,
-                               end=self.end_time,
-                               final_data=self.__data['final_data'],
-                               final_data_2=self.__data_2['final_data_2'],
-                               data=data,
-                               total=self.total,
+                               start=self.__start_time,
+                               end=self.__end_time,
+                               final_data=self.__data_by_uut['final_data'],
+                               final_data_2=self.__data_by_case['final_data'],
+                               data=self.pie_chart_data,
+                               total=self.__total,
                                encoding='utf-8')  # unicode string
-        task_folder_path = os.path.join(os.getcwd(), 'Report\\' + self.__name)
-        with open(task_folder_path + '\\' + self.__name + '.html',
-                  'w',
-                  encoding='utf-8') as f:
+        with open(self.__test_report_root + '\\' + self.__name + '.html', 'w', encoding='utf-8') as f:
             f.write(html)
-
         # copy static folder
+        if self.__get_src_files():
+            execution_log.info('generate {}.html finished'.format(self.__name))
+        return True
+
+    def __get_src_files(self):
         static_path = os.path.join(os.getcwd(), self.__static_src)
-        if not os.path.exists(task_folder_path + '\\' + 'static'):
-            shutil.copytree(static_path, task_folder_path + '\\' + 'static')
-            execution_log.info('copy static folder finished')
-        else:
-            execution_log.info(
-                'target folder exist, copy static folder failed')
-        execution_log.info('generate {}.html finished'.format(self.__name))
-        return task_folder_path
+        if os.path.exists(self.__test_report_root + '\\' + 'static'):
+            shutil.rmtree(self.__test_report_root + '\\' + 'static')
+            execution_log.info('Target static folder exist, remove the old folder')
+        shutil.copytree(static_path, self.__test_report_root + '\\' + 'static')
+        execution_log.info('Copy static folder to report folder finished')
+        return True
 
-    # group by uut
-    def __final_data(self):
-
-        file = os.path.join(os.getcwd(),
-                            'Report\\{}\\result.yaml'.format(self.__name))
-        passed_case_number = 0
-        failed_case_number = 0
-        norun_case_number = 0
-        data_dict = {}
-        test_uut_list = []
+    def __generate_table(self, key_name):
+        test_result_file = os.path.join(self.__test_report_root, 'result.yaml')
+        with open(test_result_file, 'r') as f:
+            source_data = yaml.safe_load(f)
+        df_raw = pandas.DataFrame(source_data)
+        # remove the unnecessary column
+        df_new = df_raw[[key_name, 'result']]
+        table_raw = pandas.pivot_table(df_new, index=key_name, columns='result', aggfunc=len, margins=True)
+        # Turn index to new column
+        table_raw[key_name] = table_raw.index
+        table_format = table_raw[[key_name, 'pass', 'fail']]
+        # raw_data: list:[[key_name, 'pass_count', 'fail_count'], [key_name, 'pass_count', 'fail_count'], ...]
+        raw_data = table_format.values.tolist()
         final_data = []
-        with open(file, encoding='utf-8') as f:
-            source_data = yaml.safe_load(f)
-
+        data_dict = {}
+        current_case_list = []
+        # exclude last item: All
+        for item in raw_data[:-1]:
             for each_result in source_data:
-                if each_result['uut_name'] not in test_uut_list:
-                    test_uut_list.append(each_result['uut_name'])
-
-            for uut_name in test_uut_list:
-                # [uut, case[], pass, fail, norun, total]
-                final_data.append([uut_name, [], 0, 0, 0, 0])
-            for each_result in source_data:
-                # k = [uut_name , [], 0, 0, 0, 0]
-                for each_uut_result in final_data:
-                    if each_result['uut_name'] == each_uut_result[0]:
-                        index = final_data.index(each_uut_result)
-                        final_data[index][1].append(each_result)
-                        if each_result['result'].upper() == 'PASS':
-                            final_data[index][2] += 1
-                            passed_case_number += 1
-                        if each_result['result'].upper() == 'FAIL':
-                            final_data[index][3] += 1
-                            failed_case_number += 1
-                        if each_result['result'].upper() == 'NORUN':
-                            final_data[index][4] += 1
-                            norun_case_number += 1
-                        final_data[index][5] += 1
-            total_case_number = passed_case_number + failed_case_number + norun_case_number
-            data_dict['final_data'] = final_data
-            data_dict['passCount'] = passed_case_number
-            data_dict['failCount'] = failed_case_number
-            data_dict['norunCount'] = norun_case_number
-            data_dict['count'] = total_case_number
+                if item[0] == each_result[key_name]:
+                    current_case_list.append(each_result)
+            final_data.append([item[0], current_case_list, item[1], item[2], 0, item[1] + item[2]])
+        # get last item in list
+        total_item = raw_data.pop()
+        data_dict['final_data'] = final_data
+        data_dict['passCount'] = total_item[1]
+        data_dict['failCount'] = total_item[2]
+        data_dict['norunCount'] = 0
+        data_dict['count'] = total_item[1] + total_item[2]
         return data_dict
-
-    # group by case
-    def __final_data_2(self):
-        file = os.path.join(os.getcwd(),
-                            'Report\\{}\\result.yaml'.format(self.__name))
-        passed_case_number = 0
-        failed_case_number = 0
-        norun_case_number = 0
-        data_dict_2 = {}
-        test_case_list = []
-        final_data_2 = []
-        with open(file, encoding='utf-8') as f:
-            source_data = yaml.safe_load(f)
-
-            for each_result in source_data:
-                if each_result['case_name'] not in test_case_list:
-                    test_case_list.append(each_result['case_name'])
-
-            for case_name in test_case_list:
-                # [case_name, uut[], pass, fail, norun, total]
-                final_data_2.append([case_name, [], 0, 0, 0, 0])
-            for each_result in source_data:
-                # print(each_result)
-                for each_case_result in final_data_2:
-                    if each_result['case_name'] == each_case_result[0]:
-                        index = final_data_2.index(each_case_result)
-                        final_data_2[index][1].append(each_result)
-                        if each_result['result'].upper() == 'PASS':
-                            final_data_2[index][2] += 1
-                            passed_case_number += 1
-                        if each_result['result'].upper() == 'FAIL':
-                            final_data_2[index][3] += 1
-                            failed_case_number += 1
-                        if each_result['result'].upper() == 'NORUN':
-                            final_data_2[index][4] += 1
-                            norun_case_number += 1
-                        final_data_2[index][5] += 1
-            total_case_number = passed_case_number + failed_case_number + norun_case_number
-            data_dict_2['final_data_2'] = final_data_2
-            data_dict_2['passCount'] = passed_case_number
-            data_dict_2['failCount'] = failed_case_number
-            data_dict_2['norunCount'] = norun_case_number
-            data_dict_2['count'] = total_case_number
-        return data_dict_2
 
     # get all uut result
     def __result(self):
         result = []
-        result_file = os.path.join(
-            os.getcwd(), 'Report\\{}\\result.yaml'.format(self.__name))
+        result_file = os.path.join(self.__test_report_root, 'result.yaml')
         for i in self.__uut_list:
-            uut_result_file = os.path.join(
-                os.getcwd(), 'Report\\{}\\{}\\test_report\\{}.yaml'.format(
-                    self.__name, i.get_ip(), i.get_ip()))
+            uut_result_file = os.path.join(self.__test_report_root, '{}\\test_report\\{}.yaml'.format(i.get_ip(), i.get_ip()))
             if not os.path.exists(uut_result_file):
                 if not os.path.exists(os.path.dirname(result_file)):
                     os.makedirs(os.path.dirname(result_file))
