@@ -4,7 +4,7 @@
 # @Email   : jie.liu1@hp.com
 # @File    : test_execution_engine.py
 # @Project : Automation-Framework
-from Framework_Kernel import execution_engine
+from Framework_Kernel import execution_engine, host
 from Framework_Kernel.task import Task
 from multiprocessing import Pipe
 from unittest.mock import patch
@@ -27,7 +27,11 @@ class ExecutionEngineTest(unittest.TestCase):
         self.deploy_list = []
         self.execution = execution_engine.ExecutionEngine(self.deploy_list, self.pipe[0])
         self.task_name = 'report_for_unittest'
+        host1 = host.WindowsExecuteHost('15.83.248.208', '')
+        host2 = host.WindowsExecuteHost('15.83.250.20', '')
         self.task = Task(name=self.task_name)
+        self.task.insert_uut_list(host1)
+        self.task.insert_uut_list(host2)
         self.pipe[1].send(self.task)
 
     @patch('Framework_Kernel.task_queue.Queue.insert_task')
