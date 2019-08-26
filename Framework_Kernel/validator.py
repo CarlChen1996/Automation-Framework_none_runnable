@@ -6,8 +6,8 @@
 # @Project : Automation-Framework
 import shlex
 import subprocess
-from Framework_Kernel.log import configuration_log,assemble_log
-
+from Framework_Kernel.log import configuration_log, assemble_log, execution_log
+import ftplib
 
 class Validator:
     def validate(self, name):
@@ -63,9 +63,15 @@ class HostValidator(Validator):
             host.status = 'off'
             return False
 
-    def validate_http(self):
-        pass
-
+    @staticmethod
+    def validate_ftp(ftp_settings):
+        try:
+            ftplib.FTP(ftp_settings['server_address']).login(ftp_settings['username'], ftp_settings['password'])
+            execution_log.info('validate_ftp '+ftp_settings['server_address']+' success')
+            return True
+        except Exception as e:
+            execution_log.error(e)
+            return False
 
 class ScriptValidator(Validator):
     # To validate github .py file.
@@ -79,9 +85,6 @@ class ScriptValidator(Validator):
 
 
 if __name__ == '__main__':
-    from Framework_Kernel.host import WindowsExecuteHost
-    h = WindowsExecuteHost(ip='15.83.248.251',mac='12121212212')
-    a = HostValidator()
-    b = a.validate_uut(h)
-    print(b)
+    pass
+
 
