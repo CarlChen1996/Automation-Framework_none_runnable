@@ -24,7 +24,7 @@ class Report:
         self.__start_time = task.start_time
         self.__end_time = task.end_time
         self.__test_report_root = os.path.join(os.getcwd(), 'Report\\' + self.__name)
-        self.__result()
+        self.__load_uut_result()
         self.__data_by_uut = self.__generate_table('uut_name')
         self.__data_by_case = self.__generate_table('case_name')
         self.__total = {
@@ -118,29 +118,28 @@ class Report:
         return data_dict
 
     # get all uut result
-    def __result(self):
+    def __load_uut_result(self):
         result = []
+        if not os.path.exists(self.__test_report_root):
+            os.makedirs(self.__test_report_root)
         result_file = os.path.join(self.__test_report_root, 'result.yaml')
         for i in self.__uut_list:
             uut_result_file = os.path.join(self.__test_report_root, '{}\\test_report\\{}.yaml'.format(i.get_ip(), i.get_ip()))
             if not os.path.exists(uut_result_file):
-                if not os.path.exists(os.path.dirname(result_file)):
-                    os.makedirs(os.path.dirname(result_file))
-                a = [{
+                empty_result = [{
                     'uut_name': i,
                     'case_name': 'Error',
                     'steps': [],
                     'result': 'Fail'
                 }]
-                result.extend(a)
+                result.extend(empty_result)
                 continue
             with open(uut_result_file, encoding='utf-8') as f:
-                a = yaml.safe_load(f.read())
-                result.extend(a)
-
+                empty_result = yaml.safe_load(f.read())
+                result.extend(empty_result)
         with open(result_file, 'w', encoding='utf-8') as g:
             yaml.dump(result, g)
-            # print(g)
+        return result
 
     @staticmethod
     def remove_report_folder(task_report_path):
