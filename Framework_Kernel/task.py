@@ -74,6 +74,7 @@ class Task:
     def get_scripts(self, host):
         host.get_scripts(self)
 
+    # Use to replace the EXECUTE(SELF) method after removing QTP
     # def execute(self, host):
     #     # host is UUT host
     #     host.execute_task(self)
@@ -84,9 +85,11 @@ class Task:
     def deploy(self, host):
         host.deploy_task(self)
 
+    # Use to check task status after removing QTP
     # def check_status(self, host):
     #     host.check_status(self)
 
+    # Use to replace the collect_result method after removing QTP
     # def collect_result(self, host):
     #     host.collect_result(self)
 
