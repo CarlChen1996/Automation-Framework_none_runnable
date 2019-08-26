@@ -27,7 +27,7 @@ class Report:
         self.__load_uut_result()
         self.__data_by_uut = self.__generate_table('uut_name')
         self.__data_by_case = self.__generate_table('case_name')
-        self.__total = {
+        self.total = {
             'Passing rate': '%.2f' % (100 * self.__data_by_uut['passCount'] / self.__data_by_uut['count']),
             'Pass': self.__data_by_uut['passCount'],
             'Fail': self.__data_by_uut['failCount'],
@@ -36,12 +36,12 @@ class Report:
         }
         self.pie_chart_data = [
             {
-                'value': self.__total['Pass'],
+                'value': self.total['Pass'],
                 'name': 'Pass',
                 'itemStyle': {'color': '#5cb85c'}
             },
             {
-                'value': self.__total['Fail'],
+                'value': self.total['Fail'],
                 'name': 'Fail',
                 'itemStyle': {'color': '#d9534f'}
             },
@@ -68,7 +68,7 @@ class Report:
                                final_data=self.__data_by_uut['final_data'],
                                final_data_2=self.__data_by_case['final_data'],
                                data=self.pie_chart_data,
-                               total=self.__total,
+                               total=self.total,
                                encoding='utf-8')  # unicode string
         with open(self.__test_report_root + '\\' + self.__name + '.html', 'w', encoding='utf-8') as f:
             f.write(html)

@@ -21,7 +21,7 @@
             test_get_ack_right_from_execution_engine(self, remove)
             test_get_ack_wrong_from_execution_engine(self, remove)
             test_remove_task_from_assemble_queue(self)
-            test_initial_task(self, insert_task, set_state)
+            test_initial_task(self, insert_task, set_state, sleep_mock)
             test_add_task_to_assemble_queue(self)
 
 	Test_execution_engine.py

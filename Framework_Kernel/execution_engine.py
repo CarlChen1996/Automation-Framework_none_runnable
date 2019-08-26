@@ -89,12 +89,15 @@ class ExecutionEngine(Engine):
             time.sleep(10)
 
     def deploy(self, d, i):
-        # ----------循环里面添加 刷新list的方法 ---------------------
-        self.execution_queue.deploy(i, d)
-        self.execution_queue.execute(i)
-        # --------需要得到返回值 ------------------
-        # self.__execution_queue.check_status(i)
-        self.execution_queue.collect_result(i)
+        # deploy task -> execute task -> collect result
+        execution_log.info(
+            'execute_engine deploy {} to {} with {}'.format(i.get_name(), i.get_uut_list()[0].get_hostname(),
+                                                            d.get_hostname()))
+        i.deploy(d)
+        execution_log.info('execute_engine execute {}'.format(i.get_name()))
+        i.execute()
+        execution_log.info('execute_engine collect result {}'.format(i.get_name()))
+        i.collect_result()
 
     @staticmethod
     def download_result():
@@ -136,7 +139,7 @@ class ExecutionEngine(Engine):
             'script_version': '1.0',
             'start': i.start_time,
             'end': i.end_time,
-            'pass_rate': r.total['Passing rate']+'%',
+            'pass_rate': r.total['Passing rate'] + '%',
             'planned': r.total['Count'],
             'passed': r.total['Pass'],
             'failed': r.total['Fail']

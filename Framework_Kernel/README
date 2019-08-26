@@ -151,14 +151,10 @@
             clear(self)
             get_task_list(self)
             
-        class AssembleQueue(Queue):
-            assemble(self, task, host)
+        class AssembleQueue(Queue)
         
         class ExecuteQueue(Queue)
-            deploy(self, task, host)
-            execute(self, task)
             check_status(self, task)
-            collect_result(self, task)
             
     Report.py
         class Report

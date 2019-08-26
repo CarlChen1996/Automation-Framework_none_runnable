@@ -130,15 +130,15 @@ class AssembleEngine(Engine):
                     task.insert_uut_list(uut)
             assemble_log.info(
                 '[Thread_fresh_testplan]--insert {} to assemble queue list'.
-                format(task.get_name()))
+                    format(task.get_name()))
             self.assembleQueue.insert_task(task=task)
             # -------------------rename task plan name -------------------------
             os.rename(
                 taskitem['file_path'], taskitem['file_path']
-                [:taskitem['file_path'].index('TEST_PLAN')] + 'Loaded_' + taskitem['file_path']
-                [taskitem['file_path'].index('TEST_PLAN'):])
+                                       [:taskitem['file_path'].index('TEST_PLAN')] + 'Loaded_' + taskitem['file_path']
+                                       [taskitem['file_path'].index('TEST_PLAN'):])
             assemble_log.info('rename finished' + taskitem['file_path']
-                              [:taskitem['file_path'].index('TEST_PLAN')] + 'Loaded_' + taskitem['file_path']
+            [:taskitem['file_path'].index('TEST_PLAN')] + 'Loaded_' + taskitem['file_path']
                               [taskitem['file_path'].index('TEST_PLAN'):])
         assemble_log.info(
             '[Thread_fresh_testplan] ***************finish refresh queue *****************'
@@ -165,7 +165,7 @@ class AssembleEngine(Engine):
                     self.__pipe.send(task)
                     assemble_log.info(
                         '[send_task_to_execution]-Send {} to execution engine'.
-                        format(task.get_name()))
+                            format(task.get_name()))
                     self.get_signal_after_send(task)
                 else:
                     time.sleep(1)
@@ -178,7 +178,7 @@ class AssembleEngine(Engine):
                 e.disconnect()
                 assemble_log.error(
                     '[send_task_to_execution] !!!ERROR ERROR!!!, {} is removed from assemble queue'
-                    .format(task.get_name()))
+                        .format(task.get_name()))
         time.sleep(10)
 
     def get_signal_after_send(self, task):
@@ -187,7 +187,7 @@ class AssembleEngine(Engine):
             self.assembleQueue.remove_task(task)
             assemble_log.info(
                 '[fresh_queue_execution] {} is removed from assemble queue'.
-                format(task.get_name()))
+                    format(task.get_name()))
             assemble_log.info(
                 '[fresh_queue_execution]task left in assemble queue: %d' %
                 len(self.assembleQueue.get_task_list()))
@@ -216,21 +216,27 @@ class AssembleEngine(Engine):
                         """
                         if not res:
                             error_msg_instance = ERROR_MSG(ENGINE_CODE().assembly_engine,
-                                                            ERROR_LEVEL().drop_task,
-                                                            "check task fail,drop it")
+                                                           ERROR_LEVEL().drop_task,
+                                                           "check task fail,drop it")
                             error_handle_instance = ErrorHandler(error_msg_instance)
                             handle_res = error_handle_instance.handle(task=Task, task_queue=self.assembleQueue)
                             if not handle_res:
                                 continue
-
-                        self.assembleQueue.assemble(task, b_host)
+                        assemble_log.info(
+                            'assemble_engine build {} on {}'.format(task.get_name(), b_host.get_hostname()))
+                        print("**************************************************")
+                        print("**************************************************")
+                        print("**************************************************")
+                        print("**************************************************")
+                        print("**************************************************")
+                        task.build(b_host)
                         print(20 * '*')
                         print(task.get_status(), task.get_exe_file_list())
                         print(20 * '*')
                         task.set_state('Assemble Finished')
                         assemble_log.info(
                             '[thread_assemble_task] **************{} assemble finished****************'
-                            .format(task.get_name()))
+                                .format(task.get_name()))
             except Exception as e:
                 print(e)
             # print(

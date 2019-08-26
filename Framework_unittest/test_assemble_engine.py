@@ -113,9 +113,10 @@ class AssembleEngineTest(unittest.TestCase):
         self.assemble.get_signal_after_send(self.task)
         self.assertNotIn(self.task, self.assemble.assembleQueue.get_task_list())
 
+    @patch('time.sleep')
     @patch('Framework_Kernel.task.Task.set_state')
     @patch('Framework_Kernel.task_queue.Queue.insert_task')
-    def test_initial_task(self, insert_task, set_state):
+    def test_initial_task(self, insert_task, set_state, sleep_mock):
         self.assemble.generate_task(self.generate_excel_list())
         set_state.assert_called_once()
         insert_task.assert_called_once()
