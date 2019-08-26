@@ -15,7 +15,7 @@ from Common_Library.email_operator import Email
 from Common_Library.functions import render_template, zip_dir
 from Framework_Kernel.task_queue import ExecuteQueue
 from Framework_Kernel.analyzer import Analyzer
-
+from Framework_Kernel.validator import HostValidator
 '''
 from Framework_Kernel.task import Task
 from Framework_Kernel.host import WindowsDeployHost, WindowsExecuteHost
@@ -105,12 +105,14 @@ class ExecutionEngine(Engine):
         config_file = os.path.join(os.getcwd(), r'.\Configuration\config_framework_list.yml')
         analyze_handler = Analyzer()
         ftp_settings = analyze_handler.analyze_file(config_file)['ftp_settings']
-        ftp_util = FTPUtils(ftp_settings['server_address'], ftp_settings['username'], ftp_settings['password'])
-        task_list = ftp_util.get_item_list(ftp_settings['result_file_path'])
-        for folder in task_list:
-            ftp_util.download_dir(folder, os.path.join('.\\Report', folder))
-            ftp_util.delete_dir(folder)
-        ftp_util.close()
+        validate_ftp = HostValidator.validate_ftp(ftp_settings)
+        if validate_ftp:
+            ftp_util = FTPUtils(ftp_settings['server_address'], ftp_settings['username'], ftp_settings['password'])
+            task_list = ftp_util.get_item_list(ftp_settings['result_file_path'])
+            for folder in task_list:
+                ftp_util.download_dir(folder, os.path.join('.\\Report', folder))
+                ftp_util.delete_dir(folder)
+            ftp_util.close()
 
     def send_report(self, i):
         r = Report(i)
