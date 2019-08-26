@@ -45,8 +45,7 @@ class QTP_HPDM:
         empty_workbook = self.__clear_data(workbook)
         if empty_workbook:
             final_workbook = self.__fill_data(empty_workbook, task)
-        final_workbook.close()
-        # self.__upload_test_data()
+            final_workbook.close()
         return True
 
     def __clear_data(self, data_workbook):
@@ -115,9 +114,10 @@ class QTP_HPDM:
 
     def deploy_task(self, task, deploy_host):
         if self.__initial_test_data(task):
-            self.discover_devices(task)
-            self.__ip = deploy_host.get_ip()
-            self.__run_qtp_script(self.__send_packages_path)
+            self.__upload_test_data()
+        self.discover_devices(task)
+        self.__ip = deploy_host.get_ip()
+        self.__run_qtp_script(self.__send_packages_path)
 
     def execute_task(self):
         self.__run_qtp_script(self.__send_command_path)

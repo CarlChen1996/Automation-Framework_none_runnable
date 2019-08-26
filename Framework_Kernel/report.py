@@ -75,7 +75,7 @@ class Report:
         # copy static folder
         if self.__get_src_files():
             execution_log.info('generate {}.html finished'.format(self.__name))
-        return True
+        return self.__test_report_root
 
     def __get_src_files(self):
         static_path = os.path.join(os.getcwd(), self.__static_src)
