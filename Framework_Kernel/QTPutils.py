@@ -7,9 +7,9 @@
 import time
 import win32com.client
 import os
-import ftplib
 import openpyxl
 from Framework_Kernel.analyzer import Analyzer
+from Common_Library.file_transfer import FTPUtils
 
 
 class QTP_HPDM:
@@ -88,10 +88,9 @@ class QTP_HPDM:
         return data_workbook
 
     def __upload_test_data(self):
-        ftp = ftplib.FTP(self.__ftp)
-        ftp.login(self.__ftp_user, self.__ftp_passwd)
-        print(ftp.nlst())
-        ftp.storbinary('STOR test_data.xlsx', open(self.__test_data_path, 'rb'), 1024)
+        ftp = FTPUtils(self.__ftp, self.__ftp_user, self.__ftp_passwd)
+        print(ftp.get_item_list(''))
+        ftp.upload_file(file_name=self.__test_data_path, save_as_name='test_data.xlsx')
         ftp.close()
 
     def __run_qtp_script(self, testPath):
