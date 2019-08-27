@@ -16,7 +16,7 @@ test_deploy_server: check connectivity of deploy server
 test_unavailable_deploy_server: check return value with unavailable deploy ip
 test_UUT: check connectivity of UUT
 test_unavailable_UUT: check return value with unavailable uut ip
-test_https: check connectivity of https server
+test_ftp: check connectivity of ftp server
 '''
 
 
@@ -54,7 +54,10 @@ class ValidatorTest(unittest.TestCase):
     def test_unavailable_UUT(self):
         self.assertFalse(self.host_validator.validate_uut(self.unavailable_uut_host))
 
-    @patch('Framework_Kernel.validator.Validator.validate')
-    def test_http(self, validate_mock):
-        validator.Validator().validate('test')
-        validate_mock.assert_called_once_with('test')
+    def test_ftp(self):
+        ftp = {'server_address': '15.83.240.98', 'username': r'sh\kit.liu', 'password': 'Shanghai2014'}
+        self.assertTrue(self.host_validator.validate_ftp(ftp))
+
+    def test_unavailable_ftp(self):
+        ftp = {'server_address': '15.83.240.1', 'username': r'sh\kit.liu', 'password': 'Shanghai2014'}
+        self.assertFalse(self.host_validator.validate_ftp(ftp))

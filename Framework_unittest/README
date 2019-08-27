@@ -69,4 +69,5 @@
             test_unavailable_deploy_server(self)
             test_UUT(self)
             test_unavailable_UUT(self)
-            test_http(self, validate_mock)
+            test_ftp(self)
+            test_unavailable_ftp(self)

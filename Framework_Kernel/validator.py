@@ -7,7 +7,7 @@
 import shlex
 import subprocess
 from Framework_Kernel.log import configuration_log, assemble_log, execution_log
-import ftplib
+from Common_Library.file_transfer import FTPUtils
 
 class Validator:
     def validate(self, name):
@@ -66,7 +66,8 @@ class HostValidator(Validator):
     @staticmethod
     def validate_ftp(ftp_settings):
         try:
-            ftplib.FTP(ftp_settings['server_address']).login(ftp_settings['username'], ftp_settings['password'])
+            ftp = FTPUtils(ftp_settings['server_address'], ftp_settings['username'], ftp_settings['password'])
+            ftp.close()
             execution_log.info('validate_ftp '+ftp_settings['server_address']+' success')
             return True
         except Exception as e:
