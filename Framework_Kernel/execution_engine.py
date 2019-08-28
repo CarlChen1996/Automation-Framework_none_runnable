@@ -13,7 +13,7 @@ from Framework_Kernel.engine import Engine
 from Common_Library.file_transfer import FTPUtils
 from Common_Library.email_operator import Email
 from Common_Library.functions import render_template, zip_dir
-from Framework_Kernel.task_queue import ExecuteQueue
+from Framework_Kernel.task_queue import Queue
 from Framework_Kernel.analyzer import Analyzer
 from Framework_Kernel.validator import HostValidator
 '''
@@ -29,7 +29,7 @@ class ExecutionEngine(Engine):
     def __init__(self, deploy_list, pipe):
         self.__pipe = pipe
         self.__deploy_list = deploy_list
-        self.execution_queue = ExecuteQueue()
+        self.execution_queue = Queue()
         # self.execution_queue.task_list=[]
         # -----------execute结束后需要同时删除task list-----------------
         # execution_queue.task_list = task_list.copy()

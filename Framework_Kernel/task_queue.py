@@ -4,7 +4,6 @@
 # @Email   : balance.cheng@hp.com
 # @File    : Queue.py
 # @Project : framework
-from Framework_Kernel.log import assemble_log, execution_log
 
 
 class Queue:
@@ -28,21 +27,3 @@ class Queue:
 
     def get_task_list(self):
         return self.__task_list
-
-
-class AssembleQueue(Queue):
-    def __init__(self):
-        Queue.__init__(self)
-        self.log = assemble_log
-
-
-class ExecuteQueue(Queue):
-    def __init__(self):
-        Queue.__init__(self)
-        self.log = execution_log
-
-    def check_status(self, task):
-        for host in task.get_uut_list():
-            self.log.info('execute_queue check status {} on {}'.format(
-                task.get_name(), host.get_hostname()))
-            task.check_status(host)

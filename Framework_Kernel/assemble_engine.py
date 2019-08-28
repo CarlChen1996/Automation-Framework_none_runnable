@@ -5,7 +5,7 @@
 # @File    : AssembleEngine.py
 # @Project : Automation-Framework
 from Framework_Kernel.engine import Engine
-from Framework_Kernel.task_queue import AssembleQueue
+from Framework_Kernel.task_queue import Queue
 from Framework_Kernel.analyzer import Analyzer
 from Common_Library.email_operator import Email
 from Framework_Kernel.task import Task
@@ -25,7 +25,7 @@ import datetime
 class AssembleEngine(Engine):
     def __init__(self, pipe, build_list):
         self.__pipe = pipe
-        self.assembleQueue = AssembleQueue()
+        self.assembleQueue = Queue()
         self.tasklist = []
         self.__build_list = build_list
         self.test_plan_folder = os.path.join(os.getcwd(), 'Test_Plan')

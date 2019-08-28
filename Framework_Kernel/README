@@ -151,11 +151,6 @@
             clear(self)
             get_task_list(self)
             
-        class AssembleQueue(Queue)
-        
-        class ExecuteQueue(Queue)
-            check_status(self, task)
-            
     Report.py
         class Report
             generate(self)
