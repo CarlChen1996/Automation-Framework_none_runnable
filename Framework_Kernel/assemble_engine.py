@@ -171,14 +171,24 @@ class AssembleEngine(Engine):
                     time.sleep(1)
                     continue
             elif task.get_status() != '':
-                self.assembleQueue.remove_task(task)
-                e = Email()
-                e.send_email('send_task_to_execution', task.get_email(),
-                             '[send_task_to_execution] !!!ERROR ERROR!!!, {} is removed from assemble queue', 'html')
-                e.disconnect()
-                assemble_log.error(
-                    '[send_task_to_execution] !!!ERROR ERROR!!!, {} is removed from assemble queue'
-                        .format(task.get_name()))
+                '''
+                deal with build fail
+                '''
+                error_msg_instance = ERROR_MSG(ENGINE_CODE().assembly_engine,
+                                ERROR_LEVEL().drop_task,
+                                "build task fail,drop it")
+                error_handle_instance = ErrorHandler(error_msg_instance)
+                handle_res = error_handle_instance.handle(task=Task, task_queue=self.assembleQueue)
+                if not handle_res:
+                    continue
+                # self.assembleQueue.remove_task(task)
+                # e = Email()
+                # e.send_email('send_task_to_execution', task.get_email(),
+                #              '[send_task_to_execution] !!!ERROR ERROR!!!, {} is removed from assemble queue', 'html')
+                # e.disconnect()
+                # assemble_log.error(
+                #     '[send_task_to_execution] !!!ERROR ERROR!!!, {} is removed from assemble queue'
+                #         .format(task.get_name()))
         time.sleep(10)
 
     def get_signal_after_send(self, task):
