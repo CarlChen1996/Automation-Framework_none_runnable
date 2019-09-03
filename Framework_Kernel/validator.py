@@ -6,14 +6,20 @@
 # @Project : Automation-Framework
 import shlex
 import subprocess
+
+import paramiko
+import pythoncom
+
 from Framework_Kernel.log import configuration_log, assemble_log, execution_log
 from Common_Library.file_transfer import FTPUtils
+from win32com.client import DispatchEx
+
 
 class Validator:
     def validate(self, name):
         print('validate finished')
 
-    def ping(self,ip):
+    def ping(self, ip):
         cmd = "ping -n 1 {}".format(ip)
         args = shlex.split(cmd)
         try:
@@ -30,7 +36,7 @@ class HostValidator(Validator):
         # controller_log.info('validate ' + host.get_hostname() + ' finished')
         return True
 
-    def validate_build_server(self,host):
+    def validate_build_server(self, host):
         result = self.ping(host.get_ip())
         if result:
             configuration_log.info('validate_build_server ' + host.get_ip() + ' pass')
@@ -41,16 +47,52 @@ class HostValidator(Validator):
             host.status = 'off'
             return False
 
-    def validate_deploy_server(self, host):
-        result = self.ping(host.get_ip())
-        if result:
-            configuration_log.info('validate_deploy_server ' + host.get_ip() + ' pass')
-            host.status = 'on'
+    @staticmethod
+    def __validate_QTP(host):
+        try:
+            pythoncom.CoInitialize()
+            DispatchEx('QuickTest.Application', host.get_ip())
+            pythoncom.CoUninitialize()
             return True
-        else:
-            configuration_log.info('validate_deploy_server ' + host.get_ip() + ' fail')
-            host.status = 'off'
+        except Exception as e:
+            configuration_log.info(e)
             return False
+
+    @staticmethod
+    def __validate_HPDM(host):
+        ssh = paramiko.SSHClient()
+        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy)
+        ssh.connect(host.get_ip(), 22, host.get_username(), host.get_password())
+        stdin, stdout, stderr = ssh.exec_command("sc queryex HPDMServer")
+        res = stdout.readlines
+        if 'OPENSERVICE FAILED 1060' in res[0].upper():
+            configuration_log.info('validate_deploy_server ' + host.get_ip() +
+                               ' fail, HPDM service not exist')
+            return False
+        for i in res:
+            if 'STATE' in i.upper():
+                # sample: STATE              : 4  RUNNING
+                if i.split(":")[1].strip().split(" ")[-1].upper() == 'RUNNING':
+                    return True
+                else:
+                    configuration_log.info('validate_deploy_server ' + host.get_ip() +
+                                       ' fail, HPDM service is not running')
+                    return False
+
+    def validate_deploy_server(self, host):
+        if not self.__validate_QTP(host):
+            host.status = 'off'
+            configuration_log.info('validate_deploy_server ' + host.get_ip() +
+                                ' fail, QTP check fail')
+            return False
+        if not self.__validate_HPDM(host):
+            host.status = 'off'
+            configuration_log.info('validate_deploy_server ' + host.get_ip() +
+                                ' fail, HPDM check fail')
+            return False
+        host.status = 'off'
+        configuration_log.info('validate_deploy_server ' + host.get_ip() + ' pass')
+        return True
 
     def validate_uut(self, host):
         result = self.ping(host.get_ip())
@@ -68,11 +110,12 @@ class HostValidator(Validator):
         try:
             ftp = FTPUtils(ftp_settings['server_address'], ftp_settings['username'], ftp_settings['password'])
             ftp.close()
-            execution_log.info('validate_ftp '+ftp_settings['server_address']+' success')
+            execution_log.info('validate_ftp ' + ftp_settings['server_address'] + ' success')
             return True
         except Exception as e:
             execution_log.error(e)
             return False
+
 
 class ScriptValidator(Validator):
     # To validate github .py file.
@@ -82,10 +125,5 @@ class ScriptValidator(Validator):
         return True
 
 
-
-
-
 if __name__ == '__main__':
     pass
-
-
