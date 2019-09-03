@@ -5,15 +5,16 @@
 # @File    : Validator.py
 # @Project : Automation-Framework
 import shlex
+import stat,errno
 import subprocess
-
 import paramiko
 import pythoncom
-
 from Framework_Kernel.log import configuration_log, assemble_log, execution_log
 from Common_Library.file_transfer import FTPUtils
 from win32com.client import DispatchEx
-
+import os
+from shutil import rmtree
+from git import Repo
 
 class Validator:
     def validate(self, name):
@@ -120,9 +121,36 @@ class HostValidator(Validator):
 class ScriptValidator(Validator):
     # To validate github .py file.
     def validate(self, task):
-        print('validate ' + task.get_name() + ' scripts finished')
-        # controller_log.info('validate ' + task.get_name() + ' scripts finished')
-        return True
+        git_script_list = self.get_git_scripts()
+        task_script_list = task.get_script_list()
+        if set(task_script_list) < set(git_script_list):
+            print('validate ' + task.get_name() + ' scripts finished')
+            # controller_log.info('validate ' + task.get_name() + ' scripts finished')
+            return True
+        else:
+            print('validate ' + task.get_name() + ' scripts fail')
+            return False
+
+    def handle_remove_read_only(self,func, path, exc):
+        excvalue = exc[1]
+        if func in (os.rmdir, os.remove, os.unlink) and excvalue.errno == errno.EACCES:
+            os.chmod(path, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)  # 0777
+            func(path)
+
+    def get_git_scripts(self):
+        repo_path = 'https://github.azc.ext.hp.com/HPI-ThinClientQA/bamboo_test1.git'
+        local_path = os.getcwd()+'/git_temp'
+        if os.path.exists(local_path):
+            rmtree(local_path)
+        else:
+            Repo.clone_from(repo_path, local_path)
+        scripts = []
+        scripts_path = local_path + '/test_suite'
+        for dir, folder, file in os.walk(scripts_path):
+            for i in file:
+                scripts.append(i[:-3])
+        rmtree(local_path, onerror=self.handle_remove_read_only)
+        return scripts
 
 
 if __name__ == '__main__':
