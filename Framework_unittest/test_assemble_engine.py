@@ -19,7 +19,7 @@ test_scan_folder: scan Test_Plan folder
 test_get_task_when_task_exist: get task from Test_Plan when task exist
 test_get_task_when_task_not_exist: time.sleep was called when task not exist
 test_send_task_to_execution_true: send task to execution engine by pipe while task was assembled finish
-test_send_task_to_execution_false: remove task while task was assembled fail
+test_send_task_to_execution_false: 
 test_get_ack_right_from_execution_engine: get right ack to remove task
 test_get_ack_wrong_from_execution_engine: get wrong ack will do nothing
 test_remove_task_from_assemble_queue: remove task from assemble queue after get right ack
@@ -86,12 +86,12 @@ class AssembleEngineTest(unittest.TestCase):
 
     @patch('time.sleep')
     @patch('Common_Library.email_operator.Email.send_email')
-    @patch('Framework_Kernel.task_queue.Queue.remove_task')
-    def test_send_task_to_execution_false(self, remove_task, email_mock, sleep_mock):
+    @patch('Framework_Kernel.error_handler.ErrorHandler.handle')
+    def test_send_task_to_execution_false(self, error_handle_mock, email_mock, sleep_mock):
         self.task.set_status('SUCCES')
         self.assemble.assembleQueue.insert_task(task=self.task)
         self.assemble.send_task_to_execution()
-        remove_task.assert_called_once_with(self.task)
+        error_handle_mock.assert_called_once_with(task=self.task, task_queue=self.assemble.assembleQueue)
 
     @patch('Framework_Kernel.task_queue.Queue.remove_task')
     def test_get_ack_right_from_execution_engine(self, remove):
