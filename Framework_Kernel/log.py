@@ -14,12 +14,13 @@ from PIL import ImageGrab
 import yaml
 
 lock = multiprocessing.Lock()
-with open(os.path.join(os.getcwd() + r'/Configuration/config_log.yml'), 'r', encoding='utf-8') as f:
-    config = yaml.safe_load(f.read())
+with open(os.path.join(os.getcwd() + r'/Configuration/config_framework_list.yml'), 'r', encoding='utf-8') as f:
+    config = yaml.safe_load(f.read())['log_settings']
 
 
-# with open(os.path.join(os.path.dirname(os.getcwd()) + r'/Configuration/config_log.yml'), 'r', encoding='utf-8') as f:
-#     config = yaml.safe_load(f.read())
+# with open(os.path.join(os.path.dirname(os.getcwd()) + r'/Configuration/config_framework_list.yml'), 'r', encoding='utf-8') as f:
+#     config = yaml.safe_load(f.read())['log_settings']
+
 
 class SafeLog(TimedRotatingFileHandler):
     def __init__(self, *args, **kwargs):
@@ -183,6 +184,4 @@ assemble_log = Log(name='assemble_engine')
 error_handler_log = Log(name="error_handler")
 
 if __name__ == '__main__':
-    with open(os.path.join(os.getcwd() + '\\Configuration\\config_log.yml'), 'r', encoding='utf-8') as f:
-        d = yaml.safe_load(f.read())
-    print(d)
+    assemble_log.info('test')
