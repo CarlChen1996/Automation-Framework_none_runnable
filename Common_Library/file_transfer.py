@@ -84,8 +84,7 @@ class FTPUtils:
     def delete_dir(self, dir_name):
         # Handle dir_name doesn't exist
         try:
-            items = self.ftp.nlst(dir_name)
-            self.change_dir(dir_name)
+            items = self.ftp.nlst()
         except ftplib.all_errors as e:
             print(e)
             return
@@ -94,13 +93,12 @@ class FTPUtils:
                 continue
             try:
                 self.change_dir(item)
-                self.change_dir('..')
                 self.delete_dir(item)
+                self.ftp.rmd(item)
             except ftplib.all_errors:
                 self.delete_file(item)
         try:
             self.change_dir('..')
-            self.ftp.rmd(dir_name)
         except ftplib.all_errors as e:
             print(e)
         return dir_name
