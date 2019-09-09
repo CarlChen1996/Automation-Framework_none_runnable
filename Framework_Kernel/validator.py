@@ -15,6 +15,7 @@ from win32com.client import DispatchEx
 import os
 from shutil import rmtree
 from git import Repo
+from Common_Library import jenkins_operator
 
 
 class Validator:
@@ -43,11 +44,19 @@ class HostValidator(Validator):
         if result:
             configuration_log.info('validate_build_server ' + host.get_ip() + ' pass')
             host.status = 'on'
+            self.get_jenkins_node_state(host)
             return True
         else:
             configuration_log.info('validate_build_server ' + host.get_ip() + ' fail')
             host.status = 'off'
             return False
+
+    @staticmethod
+    def get_jenkins_node_state(host):
+        jenkins_host = jenkins_operator.JenkinsServer()
+        jenkins_host.connect()
+        node_info=jenkins_host.connection.get_node_info(host.get_hostname())
+        host.state=node_info.get('idle')
 
     @staticmethod
     def __validate_QTP(host):

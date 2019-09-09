@@ -206,6 +206,15 @@ class AssembleEngine(Engine):
                 '[fresh_queue_execution]-----send task and received task is not the same one- ----------'
             )
 
+    def get_os_type(self, task):
+        build_server_os = ''
+        for i in task.get_uut_list():
+            if 'wes' in i._Host__version.lower():
+                build_server_os = 'windows'
+            elif 'tp' in i._Host__version.lower():
+                build_server_os = 'linux'
+        return build_server_os
+
     def __assemble(self):
         while True:
             assemble_log.info(
@@ -213,6 +222,45 @@ class AssembleEngine(Engine):
             )
             h_validator = HostValidator()
             s_validator = ScriptValidator()
+            '''validate task script'''
+            """validate  task,create temp win task list"""
+            '''validate  task,create temp linux task list'''
+            '''validate node,create temp win node list'''
+            '''validate node,create temp linux node list'''
+            '''process temp win task list and temp win node list'''
+            '''process temp linux task list and temp linux node list'''
+            temp_task_win=[]
+            temp_task_linux=[]
+            temp_node_win=[]
+            temp_node_linux=[]
+            for task in self.assembleQueue.get_task_list()[:]:
+                res = s_validator.validate(task)
+                """
+                check task is ok
+                """
+                if not res:
+                    error_msg_instance = ERROR_MSG(ENGINE_CODE().assembly_engine,
+                                                   ERROR_LEVEL().drop_task,
+                                                   "check task fail,drop it")
+                    error_handle_instance = ErrorHandler(error_msg_instance)
+                    handle_res = error_handle_instance.handle(task=Task, task_queue=self.assembleQueue)
+                    if not handle_res:
+                        continue
+
+                if task.get_state().upper() == 'WAIT ASSEMBLE':
+                    if self.get_os_type(task)=='windows':
+                        temp_task_win.append(task)
+                    elif self.get_os_type(task)=='linux':
+                        temp_task_linux.append(task)
+
+            for build_node in self.__build_list:
+                if build_node.state:
+                    if build_node.os=='windows':
+                        temp_node_win.append(build_node)
+                    elif build_node.os=='linux':
+                        temp_node_linux.append(build_node)
+
+
             try:
                 for task in self.assembleQueue.get_task_list():
                     if task.get_state().upper() == 'WAIT ASSEMBLE':
@@ -220,18 +268,6 @@ class AssembleEngine(Engine):
                         b_host = self.__build_list[0]
                         for uut in task.get_uut_list():
                             h_validator.validate_uut(uut)
-                        res = s_validator.validate(task)
-                        """
-                        check task is ok
-                        """
-                        if not res:
-                            error_msg_instance = ERROR_MSG(ENGINE_CODE().assembly_engine,
-                                                           ERROR_LEVEL().drop_task,
-                                                           "check task fail,drop it")
-                            error_handle_instance = ErrorHandler(error_msg_instance)
-                            handle_res = error_handle_instance.handle(task=Task, task_queue=self.assembleQueue)
-                            if not handle_res:
-                                continue
                         assemble_log.info(
                             'assemble_engine build {} on {}'.format(task.get_name(), b_host.get_hostname()))
                         print("**************************************************")

@@ -31,6 +31,7 @@ class Host:
         self.__password = password
         self.__domain = domain
         self.status = status
+        self.state = ''
 
     def start(self):
         print(sys._getframe().f_code.co_name + "  finished")
