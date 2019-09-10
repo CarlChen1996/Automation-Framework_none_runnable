@@ -11,6 +11,7 @@ from Framework_Kernel.log import assemble_log, execution_log
 from Framework_Kernel import QTPutils
 from Framework_Kernel.analyzer import Analyzer
 from Common_Library import file_operator, file_transfer, jenkins_operator
+from Framework_Kernel.validator import HostValidator
 import random
 
 
@@ -158,7 +159,11 @@ class Build:
         if not task.get_script_list():
             task.set_status("FAIL")
             return False
-        self.jenkins_build(task)
+        jenkins_host_validator = HostValidator()
+        if jenkins_host_validator.validate_jenkins_server():
+            self.jenkins_build(task)
+        else:
+            return False
         self.log.info('build ' + task.get_name() + task.get_status())
         self.generate_scripts_config(task)
         return task
