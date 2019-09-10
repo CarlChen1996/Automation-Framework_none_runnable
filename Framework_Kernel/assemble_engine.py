@@ -9,7 +9,7 @@ from Framework_Kernel.task_queue import Queue
 from Framework_Kernel.analyzer import Analyzer
 from Common_Library.email_operator import Email
 from Framework_Kernel.task import Task
-from Framework_Kernel.host import WindowsExecuteHost, LinuxExecuteHost
+from Framework_Kernel.host import WindowsExecuteHost, LinuxExecuteHost,WindowsBuildHost, LinuxBuildHost
 from Framework_Kernel.validator import HostValidator
 from Framework_Kernel.validator import ScriptValidator
 from Framework_Kernel.script import Script
@@ -255,11 +255,10 @@ class AssembleEngine(Engine):
 
             for build_node in self.__build_list:
                 if build_node.state:
-                    if build_node.os=='windows':
+                    if isinstance(build_node,WindowsBuildHost):
                         temp_node_win.append(build_node)
-                    elif build_node.os=='linux':
+                    elif isinstance(build_node,LinuxBuildHost):
                         temp_node_linux.append(build_node)
-
 
             try:
                 for task in self.assembleQueue.get_task_list():

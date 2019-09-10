@@ -5,7 +5,7 @@
 # @File    : test.py
 # @Project : demo
 from Framework_Kernel.engine import Engine
-from Framework_Kernel.host import WindowsBuildHost, WindowsDeployHost
+from Framework_Kernel.host import WindowsBuildHost, WindowsDeployHost,LinuxBuildHost
 from Framework_Kernel.analyzer import Analyzer
 from Framework_Kernel.validator import HostValidator
 from Framework_Kernel.log import configuration_log
@@ -37,6 +37,9 @@ class ConfigurationEngine(Engine):
             elif isinstance(valid_server, WindowsDeployHost):
                 self.deploy_server_list.append(valid_server)
                 configuration_log.info("Add Windows Deploy Host {}".format(valid_server.get_hostname()))
+            elif isinstance(valid_server,LinuxBuildHost):
+                self.build_server_list.append(valid_server)
+                configuration_log.info("Add linux Build Host {}".format(valid_server.get_hostname()))
         self.list_status = True
         return self.list_status
 
@@ -73,7 +76,15 @@ class ConfigurationEngine(Engine):
         elif server_item['os'] == 'linux' and server_item[
                 'function'] == 'build':
             # TODO Add LinuxBuildHost
-            server = True
+            # server = True
+            server = LinuxBuildHost(ip=server_item['ip'],
+                                      hostname=server_item['hostname'],
+                                      version=server_item['version'],
+                                      mac=server_item['mac'],
+                                      username=server_item['username'],
+                                      password=server_item['password'],
+                                      domain=server_item['domain'])
+            configuration_log.info('Init {}'.format(server_item['hostname']))
         return server
 
     def validate_server(self, server):
@@ -83,6 +94,8 @@ class ConfigurationEngine(Engine):
             validation_result = validator.validate_build_server(server)
         elif isinstance(server, WindowsDeployHost):
             validation_result = validator.validate_deploy_server(server)
+        elif isinstance(server, LinuxBuildHost):
+            validation_result = validator.validate_build_server(server)
         # TODO Need to check more here
         return validation_result
 
