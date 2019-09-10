@@ -43,9 +43,10 @@ class JenkinsServer():
     def connect(self):
         try:
             self.connection = jenkins.Jenkins(self.url, username=self.username, password=self.token)
+            self.connection.get_all_jobs()
         except Exception as e:
             assemble_log.info(str(e))
-            self.connection = None
+            self.connection = False
         return self.connection
 
     def create_job(self, job_name, job_config_file):

@@ -89,7 +89,10 @@
         
         class Build
             get_scripts(self, task)
+            get_unique_job_name(self,base_name)
             jenkins_build(self, task)
+            jenkins_parameter(self, task, jenkins_host, job_os)
+            build_job(self, task, jenkins_host, job_os)
             get_os_type(self, task)
             build_task(self, task)
             generate_scripts_config(self, task)

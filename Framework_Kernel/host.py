@@ -99,12 +99,13 @@ class Build:
 
     def jenkins_build(self, task):
         jenkins_host = jenkins_operator.JenkinsServer()
-        jenkins_host.connect()
+        if not jenkins_host.connect():
+            return False
         job_os = self.get_os_type(task)
-        '''use different job name'''
-        job_name = self.get_unique_job_name(task.get_name())
-        # job_name = task.get_name()
-        last_build_number = jenkins_host.get_last_build_number(job_name)
+        self.jenkins_parameter(task, jenkins_host, job_os)
+        return self.build_job(task, jenkins_host, job_os)
+
+    def jenkins_parameter(self, task, jenkins_host, job_os):
         if job_os == 'windows':
             jenkins_host.job_params = {
                 'os_type': job_os,
@@ -127,6 +128,10 @@ class Build:
                 'publish_path': self.get_unique_job_name(task.get_name()),
                 'email_to': task.get_email()
             }
+
+    def build_job(self, task, jenkins_host, job_os):
+        job_name = self.get_unique_job_name(task.get_name())
+        last_build_number = jenkins_host.get_last_build_number(job_name)
         if jenkins_host.create_job(job_name, jenkins_host.initial_job_configuration()):
             if jenkins_host.build_job(job_name):
                 while last_build_number == jenkins_host.get_last_build_number(job_name):
@@ -162,7 +167,8 @@ class Build:
             return False
         jenkins_host_validator = HostValidator()
         if jenkins_host_validator.validate_jenkins_server():
-            self.jenkins_build(task)
+            if not self.jenkins_build(task):
+                return False
         else:
             return False
         self.log.info('build ' + task.get_name() + task.get_status())
