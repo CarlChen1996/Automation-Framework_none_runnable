@@ -84,8 +84,8 @@ class FTPUtils:
     def delete_dir(self, dir_name):
         # Handle dir_name doesn't exist
         try:
-            items = self.ftp.nlst(dir_name)
             self.change_dir(dir_name)
+            items = self.ftp.nlst()
         except ftplib.all_errors as e:
             print(e)
             return
@@ -114,15 +114,16 @@ if __name__ == '__main__':
     # username='automation',
     # password='Shanghai2010',
     # base_Path='/Repository/Files/Captured'
-    ftp = FTPUtils('15.15.183.64', 'administrator', 'Shanghai2010')
+    ftp = FTPUtils('15.83.248.251', 'automation', 'Shanghai2010')
+    # ftp = FTPUtils('15.83.248.204', 'automation', 'Shanghai2010')
     # ftp.change_dir('test_new_12')
-    ftp.upload_file(r'c:\test\test2.txt', 'test2_new.txt')
+    # ftp.upload_file(r'c:\test\test2.txt', 'test2_new.txt')
     # print(ftp.change_dir('test234'))
     # ftp.delete_file(r'\test_new_dir\1.txt')
     # ftp.change_dir('test1')
     # ftp.upload_file(r'c:\test\test2.txt', 'test2_upload.txt')
     # ftp.upload_dir(r'c:\test', 'test_new_12')
-    # ftp.delete_dir('test_new_dir')
+    ftp.delete_dir('TEST')
     # ftp.new_dir('test_new_dir')
     # ftp.download_file('test2.txt', r'c:\test\test2.txt')
     # ftp.download_dir('test1', r'c:\test\test1_new')

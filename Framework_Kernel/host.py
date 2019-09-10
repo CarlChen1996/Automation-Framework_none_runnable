@@ -11,6 +11,7 @@ from Framework_Kernel.log import assemble_log, execution_log
 from Framework_Kernel import QTPutils
 from Framework_Kernel.analyzer import Analyzer
 from Common_Library import file_operator, file_transfer, jenkins_operator
+import random
 
 
 class Host:
@@ -31,6 +32,7 @@ class Host:
         self.__password = password
         self.__domain = domain
         self.status = status
+        self.state = ''
 
     def start(self):
         print(sys._getframe().f_code.co_name + "  finished")
@@ -90,10 +92,15 @@ class Build:
             pass
         self.log.info('get  {} scripts PASS'.format(task.get_name()))
 
+    def get_random_job_name(self,base_name):
+        return base_name+str(random.randint(100000,200000))
+
     def jenkins_build(self, task):
         jenkins_host = jenkins_operator.JenkinsServer()
         jenkins_host.connect()
         job_os = self.get_os_type(task)
+        '''use different job name'''
+        # job_name = self.get_random_job_name(task.get_name())
         job_name = task.get_name()
         last_build_number = jenkins_host.get_last_build_number(job_name)
         if job_os == 'windows':
@@ -225,6 +232,21 @@ class WindowsBuildHost(WindowsHost, Build):
 
     pass
 
+class LinuxBuildHost(LinuxHost, Build):
+    def __init__(self,
+                 ip,
+                 mac,
+                 hostname='',
+                 version='',
+                 username='',
+                 password='',
+                 domain='',
+                 status='off'):
+        LinuxHost.__init__(self, ip, mac, hostname, version, username,
+                             password, domain, status)
+        Build.__init__(self)
+
+    pass
 
 class WindowsDeployHost(WindowsHost, Deploy):
     def __init__(self,

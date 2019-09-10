@@ -5,7 +5,7 @@
 # @File    : Validator.py
 # @Project : Automation-Framework
 import shlex
-import stat,errno
+import stat, errno
 import subprocess
 
 import jenkins
@@ -19,6 +19,8 @@ from win32com.client import DispatchEx
 import os
 from shutil import rmtree
 from git import Repo
+from Common_Library import jenkins_operator
+
 
 class Validator:
     def validate(self, name):
@@ -58,6 +60,7 @@ class HostValidator(Validator):
         if result:
             configuration_log.info('validate_build_server ' + host.get_ip() + ' pass')
             host.status = 'on'
+            self.get_jenkins_node_state(host)
             return True
         else:
             configuration_log.info('validate_build_server ' + host.get_ip() + ' fail')
@@ -65,7 +68,15 @@ class HostValidator(Validator):
             return False
 
     @staticmethod
+    def get_jenkins_node_state(host):
+        jenkins_host = jenkins_operator.JenkinsServer()
+        jenkins_host.connect()
+        node_info=jenkins_host.connection.get_node_info(host.get_hostname())
+        host.state=node_info.get('idle')
+
+    @staticmethod
     def __validate_QTP(host):
+        return True
         try:
             pythoncom.CoInitialize()
             DispatchEx('QuickTest.Application', host.get_ip())
@@ -77,6 +88,7 @@ class HostValidator(Validator):
 
     @staticmethod
     def __validate_HPDM(host):
+        return True
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy)
         ssh.connect(host.get_ip(), 22, host.get_username(), host.get_password())
@@ -84,7 +96,7 @@ class HostValidator(Validator):
         res = stdout.readlines
         if 'OPENSERVICE FAILED 1060' in res[0].upper():
             configuration_log.info('validate_deploy_server ' + host.get_ip() +
-                               ' fail, HPDM service not exist')
+                                   ' fail, HPDM service not exist')
             return False
         for i in res:
             if 'STATE' in i.upper():
@@ -93,21 +105,25 @@ class HostValidator(Validator):
                     return True
                 else:
                     configuration_log.info('validate_deploy_server ' + host.get_ip() +
-                                       ' fail, HPDM service is not running')
+                                           ' fail, HPDM service is not running')
                     return False
 
     def validate_deploy_server(self, host):
         if not self.__validate_QTP(host):
             host.status = 'off'
             configuration_log.info('validate_deploy_server ' + host.get_ip() +
-                                ' fail, QTP check fail')
+                                   ' fail, QTP check fail')
             return False
+        else:
+            configuration_log.info('validate_deploy_QTP ' + host.get_ip() + ' Pass')
         if not self.__validate_HPDM(host):
             host.status = 'off'
             configuration_log.info('validate_deploy_server ' + host.get_ip() +
-                                ' fail, HPDM check fail')
+                                   ' fail, HPDM check fail')
             return False
-        host.status = 'off'
+        else:
+            configuration_log.info('validate_deploy_HPDM ' + host.get_ip() + ' Pass')
+        host.status = 'on'
         configuration_log.info('validate_deploy_server ' + host.get_ip() + ' pass')
         return True
 
@@ -137,6 +153,7 @@ class HostValidator(Validator):
 class ScriptValidator(Validator):
     # To validate github .py file.
     def validate(self, task):
+        return True
         git_script_list = self.get_git_scripts()
         task_script_list = task.get_script_list()
         if set(task_script_list) < set(git_script_list):
@@ -147,7 +164,7 @@ class ScriptValidator(Validator):
             print('validate ' + task.get_name() + ' scripts fail')
             return False
 
-    def handle_remove_read_only(self,func, path, exc):
+    def handle_remove_read_only(self, func, path, exc):
         excvalue = exc[1]
         if func in (os.rmdir, os.remove, os.unlink) and excvalue.errno == errno.EACCES:
             os.chmod(path, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)  # 0777
@@ -155,7 +172,7 @@ class ScriptValidator(Validator):
 
     def get_git_scripts(self):
         repo_path = 'https://github.azc.ext.hp.com/HPI-ThinClientQA/bamboo_test1.git'
-        local_path = os.getcwd()+'/git_temp'
+        local_path = os.getcwd() + '/git_temp'
         if os.path.exists(local_path):
             rmtree(local_path)
         else:

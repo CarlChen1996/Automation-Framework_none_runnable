@@ -1,7 +1,7 @@
 - name: Build_Node_W_1
   os: windows
   function: build
-  hostname: windows_build_server1
+  hostname: Build_Node_W_1
   ip: 15.83.248.200
   mac: 27832784292
   version: 1.0
@@ -12,7 +12,7 @@
 - name: Build_Node_TP_1
   os: linux
   function: build
-  hostname: windows_build_server1
+  hostname: Build_Node_TP_1
   ip: 15.83.248.200
   mac: 27832784292
   version: 1.0
