@@ -7,8 +7,12 @@
 import shlex
 import stat,errno
 import subprocess
+
+import jenkins
 import paramiko
 import pythoncom
+
+from Framework_Kernel.analyzer import Analyzer
 from Framework_Kernel.log import configuration_log, assemble_log, execution_log
 from Common_Library.file_transfer import FTPUtils
 from win32com.client import DispatchEx
@@ -36,6 +40,18 @@ class HostValidator(Validator):
         print('validate ' + host.get_ip() + ' pass')
         # controller_log.info('validate ' + host.get_hostname() + ' finished')
         return True
+
+    def validate_jenkins_server(self):
+        config_file = os.path.join(os.getcwd(), r'.\Configuration\config_framework_list.yml')
+        analyzer = Analyzer()
+        jenkins_settings = analyzer.analyze_file(config_file)['jenkins_settings']
+        try:
+            jenkins.Jenkins(jenkins_settings['server_address'],jenkins_settings['username'],jenkins_settings['token'])\
+                .get_info()
+            return True
+        except Exception as e:
+            configuration_log.error(e)
+            return False
 
     def validate_build_server(self, host):
         result = self.ping(host.get_ip())
@@ -154,4 +170,5 @@ class ScriptValidator(Validator):
 
 
 if __name__ == '__main__':
-    pass
+    h = HostValidator()
+    print(h.validate_jenkins_server())
