@@ -2,22 +2,22 @@
   os: windows
   function: build
   hostname: Build_Node_W_1
-  ip: 15.83.248.200
+  ip: 15.83.248.252
   mac: 27832784292
   version: 1.0
-  username: bamboo
-  password: 1177eafe586b4459f7410f9abb393e15f2
+  username: Automation
+  password: Shanghai2010
   domain: sh
 
 - name: Build_Node_TP_1
   os: linux
   function: build
   hostname: Build_Node_TP_1
-  ip: 15.83.248.200
+  ip: 15.83.248.253
   mac: 27832784292
   version: 1.0
-  username: bamboo
-  password: 1177eafe586b4459f7410f9abb393e15f2
+  username: automation
+  password: Shanghai2010
   domain: sh 
  
 - name: windows_deploy_server1
