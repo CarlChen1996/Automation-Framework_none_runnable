@@ -54,6 +54,16 @@
             test_custom_console_False(self, separator_mock)
             test_custom_console_True(self, separator_mock)
 
+    Test_QTPutils.py
+        class QTPutilsTest(unittest.TestCase)
+            setUp(self)
+            test_launch_QTP(self)
+            test_discover_device(self, run_script_mock)
+            test_create_template(self, run_script_mock)
+            test_deploy_package(self, run_script_mock, discover_devices_mock, upload_excek_mock, initial_mock)
+            test_execute_package(self, run_script_mock)
+            test_collect_result(self, run_script_mock)
+
     Test_report.py
         class ReportTest(unittest.TestCase)
             setUp(self)
