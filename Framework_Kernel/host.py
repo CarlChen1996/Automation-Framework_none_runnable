@@ -12,7 +12,7 @@ from Framework_Kernel import QTPutils
 from Framework_Kernel.analyzer import Analyzer
 from Common_Library import file_operator, file_transfer, jenkins_operator
 from Framework_Kernel.validator import HostValidator
-import random
+import random,datetime
 
 
 class Host:
@@ -93,16 +93,17 @@ class Build:
             pass
         self.log.info('get  {} scripts PASS'.format(task.get_name()))
 
-    def get_random_job_name(self,base_name):
-        return base_name+str(random.randint(100000,200000))
+    def get_unique_job_name(self,base_name):
+        return base_name+'_'+str(datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S"))
+        # return base_name+str(random.randint(100000,200000))
 
     def jenkins_build(self, task):
         jenkins_host = jenkins_operator.JenkinsServer()
         jenkins_host.connect()
         job_os = self.get_os_type(task)
         '''use different job name'''
-        # job_name = self.get_random_job_name(task.get_name())
-        job_name = task.get_name()
+        job_name = self.get_unique_job_name(task.get_name())
+        # job_name = task.get_name()
         last_build_number = jenkins_host.get_last_build_number(job_name)
         if job_os == 'windows':
             jenkins_host.job_params = {
@@ -112,7 +113,7 @@ class Build:
                 'template_file': jenkins_host.config_module_win,
                 'entry_file': 'run.py',
                 'result_file': 'run',
-                'publish_path': task.get_name(),
+                'publish_path': self.get_unique_job_name(task.get_name()),
                 'email_to': task.get_email()
             }
         elif job_os == 'linux':
@@ -123,7 +124,7 @@ class Build:
                 'template_file': jenkins_host.config_module_linux,
                 'entry_file': 'run.py',
                 'result_file': 'run',
-                'publish_path': task.get_name(),
+                'publish_path': self.get_unique_job_name(task.get_name()),
                 'email_to': task.get_email()
             }
         if jenkins_host.create_job(job_name, jenkins_host.initial_job_configuration()):
