@@ -33,7 +33,7 @@ class Host:
         self.__password = password
         self.__domain = domain
         self.status = status
-        self.state = ''
+        self.state = 'Idle'
 
     def start(self):
         print(sys._getframe().f_code.co_name + "  finished")

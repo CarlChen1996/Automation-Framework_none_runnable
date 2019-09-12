@@ -87,26 +87,27 @@ class ExecutionEngine(Engine):
     def __multi_execute(self):
         while 1:
             print('=======================================================')
-            print('============Start New Execute Thread===================')
+            print('==========Begin to Start New Execute Thread==============')
             print('=======================================================')
             execution_log.info('[thread_executor] task_list left: {}'.format(len(self.__temp_task_list)))
             if not self.__temp_task_list:
                 self.__fresh_temp_task_list()
             execute_task = self.__temp_task_list[0]
-            execute_task.set_state('Executing')
             self.__temp_task_list.remove(execute_task)
             if not self.__temp_host_list:
                 self.__fresh_temp_host_list()
             deploy_host = self.__temp_host_list[0]
-            deploy_host.status = 'Busy'
             self.__temp_host_list.remove(deploy_host)
             while 1:
+                # loop when thread queue is full
                 try:
                     if self.__current_thread_count > self.__max_thread_count:
                         execution_log.info(
                             'current thread queue is full, waiting task finished')
                         time.sleep(10)
                     else:
+                        execute_task.set_state('Executing')
+                        deploy_host.status = 'Busy'
                         self.__current_thread_count += 1
                         new_thread = threading.Thread(target=self.__execute, args=(execute_task, deploy_host))
                         new_thread.setDaemon(True)
@@ -116,6 +117,8 @@ class ExecutionEngine(Engine):
                 except:
                     execution_log.error('New thread Error, Exception:\n{}'.format(traceback.format_exc()))
                     self.__current_thread_count -= 1
+                    deploy_host.state = 'Idle'
+                    execute_task.set_state('Assemble Finished')
 
     @staticmethod
     def deploy(d, i):
@@ -135,8 +138,8 @@ class ExecutionEngine(Engine):
             for _task in self.execution_queue.get_task_list():
                 if _task.get_state() == 'Assemble Finished':
                     self.__temp_task_list.append(_task)
-                    _task.set_state('Executing')
             if not self.__temp_task_list:
+                execution_log.info('---No valid task, waiting for new task-----')
                 time.sleep(10)
             else:
                 return
@@ -146,10 +149,10 @@ class ExecutionEngine(Engine):
             execution_log.info('=======================Begin to fresh temp host list==========================')
             for _host in self.__deploy_list:
                 print('========', _host.status)
-                if _host.status.upper() != 'BUSY':
+                if _host.state.upper() == 'IDLE':
                     self.__temp_host_list.append(_host)
-                    _host.status = 'Idle'
             if not self.__temp_host_list:
+                execution_log.info('---No valid Deploy host, waiting for new host-----')
                 time.sleep(10)
             else:
                 return
