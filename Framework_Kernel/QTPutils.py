@@ -16,6 +16,7 @@ class QTP_HPDM:
     def __init__(self):
         self.__config_file = os.path.join(os.getcwd(), r'.\Configuration\config_framework_list.yml')
         self.__load_config()
+        self.__ip = ''
 
     def __load_config(self):
         analyer = Analyzer()
@@ -29,7 +30,7 @@ class QTP_HPDM:
         config_qtp = settings_dict['qtp_settings']
         config_qtp_script = config_qtp['scripts_path']
         self.__test_data_path = r'Configuration\{}'.format(config_qtp['test_data'])
-        self.__ip = config_qtp['server_address']
+        # self.__ip = config_qtp['server_address']
         self.__create_filter_path = config_qtp_script['create_filter']
         self.__send_command_path = config_qtp_script['send_command']
         self.__send_packages_path = config_qtp_script['send_packages']
@@ -88,7 +89,7 @@ class QTP_HPDM:
         return data_workbook
 
     def __upload_test_data(self):
-        ftp = FTPUtils(self.__ftp, self.__ftp_user, self.__ftp_passwd)
+        ftp = FTPUtils(self.__ip, self.__ftp_user, self.__ftp_passwd)
         print(ftp.get_item_list(''))
         ftp.upload_file(file_name=self.__test_data_path, save_as_name='test_data.xlsx')
         ftp.close()
@@ -112,14 +113,16 @@ class QTP_HPDM:
         self.__run_qtp_script(self.__discover_devices_path)
 
     def deploy_task(self, task, deploy_host):
+        self.__ip = deploy_host.get_ip()
         if self.__initial_test_data(task):
             self.__upload_test_data()
         self.discover_devices(task)
-        self.__ip = deploy_host.get_ip()
         self.__run_qtp_script(self.__send_packages_path)
 
-    def execute_task(self):
+    def execute_task(self, host):
+        self.__ip = host.get_ip()
         self.__run_qtp_script(self.__send_command_path)
 
-    def get_result(self):
+    def get_result(self, host):
+        self.__ip = host.get_ip()
         self.__run_qtp_script(self.__get_result_path)

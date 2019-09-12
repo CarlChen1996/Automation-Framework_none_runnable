@@ -30,3 +30,14 @@
   username: Administrator
   password: Shanghai2010
   domain:
+
+- name: windows_deploy_server2
+  os: windows
+  function: deploy
+  hostname: windows_deploy_server2
+  ip: 15.83.248.204
+  mac: 5666666
+  version: 1.0
+  username: Administrator
+  password: Shanghai2010
+  domain:

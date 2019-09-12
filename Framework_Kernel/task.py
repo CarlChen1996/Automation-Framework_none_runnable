@@ -79,11 +79,11 @@ class Task:
     #     # host is UUT host
     #     host.execute_task(self)
 
-    def execute(self):
-        QTPutils.QTP_HPDM().execute_task()
+    def execute(self, deploy_host):
+        QTPutils.QTP_HPDM().execute_task(deploy_host)
 
-    def deploy(self, host):
-        host.deploy_task(self)
+    def deploy(self, deploy_host):
+        deploy_host.deploy_task(self)
 
     # Use to check task status after removing QTP
     # def check_status(self, host):
@@ -93,8 +93,8 @@ class Task:
     # def collect_result(self, host):
     #     host.collect_result(self)
 
-    def collect_result(self):
-        QTPutils.QTP_HPDM().get_result()
+    def collect_result(self, deploy_host):
+        QTPutils.QTP_HPDM().get_result(deploy_host)
 
     def terminate(self, host):
         pass

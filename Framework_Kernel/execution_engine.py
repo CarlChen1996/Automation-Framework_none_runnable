@@ -16,6 +16,7 @@ from Common_Library.functions import render_template, zip_dir
 from Framework_Kernel.task_queue import Queue
 from Framework_Kernel.analyzer import Analyzer
 from Framework_Kernel.validator import HostValidator
+import traceback
 '''
 from Framework_Kernel.task import Task
 from Framework_Kernel.host import WindowsDeployHost, WindowsExecuteHost
@@ -30,6 +31,10 @@ class ExecutionEngine(Engine):
         self.__pipe = pipe
         self.__deploy_list = deploy_list
         self.execution_queue = Queue()
+        self.__max_thread_count = 5
+        self.__current_thread_count = 0
+        self.__temp_task_list = []
+        self.__temp_host_list = []
         # self.execution_queue.task_list=[]
         # -----------execute结束后需要同时删除task list-----------------
         # execution_queue.task_list = task_list.copy()
@@ -47,13 +52,13 @@ class ExecutionEngine(Engine):
         thread_queue_monitor = threading.Thread(target=self.__add_task_to_queue, args=())
         thread_queue_monitor.setDaemon(True)
         thread_queue_monitor.start()
-        thread_executor = threading.Thread(target=self.__execute, args=())
+        thread_executor = threading.Thread(target=self.__multi_execute, args=())
         thread_executor.setDaemon(True)
         thread_executor.start()
         thread_executor.join()
 
     def __add_task_to_queue(self):
-        while True:
+        while 1:
             self.insert_task_to_queue()
 
     def insert_task_to_queue(self):
@@ -67,37 +72,87 @@ class ExecutionEngine(Engine):
                            format(list(map(lambda i: i.get_name(), self.execution_queue.get_task_list()))))
         time.sleep(1)
 
-    def __execute(self):
-        while True:
-            execution_log.info('[thread_executor] task_list left: {}'.format(len(self.execution_queue.get_task_list())))
-            if self.execution_queue.get_task_list():
-                d = self.__deploy_list[0]
-                i = self.execution_queue.get_task_list()[0]
-                self.deploy(d, i)
-                i.end_time = datetime.datetime.now()
-                self.download_result()
-                self.send_report(i)
-                execution_log.info('[thread_executor] task left in execute queue: {}'.format(
-                    len(self.execution_queue.get_task_list())))
-                time.sleep(3)
-                print('---------------------------------------------------------------')
-                execution_log.info('[thread_executor] task_list now is : {}'.
-                                   format(list(map(lambda i: i.get_name(), self.execution_queue.get_task_list()))))
-            else:
-                execution_log.info(
-                    '[thread_executor]************************ wait for new task to execute **********************')
-            time.sleep(10)
+    def __execute(self, task, host):
 
-    def deploy(self, d, i):
+        self.deploy(host, task)
+        task.end_time = datetime.datetime.now()
+        self.download_result()
+        self.send_report(task)
+        execution_log.info('[thread_executor] task left in execute queue: {}'.format(
+            len(self.execution_queue.get_task_list())))
+        time.sleep(3)
+        execution_log.info('[thread_executor] task_list now is : {}'.
+                           format(list(map(lambda i: i.get_name(), self.execution_queue.get_task_list()))))
+
+    def __multi_execute(self):
+        while 1:
+            print('=======================================================')
+            print('============Start New Execute Thread===================')
+            print('=======================================================')
+            execution_log.info('[thread_executor] task_list left: {}'.format(len(self.__temp_task_list)))
+            if not self.__temp_task_list:
+                self.__fresh_temp_task_list()
+            execute_task = self.__temp_task_list[0]
+            execute_task.set_state('Executing')
+            self.__temp_task_list.remove(execute_task)
+            if not self.__temp_host_list:
+                self.__fresh_temp_host_list()
+            deploy_host = self.__temp_host_list[0]
+            deploy_host.status = 'Busy'
+            self.__temp_host_list.remove(deploy_host)
+            while 1:
+                try:
+                    if self.__current_thread_count > self.__max_thread_count:
+                        execution_log.info(
+                            'current thread queue is full, waiting task finished')
+                        time.sleep(10)
+                    else:
+                        self.__current_thread_count += 1
+                        new_thread = threading.Thread(target=self.__execute, args=(execute_task, deploy_host))
+                        new_thread.setDaemon(True)
+                        new_thread.start()
+                        new_thread.join(2)
+                        break
+                except:
+                    execution_log.error('New thread Error, Exception:\n{}'.format(traceback.format_exc()))
+                    self.__current_thread_count -= 1
+
+    @staticmethod
+    def deploy(d, i):
         # deploy task -> execute task -> collect result
         execution_log.info(
             'execute_engine deploy {} to {} with {}'.format(i.get_name(), i.get_uut_list()[0].get_hostname(),
                                                             d.get_hostname()))
         i.deploy(d)
         execution_log.info('execute_engine execute {}'.format(i.get_name()))
-        i.execute()
+        i.execute(d)
         execution_log.info('execute_engine collect result {}'.format(i.get_name()))
-        i.collect_result()
+        i.collect_result(d)
+
+    def __fresh_temp_task_list(self):
+        while 1:
+            execution_log.info('=======================Begin to fresh temp task list==========================')
+            for _task in self.execution_queue.get_task_list():
+                if _task.get_state() == 'Assemble Finished':
+                    self.__temp_task_list.append(_task)
+                    _task.set_state('Executing')
+            if not self.__temp_task_list:
+                time.sleep(10)
+            else:
+                return
+
+    def __fresh_temp_host_list(self):
+        while 1:
+            execution_log.info('=======================Begin to fresh temp host list==========================')
+            for _host in self.__deploy_list:
+                print('========', _host.status)
+                if _host.status.upper() != 'BUSY':
+                    self.__temp_host_list.append(_host)
+                    _host.status = 'Idle'
+            if not self.__temp_host_list:
+                time.sleep(10)
+            else:
+                return
 
     @staticmethod
     def download_result():

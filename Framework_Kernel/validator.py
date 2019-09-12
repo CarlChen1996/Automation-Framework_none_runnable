@@ -76,7 +76,7 @@ class HostValidator(Validator):
 
     @staticmethod
     def __validate_QTP(host):
-        return True
+        # return True
         try:
             pythoncom.CoInitialize()
             DispatchEx('QuickTest.Application', host.get_ip())
@@ -88,12 +88,11 @@ class HostValidator(Validator):
 
     @staticmethod
     def __validate_HPDM(host):
-        return True
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy)
         ssh.connect(host.get_ip(), 22, host.get_username(), host.get_password())
         stdin, stdout, stderr = ssh.exec_command("sc queryex HPDMServer")
-        res = stdout.readlines
+        res = stdout.readlines()
         if 'OPENSERVICE FAILED 1060' in res[0].upper():
             configuration_log.info('validate_deploy_server ' + host.get_ip() +
                                    ' fail, HPDM service not exist')
