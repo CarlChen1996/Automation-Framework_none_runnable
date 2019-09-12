@@ -152,8 +152,8 @@ class HostValidator(Validator):
 class ScriptValidator(Validator):
     # To validate github .py file.
     def validate(self, task):
-        return True
-        git_script_list = self.get_git_scripts()
+        # return True
+        git_script_list = self.get_git_scripts(task)
         task_script_list = task.get_script_list()
         if set(task_script_list) < set(git_script_list):
             print('validate ' + task.get_name() + ' scripts finished')
@@ -169,8 +169,8 @@ class ScriptValidator(Validator):
             os.chmod(path, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)  # 0777
             func(path)
 
-    def get_git_scripts(self):
-        repo_path = 'https://github.azc.ext.hp.com/HPI-ThinClientQA/bamboo_test1.git'
+    def get_git_scripts(self,task):
+        repo_path = task.get_repository()
         local_path = os.getcwd() + '/git_temp'
         if os.path.exists(local_path):
             rmtree(local_path)
