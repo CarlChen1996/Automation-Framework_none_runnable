@@ -36,6 +36,17 @@
             test_remove_task_from_execution_queue(self, email_mock, report_mock, result_mock,
                                               remove_folder_mock)
 
+    Test_host.py
+        class HostTest(unittest.TestCase)
+            setUp(self)
+            test_connect_jenkins_true(self)
+            test_connect_jenkins_false(self)
+            test_connect_jenkins_mock(self, connect_mock, build_job_mock, jenkins_parameter_mock)
+            test_create_job(self, create_mock, delete_mock, job_exist_mock, build_mock, initial_mock, last_number_mock,
+                        unique_job_mock)
+            test_get_result(self, result_mock, delete_mock, build_mock, create_mock, last_number_mock, unique_job_mock,
+                        initial_mock)
+
     Test_log.py
         class LogTest(unittest.TestCase)
             read_log(self, log_name)
