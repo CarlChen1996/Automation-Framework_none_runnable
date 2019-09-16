@@ -23,7 +23,8 @@ class Report:
         self.__uut_list = task.get_uut_list()
         self.__start_time = task.start_time
         self.__end_time = task.end_time
-        self.__test_report_root = os.path.join(os.getcwd(), 'Report\\' + self.__name + task.build_time)
+        if task.build_time != '':
+            self.__test_report_root = os.path.join(os.getcwd(), 'Report\\' + self.__name + task.build_time)
         self.__load_uut_result()
         self.__data_by_uut = self.__generate_table('uut_name')
         self.__data_by_case = self.__generate_table('case_name')
