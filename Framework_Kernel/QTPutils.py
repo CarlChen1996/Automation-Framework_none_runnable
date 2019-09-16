@@ -88,10 +88,10 @@ class QTP_HPDM:
         data_workbook.save(self.__test_data_path)
         return data_workbook
 
-    def __upload_test_data(self):
-        ftp = FTPUtils(self.__ip, self.__ftp_user, self.__ftp_passwd)
+    def __upload_test_data(self, deploy_host):
+        ftp = FTPUtils(self.__ftp, self.__ftp_user, self.__ftp_passwd)
         print(ftp.get_item_list(''))
-        ftp.upload_file(file_name=self.__test_data_path, save_as_name='test_data.xlsx')
+        ftp.upload_file(file_name=self.__test_data_path, save_as_name='{}.xlsx'.format(deploy_host.get_hostname()))
         ftp.close()
 
     def __run_qtp_script(self, testPath):
@@ -115,7 +115,7 @@ class QTP_HPDM:
     def deploy_task(self, task, deploy_host):
         self.__ip = deploy_host.get_ip()
         if self.__initial_test_data(task):
-            self.__upload_test_data()
+            self.__upload_test_data(deploy_host)
         self.discover_devices(task)
         self.__run_qtp_script(self.__send_packages_path)
 
