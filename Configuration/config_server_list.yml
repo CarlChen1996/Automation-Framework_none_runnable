@@ -31,10 +31,10 @@
   password: Shanghai2010
   domain: sh 
  
-- name: windows_deploy_server1
+- name: Deploy_Node_1
   os: windows
   function: deploy
-  hostname: windows_deploy_server1
+  hostname: Deploy_Node_1
   ip: 15.83.248.251
   mac: 5666666
   version: 1.0
@@ -42,10 +42,10 @@
   password: Shanghai2010
   domain:
 
-- name: windows_deploy_server2
+- name: Deploy_Node_2
   os: windows
   function: deploy
-  hostname: windows_deploy_server2
+  hostname: Deploy_Node_2
   ip: 15.83.248.204
   mac: 5666666
   version: 1.0

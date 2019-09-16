@@ -102,8 +102,8 @@ class Build:
         return self.build_job(task, jenkins_host, job_os)
 
     def jenkins_parameter(self, task, jenkins_host, job_os):
-        task.build_time = str(datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S"))
-        self.job_name = task.get_name() + task.build_time
+        build_time = str(datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S"))
+        self.job_name = task.get_name() + build_time
         if job_os == 'windows':
             jenkins_host.job_params = {
                 'os_type': job_os,
@@ -146,6 +146,7 @@ class Build:
                     elif job_os == 'linux':
                         task.insert_exe_file_list(r'/jenkins/linux/' + jenkins_host.job_params['publish_path'] + r'/' +
                                                   jenkins_host.job_params['result_file'])
+                task.folder_name = task.get_exe_file_list()[0].split('/')[-2]
         return task
 
     def get_os_type(self, task):
