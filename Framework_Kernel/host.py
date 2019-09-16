@@ -93,10 +93,6 @@ class Build:
             pass
         self.log.info('get  {} scripts PASS'.format(task.get_name()))
 
-    def get_unique_job_name(self,base_name):
-        return base_name+'_'+str(datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S"))
-        # return base_name+str(random.randint(100000,200000))
-
     def jenkins_build(self, task):
         jenkins_host = jenkins_operator.JenkinsServer()
         if not jenkins_host.connect():
@@ -106,6 +102,8 @@ class Build:
         return self.build_job(task, jenkins_host, job_os)
 
     def jenkins_parameter(self, task, jenkins_host, job_os):
+        task.build_time = str(datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S"))
+        self.job_name = task.get_name() + task.build_time
         if job_os == 'windows':
             jenkins_host.job_params = {
                 'os_type': job_os,
@@ -114,7 +112,7 @@ class Build:
                 'template_file': jenkins_host.config_module_win,
                 'entry_file': 'run.py',
                 'result_file': 'run',
-                'publish_path': self.get_unique_job_name(task.get_name()),
+                'publish_path': self.job_name,
                 'email_to': task.get_email()
             }
         elif job_os == 'linux':
@@ -125,22 +123,21 @@ class Build:
                 'template_file': jenkins_host.config_module_linux,
                 'entry_file': 'run.py',
                 'result_file': 'run',
-                'publish_path': self.get_unique_job_name(task.get_name()),
+                'publish_path': self.job_name,
                 'email_to': task.get_email()
             }
 
     def build_job(self, task, jenkins_host, job_os):
-        job_name = self.get_unique_job_name(task.get_name())
-        last_build_number = jenkins_host.get_last_build_number(job_name)
-        if jenkins_host.create_job(job_name, jenkins_host.initial_job_configuration()):
-            if jenkins_host.build_job(job_name):
-                while last_build_number == jenkins_host.get_last_build_number(job_name):
+        last_build_number = jenkins_host.get_last_build_number(self.job_name)
+        if jenkins_host.create_job(self.job_name, jenkins_host.initial_job_configuration()):
+            if jenkins_host.build_job(self.job_name):
+                while last_build_number == jenkins_host.get_last_build_number(self.job_name):
                     self.log.info('New build record is not available, wait 5 seconds')
                     time.sleep(5)
-                current_build_number = jenkins_host.get_last_build_number(job_name)
-                build_result = jenkins_host.get_build_result(job_name, current_build_number)
+                current_build_number = jenkins_host.get_last_build_number(self.job_name)
+                build_result = jenkins_host.get_build_result(self.job_name, current_build_number)
                 task.set_status(build_result)
-                jenkins_host.delete_job(job_name)
+                jenkins_host.delete_job(self.job_name)
                 if build_result == 'SUCCESS':
                     if job_os == 'windows':
                         task.insert_exe_file_list(
