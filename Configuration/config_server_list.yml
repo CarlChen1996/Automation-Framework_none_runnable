@@ -9,6 +9,17 @@
   password: Shanghai2010
   domain: sh
 
+- name: Build_Node_W_2
+  os: windows
+  function: build
+  hostname: Build_Node_W_2
+  ip: 15.83.248.207
+  mac: 27832784292
+  version: 1.0
+  username: Automation
+  password: Shanghai2010
+  domain: sh
+
 - name: Build_Node_TP_1
   os: linux
   function: build
