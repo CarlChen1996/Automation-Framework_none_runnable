@@ -76,7 +76,7 @@ class HostValidator(Validator):
 
     @staticmethod
     def __validate_QTP(host):
-        # return True
+        return True
         try:
             pythoncom.CoInitialize()
             DispatchEx('QuickTest.Application', host.get_ip())
