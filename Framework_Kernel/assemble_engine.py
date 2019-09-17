@@ -297,8 +297,9 @@ class AssembleEngine(Engine):
                                 self.temp_node_win = self.create_temp_node('win')
                         else:
                             print('win full running')
-                            time.sleep(2)
+                            time.sleep(self.loop_interval)
                 else:
+                    time.sleep(self.loop_interval)
                     self.temp_task_win = self.create_temp_task('win')
             elif os=='linux':
                 if self.temp_task_linux:
@@ -318,12 +319,16 @@ class AssembleEngine(Engine):
                                 self.temp_node_linux = self.create_temp_node('linux')
                         else:
                             print('linux full running')
-                            time.sleep(1)
+                            time.sleep(self.loop_interval)
                 else:
-                    time.sleep(10)
+                    time.sleep(self.loop_interval)
                     self.temp_task_linux = self.create_temp_task('linux')
 
     def __assemble(self):
+        config_file = os.path.join(os.getcwd(), r'.\Configuration\config_framework_list.yml')
+        analyze_hanlder = Analyzer()
+        global_settings = analyze_hanlder.analyze_file(config_file)['global_settings']
+        self.loop_interval=int(global_settings['LOOP_INTERVAL'])
 
         self.count_task_win = 0
         self.count_task_linux = 0

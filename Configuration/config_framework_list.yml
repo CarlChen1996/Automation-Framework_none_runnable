@@ -67,3 +67,6 @@ log_settings:
   WHEN: 'H'
   INTERVAL: 1
   BACKUP_COUNT: 0
+
+global_settings:
+  LOOP_INTERVAL: 10
