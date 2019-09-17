@@ -82,11 +82,14 @@ class ConfigurationEngine(Engine):
         validator = HostValidator()
         validation_result = False
         if isinstance(server, WindowsBuildHost):
-            validation_result = validator.validate_build_server(server)
+            if validator.validate_jenkins_server():
+                validation_result = validator.validate_build_server(server)
+        elif isinstance(server, LinuxBuildHost):
+            if validator.validate_jenkins_server():
+                validation_result = validator.validate_build_server(server)
         elif isinstance(server, WindowsDeployHost):
             validation_result = validator.validate_deploy_server(server)
-        elif isinstance(server, LinuxBuildHost):
-            validation_result = validator.validate_build_server(server)
+
         # TODO Need to check more here
         return validation_result
 
