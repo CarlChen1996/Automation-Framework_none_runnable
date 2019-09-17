@@ -65,10 +65,10 @@ class QTPutilsTest(unittest.TestCase):
 
     @patch('Framework_Kernel.QTPutils.QTP_HPDM._QTP_HPDM__run_qtp_script')
     def test_execute_package(self, run_script_mock):
-        self.qtp.execute_task()
+        self.qtp.execute_task(self.deploy_host)
         run_script_mock.assert_called_once_with(self.qtp._QTP_HPDM__send_command_path)
 
     @patch('Framework_Kernel.QTPutils.QTP_HPDM._QTP_HPDM__run_qtp_script')
     def test_collect_result(self, run_script_mock):
-        self.qtp.get_result()
+        self.qtp.get_result(self.deploy_host)
         run_script_mock.assert_called_once_with(self.qtp._QTP_HPDM__get_result_path)
