@@ -151,3 +151,7 @@ class JenkinsServer():
         is_off = node_info['offline']
         status = not is_off
         return status
+
+    def get_jenkins_node_state(self,host):
+        node_info = self.connection.get_node_info(host.get_hostname())
+        host.state = node_info.get('idle')

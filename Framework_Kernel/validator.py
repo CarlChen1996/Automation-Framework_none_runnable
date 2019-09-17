@@ -71,8 +71,7 @@ class HostValidator(Validator):
     def get_jenkins_node_state(host):
         jenkins_host = jenkins_operator.JenkinsServer()
         jenkins_host.connect()
-        node_info=jenkins_host.connection.get_node_info(host.get_hostname())
-        host.state=node_info.get('idle')
+        jenkins_host.get_jenkins_node_state(host)
 
     @staticmethod
     def __validate_QTP(host):
