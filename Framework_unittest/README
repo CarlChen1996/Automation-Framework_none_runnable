@@ -24,6 +24,20 @@
             test_initial_task(self, insert_task, set_state, sleep_mock)
             test_add_task_to_assemble_queue(self)
 
+    Test_configuration_engine.py
+        class ConfigurationEngineTest(unittest.TestCase)
+            setUp(self)
+            test_run(self, validate_mock, init_server_mock, get_server_mock)
+            test_analyze_server_file_mock(self, analyze_file_mock)
+            test_analyze_server_file(self)
+            test_init_server(self)
+            test_init_server_false(self)
+            test_validate_server(self)
+            test_validate_server_false_mock_windows_build(self, validate_mock)
+            test_validate_server_false_mock_Linux_build(self, validate_mock)
+            test_validate_server_false_mock_deploy(self, validate_mock)
+            test_validate_server_false(self)
+
 	Test_execution_engine.py
 	    class ExecutionEngineTest(unittest.TestCase)
 	        setUp(self)
