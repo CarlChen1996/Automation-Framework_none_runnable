@@ -35,9 +35,17 @@ class ExecutionEngine(Engine):
         self.__current_thread_count = 0
         self.__temp_task_list = []
         self.__temp_host_list = []
+        self.__fresh_temp_list_interval = self.__load_config()
         # self.execution_queue.task_list=[]
         # -----------execute结束后需要同时删除task list-----------------
         # execution_queue.task_list = task_list.copy()
+
+    def __load_config(self):
+        analyer = Analyzer()
+        settings_dict = analyer.analyze_file(os.path.join(os.getcwd(), r'Configuration\config_framework_list.yml'))
+        # -----------FTP settings ----------------
+        fresh_temp_list_interval = settings_dict['global_settings']['LOOP_INTERVAL']
+        return fresh_temp_list_interval
 
     def start(self):
         self.__executor = Process(target=self.start_thread, name='framework_executor', args=())
@@ -70,7 +78,7 @@ class ExecutionEngine(Engine):
         execution_log.info('[thread_execution_queue_monitor] append {} to task_list'.format(receive.get_name()))
         execution_log.info('[thread_execution_queue_monitor] task_list now is {}'.
                            format(list(map(lambda i: i.get_name(), self.execution_queue.get_task_list()))))
-        time.sleep(1)
+        time.sleep(1) # can be removed
 
     def __execute(self, task, host):
 
@@ -80,7 +88,7 @@ class ExecutionEngine(Engine):
         self.send_report(task)
         execution_log.info('[thread_executor] task left in execute queue: {}'.format(
             len(self.execution_queue.get_task_list())))
-        time.sleep(3)
+        time.sleep(1) # can be removed
         execution_log.info('[thread_executor] task_list now is : {}'.
                            format(list(map(lambda i: i.get_name(), self.execution_queue.get_task_list()))))
 
@@ -104,7 +112,7 @@ class ExecutionEngine(Engine):
                     if self.__current_thread_count > self.__max_thread_count:
                         execution_log.info(
                             'current thread queue is full, waiting task finished')
-                        time.sleep(10)
+                        time.sleep(self.__fresh_temp_list_interval)
                     else:
                         execute_task.set_state('Executing')
                         deploy_host.state = 'Busy'
@@ -140,7 +148,7 @@ class ExecutionEngine(Engine):
                     self.__temp_task_list.append(_task)
             if not self.__temp_task_list:
                 execution_log.info('---No valid task, waiting for new task-----')
-                time.sleep(10)
+                time.sleep(self.__fresh_temp_list_interval)
             else:
                 return
 
@@ -153,7 +161,7 @@ class ExecutionEngine(Engine):
                     self.__temp_host_list.append(_host)
             if not self.__temp_host_list:
                 execution_log.info('---No valid Deploy host, waiting for new host-----')
-                time.sleep(10)
+                time.sleep(self.__fresh_temp_list_interval)
             else:
                 return
 
@@ -215,3 +223,7 @@ class ExecutionEngine(Engine):
         template_file = settings['email_settings']['report_summary']
         html = render_template(template_file, vars=email_vars)
         return email_subject, email_to, html, att_zip, task_report_path
+
+t=ExecutionEngine('','').fresh_temp_list_interval
+print(t)
+print(type(t))
