@@ -223,7 +223,3 @@ class ExecutionEngine(Engine):
         template_file = settings['email_settings']['report_summary']
         html = render_template(template_file, vars=email_vars)
         return email_subject, email_to, html, att_zip, task_report_path
-
-t=ExecutionEngine('','').fresh_temp_list_interval
-print(t)
-print(type(t))
