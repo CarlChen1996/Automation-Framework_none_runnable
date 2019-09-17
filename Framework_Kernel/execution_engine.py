@@ -107,7 +107,7 @@ class ExecutionEngine(Engine):
                         time.sleep(10)
                     else:
                         execute_task.set_state('Executing')
-                        deploy_host.status = 'Busy'
+                        deploy_host.state = 'Busy'
                         self.__current_thread_count += 1
                         new_thread = threading.Thread(target=self.__execute, args=(execute_task, deploy_host))
                         new_thread.setDaemon(True)
