@@ -91,7 +91,7 @@ class Build:
     def get_scripts(self, task):
         for script in task.get_script_list():
             pass
-        self.log.info('get  {} scripts PASS'.format(task.get_name()))
+        # self.log.info('get  {} scripts PASS'.format(task.get_name()))
 
     def jenkins_build(self, task):
         jenkins_host = jenkins_operator.JenkinsServer()
@@ -108,7 +108,7 @@ class Build:
             jenkins_host.job_params = {
                 'os_type': job_os,
                 'repository': task.get_repository(),
-                'build_node': 'Build_Node_W_1',
+                'build_node': self._Host__hostname,
                 'template_file': jenkins_host.config_module_win,
                 'entry_file': 'run.py',
                 'result_file': 'run',
@@ -119,7 +119,7 @@ class Build:
             jenkins_host.job_params = {
                 'os_type': job_os,
                 'repository': task.get_repository(),
-                'build_node': 'Build_Node_TP_1',
+                'build_node': self._Host__hostname,
                 'template_file': jenkins_host.config_module_linux,
                 'entry_file': 'run.py',
                 'result_file': 'run',
@@ -132,7 +132,7 @@ class Build:
         if jenkins_host.create_job(self.job_name, jenkins_host.initial_job_configuration()):
             if jenkins_host.build_job(self.job_name):
                 while last_build_number == jenkins_host.get_last_build_number(self.job_name):
-                    self.log.info('New build record is not available, wait 5 seconds')
+                    # self.log.info('New build record is not available, wait 5 seconds')
                     time.sleep(5)
                 current_build_number = jenkins_host.get_last_build_number(self.job_name)
                 build_result = jenkins_host.get_build_result(self.job_name, current_build_number)
@@ -169,17 +169,17 @@ class Build:
                 return False
         else:
             return False
-        self.log.info('build ' + task.get_name() + task.get_status())
+        # self.log.info('build ' + task.get_name() + task.get_status())
         self.generate_scripts_config(task)
         return task
 
     def generate_scripts_config(self, task):
-        self.log.info("generate script config file")
+        # self.log.info("generate script config file")
         scripts_config = os.path.join(os.getcwd(), 'script.yml')
         scripts = [{i.get_name(): i.get_status()} for i in task.get_script_list()]
         file_operator.YamlFile.save(scripts, scripts_config)
         store_dir = os.path.join(os.path.dirname(task.get_exe_file_list()[0]), 'test_data')
-        self.log.info("upload script config file to {}".format(store_dir))
+        # self.log.info("upload script config file to {}".format(store_dir))
         remote_base_path = store_dir
         # Retrive FTP Settings from configuration file
         config_file = os.path.join(os.getcwd(), r'.\Configuration\config_framework_list.yml')

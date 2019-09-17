@@ -38,7 +38,7 @@ class QTP_HPDM:
         self.__get_result_path = config_qtp_script['get_result']
         # ---------HPDM settings ----------------------
         self.__os_list = settings_dict['hpdm_settings']['os_list']
-        self.__repository_path = settings_dict['hpdm_settings']['repository_path'].replace('\\', '/')
+        self.__repository_path = settings_dict['hpdm_settings']['repository_path']
 
     # General Excel file as QTP DataTable
     def __initial_test_data(self, task):

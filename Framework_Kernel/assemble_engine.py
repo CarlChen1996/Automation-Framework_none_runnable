@@ -215,76 +215,171 @@ class AssembleEngine(Engine):
                 build_server_os = 'linux'
         return build_server_os
 
-    def __assemble(self):
+    def refresh_node_state(self):
+        pass
+
+    def create_temp_task_win(self):
+        self.temp_task_win = []
+        for task in self.assembleQueue.get_task_list():
+            if task.get_state().upper() == 'WAIT ASSEMBLE':
+                if self.get_os_type(task) == 'windows':
+                    self.temp_task_win.append(task)
+
+    def create_temp_task_linux(self):
+        self.temp_task_linux = []
+        for task in self.assembleQueue.get_task_list():
+            if task.get_state().upper() == 'WAIT ASSEMBLE':
+                if self.get_os_type(task) == 'linux':
+                    self.temp_task_linux.append(task)
+
+    def create_temp_node_win(self):
+        self.temp_node_win = []
+        self.refresh_node_state()
+        for build_node in self.__build_list:
+            if build_node.state:
+                if isinstance(build_node, WindowsBuildHost):
+                    self.temp_node_win.append(build_node)
+
+    def create_temp_node_linux(self):
+        self.temp_node_linux = []
+        self.refresh_node_state()
+        for build_node in self.__build_list:
+            if build_node.state:
+                if isinstance(build_node, LinuxBuildHost):
+                    self.temp_node_linux.append(build_node)
+
+    def validate_task(self):
+        h_validator = HostValidator()
+        s_validator = ScriptValidator()
+        for task in self.assembleQueue.get_task_list()[:]:
+            res = s_validator.validate(task)
+            """
+            check task is ok
+            """
+            if not res:
+                error_msg_instance = ERROR_MSG(ENGINE_CODE().assembly_engine,
+                                               ERROR_LEVEL().drop_task,
+                                               "check task fail,drop it")
+                error_handle_instance = ErrorHandler(error_msg_instance)
+                handle_res = error_handle_instance.handle(task=Task, task_queue=self.assembleQueue)
+                if not handle_res:
+                    continue
+
+
+    def build(self,task,node,os):
+        print('start build {} on {}'.format(task.get_name(), node.get_hostname()))
+        # for i in range(15):
+        #     print('building {} on {}'.format(task.get_name(), node.get_hostname()))
+        #     time.sleep(1)
+        h_validator = HostValidator()
+        for uut in task.get_uut_list():
+            h_validator.validate_uut(uut)
+        task.build(node)
+        print(20 * '*')
+        print(task.get_status(), task.get_exe_file_list())
+        print(20 * '*')
+        print('build finished {} on {}'.format(task.get_name(), node.get_hostname()))
+        task.set_state('Assemble Finished')
+        node.state=True
+        if os=='win':
+            self.count_task_win-=1
+        elif os=='linux':
+            self.count_task_linux-=1
+
+    def thread_f_win(self):
         while True:
-            assemble_log.info(
-                '[thread_assemble_task] ************************ Begine to assemble... **********************'
-            )
-            h_validator = HostValidator()
-            s_validator = ScriptValidator()
-            '''validate task script'''
-            """validate  task,create temp win task list"""
-            '''validate  task,create temp linux task list'''
-            '''validate node,create temp win node list'''
-            '''validate node,create temp linux node list'''
-            '''process temp win task list and temp win node list'''
-            '''process temp linux task list and temp linux node list'''
-            temp_task_win=[]
-            temp_task_linux=[]
-            temp_node_win=[]
-            temp_node_linux=[]
-            for task in self.assembleQueue.get_task_list()[:]:
-                res = s_validator.validate(task)
-                """
-                check task is ok
-                """
-                if not res:
-                    error_msg_instance = ERROR_MSG(ENGINE_CODE().assembly_engine,
-                                                   ERROR_LEVEL().drop_task,
-                                                   "check task fail,drop it")
-                    error_handle_instance = ErrorHandler(error_msg_instance)
-                    handle_res = error_handle_instance.handle(task=Task, task_queue=self.assembleQueue)
-                    if not handle_res:
-                        continue
+            if self.temp_task_win:
+                for task in self.temp_task_win[:]:
+                    if self.count_task_win < self.max_count:
+                        if self.temp_node_win:
+                            node0=self.temp_node_win[0]
+                            self.temp_task_win.remove(task)
+                            self.temp_node_win.remove(node0)
+                            t = threading.Thread(target=self.build, args=(task, node0,'win'))
+                            node0.state=False
+                            self.count_task_win+=1
+                            task.set_state('ASSEMBLING')
+                            t.start()
+                            print('current len of temp node {}'.format(len(self.temp_node_win)))
+                        else:
+                            temp_node_win = self.create_temp_node_win()
+                    else:
+                        print('win full running')
+                        time.sleep(2)
+            else:
+                self.create_temp_task_win()
 
-                if task.get_state().upper() == 'WAIT ASSEMBLE':
-                    if self.get_os_type(task)=='windows':
-                        temp_task_win.append(task)
-                    elif self.get_os_type(task)=='linux':
-                        temp_task_linux.append(task)
+    def thread_f_linux(self):
+        while True:
+            if self.temp_task_linux:
+                for task in self.temp_task_linux[:]:
+                    if self.count_task_linux < self.max_count:
+                        if self.temp_node_linux:
+                            node0=self.temp_node_linux[0]
+                            self.temp_task_linux.remove(task)
+                            self.temp_node_linux.remove(node0)
+                            t = threading.Thread(target=self.build, args=(task, node0,'linux'))
+                            node0.state=False
+                            self.count_task_linux+=1
+                            task.set_state('ASSEMBLING')
+                            t.start()
+                            print('current len of temp node {}'.format(len(self.temp_node_linux)))
+                        else:
+                            self.create_temp_node_linux()
+                    else:
+                        print('linux full running')
+                        time.sleep(1)
+            else:
+                self.create_temp_task_linux()
 
-            for build_node in self.__build_list:
-                if build_node.state:
-                    if isinstance(build_node,WindowsBuildHost):
-                        temp_node_win.append(build_node)
-                    elif isinstance(build_node,LinuxBuildHost):
-                        temp_node_linux.append(build_node)
+    def __assemble(self):
 
-            try:
-                for task in self.assembleQueue.get_task_list():
-                    if task.get_state().upper() == 'WAIT ASSEMBLE':
-                        task.set_state('ASSEMBLING')
-                        b_host = self.__build_list[0]
-                        for uut in task.get_uut_list():
-                            h_validator.validate_uut(uut)
-                        assemble_log.info(
-                            'assemble_engine build {} on {}'.format(task.get_name(), b_host.get_hostname()))
-                        print("**************************************************")
-                        print("**************************************************")
-                        print("**************************************************")
-                        print("**************************************************")
-                        print("**************************************************")
-                        task.build(b_host)
-                        print(20 * '*')
-                        print(task.get_status(), task.get_exe_file_list())
-                        print(20 * '*')
-                        task.set_state('Assemble Finished')
-                        assemble_log.info(
-                            '[thread_assemble_task] **************{} assemble finished****************'
-                                .format(task.get_name()))
-            except Exception as e:
-                print(e)
-            # print(
-            #     '[thread_assemble_task]--------------------------------------------------------------------------------'
-            # )
-            time.sleep(10)
+        self.count_task_win = 0
+        self.count_task_linux = 0
+        self.max_count=2
+        # self.validate_task()
+        self.create_temp_task_win()
+        self.create_temp_node_win()
+        self.create_temp_task_linux()
+        self.create_temp_node_linux()
+        win_thread=threading.Thread(target=self.thread_f_win)
+        win_thread.start()
+        linux_thread=threading.Thread(target=self.thread_f_linux)
+        linux_thread.start()
+        win_thread.join()
+        linux_thread.join()
+
+
+
+
+
+        # h_validator = HostValidator()
+        # s_validator = ScriptValidator()
+        # try:
+        #     for task in self.assembleQueue.get_task_list():
+        #         if task.get_state().upper() == 'WAIT ASSEMBLE':
+        #             task.set_state('ASSEMBLING')
+        #             b_host = self.__build_list[0]
+        #             for uut in task.get_uut_list():
+        #                 h_validator.validate_uut(uut)
+        #             assemble_log.info(
+        #                 'assemble_engine build {} on {}'.format(task.get_name(), b_host.get_hostname()))
+        #             print("**************************************************")
+        #             print("**************************************************")
+        #             print("**************************************************")
+        #             print("**************************************************")
+        #             print("**************************************************")
+        #             task.build(b_host)
+        #             print(20 * '*')
+        #             print(task.get_status(), task.get_exe_file_list())
+        #             print(20 * '*')
+        #             task.set_state('Assemble Finished')
+        #             assemble_log.info(
+        #                 '[thread_assemble_task] **************{} assemble finished****************'
+        #                     .format(task.get_name()))
+        # except Exception as e:
+        #     print(e)
+        # # print(
+        # #     '[thread_assemble_task]--------------------------------------------------------------------------------'
+        # # )
+        # time.sleep(10)
