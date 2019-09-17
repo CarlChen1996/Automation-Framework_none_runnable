@@ -154,4 +154,7 @@ class JenkinsServer():
 
     def get_jenkins_node_state(self,host):
         node_info = self.connection.get_node_info(host.get_hostname())
-        host.state = node_info.get('idle')
+        if node_info.get('idle'):
+            host.state='Idle'
+        else:
+            host.state = 'Busy'
