@@ -121,16 +121,16 @@ class ExecutionEngine(Engine):
                     execute_task.set_state('Assemble Finished')
 
     @staticmethod
-    def deploy(d, i):
+    def deploy(deploy_server_host, task):
         # deploy task -> execute task -> collect result
         execution_log.info(
-            'execute_engine deploy {} to {} with {}'.format(i.get_name(), i.get_uut_list()[0].get_hostname(),
-                                                            d.get_hostname()))
-        i.deploy(d)
-        execution_log.info('execute_engine execute {}'.format(i.get_name()))
-        i.execute(d)
-        execution_log.info('execute_engine collect result {}'.format(i.get_name()))
-        i.collect_result(d)
+            'execute_engine deploy {} to {} with {}'.format(task.get_name(), task.get_uut_list()[0].get_hostname(),
+                                                            deploy_server_host.get_hostname()))
+        task.deploy(deploy_server_host)
+        execution_log.info('execute_engine execute {}'.format(task.get_name()))
+        task.execute(deploy_server_host)
+        execution_log.info('execute_engine collect result {}'.format(task.get_name()))
+        task.collect_result(deploy_server_host)
 
     def __fresh_temp_task_list(self):
         while 1:
@@ -172,37 +172,37 @@ class ExecutionEngine(Engine):
                 ftp_util.delete_dir(folder)
             ftp_util.close()
 
-    def send_report(self, i):
-        r = Report(i)
+    def send_report(self, task):
+        report = Report(task)
         # Send Email
-        email_subject, email_to, html, att_zip, task_report_path = self.email_parameter(r, i)
+        email_subject, email_to, html, att_zip, task_report_path = self.email_parameter(report, task)
         if html is not False:
             email_handler = Email()
             email_handler.send_email(email_subject, email_to, html.encode('utf-8'), 'html', attachment=att_zip)
             email_handler.disconnect()
-            r.remove_report_folder(task_report_path)
-            self.execution_queue.remove_task(i)
-            execution_log.info("[thread_executor] remove {} from task_list".format(i.get_name()))
-            execution_log.info('[thread_executor] remove {} from execute queue'.format(i.get_name()))
+            report.remove_report_folder(task_report_path)
+            self.execution_queue.remove_task(task)
+            execution_log.info("[thread_executor] remove {} from task_list".format(task.get_name()))
+            execution_log.info('[thread_executor] remove {} from execute queue'.format(task.get_name()))
         else:
             execution_log.info("Failed to find the email template, please double check")
 
     @staticmethod
-    def email_parameter(r, i):
-        task_report_path = r.generate()
-        email_to = i.get_email()
+    def email_parameter(report, task):
+        task_report_path = report.generate()
+        email_to = task.get_email()
         email_subject = 'Thin Client QA Automation Test Report'
         email_vars = {
             'status': 'Normal',
-            'project_name': i.get_name(),
+            'project_name': task.get_name(),
             'framework_version': '1.0',
             'script_version': '1.0',
-            'start': i.start_time,
-            'end': i.end_time,
-            'pass_rate': r.total['Passing rate'] + '%',
-            'planned': r.total['Count'],
-            'passed': r.total['Pass'],
-            'failed': r.total['Fail']
+            'start': task.start_time,
+            'end': task.end_time,
+            'pass_rate': report.total['Passing rate'] + '%',
+            'planned': report.total['Count'],
+            'passed': report.total['Pass'],
+            'failed': report.total['Fail']
         }
         # Zip Attachment
         att_file = os.path.basename(os.path.normpath(task_report_path)) + '.zip'
