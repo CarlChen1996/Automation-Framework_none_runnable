@@ -19,13 +19,15 @@ test_scan_folder: scan Test_Plan folder
 test_get_task_when_task_exist: get task from Test_Plan when task exist
 test_get_task_when_task_not_exist: time.sleep was called when task not exist
 test_send_task_to_execution_true: send task to execution engine by pipe while task was assembled finish
-test_send_task_to_execution_false: 
+test_send_task_to_execution_false: test for task does not build success
+test_send_task_to_execution_unfinished: test for task build success, but state was not set 'ASSEMBLE FINISHED'
 test_get_ack_right_from_execution_engine: get right ack to remove task
 test_get_ack_wrong_from_execution_engine: get wrong ack will do nothing
 test_remove_task_from_assemble_queue: remove task from assemble queue after get right ack
-test_initial_task: initial_task after task has been load
+test_generate_task: initial_task after task has been load
 test_add_task_to_assemble_queue: add task to assemble queue after initial task
-test_send_task_to_execution_true
+test_validate_task_true: test validate_task can return True after validate scripts True
+test_validate_task_false: test validate_task can return False after validate scripts False
 '''
 
 
@@ -57,7 +59,7 @@ class AssembleEngineTest(unittest.TestCase):
             self.assertIn(os.path.basename(self.excel_name), self.scan_folder())
             os.rename(self.excel_name, self.loaded_excel)
         else:
-            self.assertIn(os.path.basename(self.loaded_excel), self.scan_folder())
+            self.assertIn(os.path.basename(self.excel_name), self.scan_folder())
 
     @patch('Framework_Kernel.assemble_engine.AssembleEngine.generate_task')
     def test_get_task_when_task_exist(self, generate_task):
@@ -85,13 +87,20 @@ class AssembleEngineTest(unittest.TestCase):
         self.assertEqual(receive_task.get_name(), self.task_name)
 
     @patch('time.sleep')
-    @patch('Common_Library.email_operator.Email.send_email')
     @patch('Framework_Kernel.error_handler.ErrorHandler.handle')
-    def test_send_task_to_execution_false(self, error_handle_mock, email_mock, sleep_mock):
+    def test_send_task_to_execution_false(self, error_handle_mock, sleep_mock):
         self.task.set_status('SUCCES')
         self.assemble.assembleQueue.insert_task(task=self.task)
         self.assemble.send_task_to_execution()
         error_handle_mock.assert_called_once_with(task=self.task, task_queue=self.assemble.assembleQueue)
+
+    @patch('time.sleep')
+    def test_send_task_to_execution_unfinished(self, sleep_mock):
+        self.task.set_status('SUCCESS')
+        self.task.set_state('ASSEMBLE')
+        self.assemble.assembleQueue.insert_task(task=self.task)
+        self.assemble.send_task_to_execution()
+        self.assertEqual(sleep_mock.call_count, 2)
 
     @patch('Framework_Kernel.task_queue.Queue.remove_task')
     def test_get_ack_right_from_execution_engine(self, remove):
@@ -113,14 +122,29 @@ class AssembleEngineTest(unittest.TestCase):
         self.assemble.get_signal_after_send(self.task)
         self.assertNotIn(self.task, self.assemble.assembleQueue.get_task_list())
 
+    @patch('Framework_Kernel.assemble_engine.AssembleEngine.validate_task')
     @patch('time.sleep')
     @patch('Framework_Kernel.task.Task.set_state')
     @patch('Framework_Kernel.task_queue.Queue.insert_task')
-    def test_initial_task(self, insert_task, set_state, sleep_mock):
+    def test_generate_task(self, insert_task, set_state, sleep_mock, validate_mock):
+        validate_mock.return_value = True
         self.assemble.generate_task(self.generate_excel_list())
         set_state.assert_called_once()
         insert_task.assert_called_once()
 
-    def test_add_task_to_assemble_queue(self):
+    @patch('Framework_Kernel.assemble_engine.AssembleEngine.validate_task')
+    @patch('time.sleep')
+    def test_add_task_to_assemble_queue(self, sleep_mock, validate_mock):
+        validate_mock.return_value = True
         self.assemble.generate_task(self.generate_excel_list())
         self.assertEqual(self.assemble.assembleQueue.get_task_list()[0].get_name(), self.task_name)
+
+    @patch('Framework_Kernel.validator.ScriptValidator.validate')
+    def test_validate_task_true(self, validate_mock):
+        validate_mock.return_value = True
+        self.assertTrue(self.assemble.validate_task(self.task))
+
+    @patch('Framework_Kernel.validator.ScriptValidator.validate')
+    def test_validate_task_false(self, validate_mock):
+        validate_mock.return_value = False
+        self.assertFalse(self.assemble.validate_task(self.task))
