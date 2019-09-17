@@ -153,8 +153,9 @@ class ScriptValidator(Validator):
     def validate(self, task):
         # return True
         git_script_list = self.get_git_scripts(task)
-        task_script_list = task.get_script_list()
-        if set(task_script_list) < set(git_script_list):
+        task_script_list = [i.get_name() for i in task.get_script_list()]
+        # task_script_list = task.get_script_list()
+        if set(task_script_list) <= set(git_script_list):
             print('validate ' + task.get_name() + ' scripts finished')
             # controller_log.info('validate ' + task.get_name() + ' scripts finished')
             return True
@@ -172,7 +173,7 @@ class ScriptValidator(Validator):
         repo_path = task.get_repository()
         local_path = os.getcwd() + '/git_temp'
         if os.path.exists(local_path):
-            rmtree(local_path)
+            rmtree(local_path, onerror=self.handle_remove_read_only)
         else:
             Repo.clone_from(repo_path, local_path)
         scripts = []

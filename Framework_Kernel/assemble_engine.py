@@ -253,7 +253,7 @@ class AssembleEngine(Engine):
                                                ERROR_LEVEL().drop_task,
                                                "check task fail,drop it")
                 error_handle_instance = ErrorHandler(error_msg_instance)
-                handle_res = error_handle_instance.handle(task=Task, task_queue=self.assembleQueue)
+                handle_res = error_handle_instance.handle(task=task, task_queue=self.assembleQueue)
                 if not handle_res:
                     continue
 
