@@ -66,7 +66,6 @@ class AssembleEngine(Engine):
         while True:
             file_list = self.scan_folder()
             self.get_task_from_folder(file_list)
-            self.validate_task()
 
     def scan_folder(self):
         assemble_log.info(
@@ -132,7 +131,12 @@ class AssembleEngine(Engine):
             assemble_log.info(
                 '[Thread_fresh_testplan]--insert {} to assemble queue list'.
                     format(task.get_name()))
-            self.assembleQueue.insert_task(task=task)
+
+            if self.validate_task(task):
+                self.assembleQueue.insert_task(task=task)
+            else:
+                assemble_log.info('Validate task scripts fail ,not insert into queue')
+
             # -------------------rename task plan name -------------------------
             os.rename(
                 taskitem['file_path'], taskitem['file_path']
@@ -241,21 +245,22 @@ class AssembleEngine(Engine):
 
         return temp_node
 
-    def validate_task(self):
+    def validate_task(self,task):
         s_validator = ScriptValidator()
-        for task in self.assembleQueue.get_task_list()[:]:
-            res = s_validator.validate(task)
-            """
-            check task is ok
-            """
-            if not res:
-                error_msg_instance = ERROR_MSG(ENGINE_CODE().assembly_engine,
-                                               ERROR_LEVEL().drop_task,
-                                               "check task fail,drop it")
-                error_handle_instance = ErrorHandler(error_msg_instance)
-                handle_res = error_handle_instance.handle(task=task, task_queue=self.assembleQueue)
-                if not handle_res:
-                    continue
+
+        res = s_validator.validate(task)
+        return res
+        # """
+        # check task is ok
+        # """
+        # if not res:
+        #     error_msg_instance = ERROR_MSG(ENGINE_CODE().assembly_engine,
+        #                                    ERROR_LEVEL().drop_task,
+        #                                    "check task fail,drop it")
+        #     error_handle_instance = ErrorHandler(error_msg_instance)
+        #     handle_res = error_handle_instance.handle(task=task, task_queue=self.assembleQueue)
+        #     if not handle_res:
+        #         pass
 
     def build(self,task,node,os):
         print('start build {} on {}'.format(task.get_name(), node.get_hostname()))
