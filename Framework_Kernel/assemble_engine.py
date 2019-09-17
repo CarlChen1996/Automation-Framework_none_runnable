@@ -287,12 +287,17 @@ class AssembleEngine(Engine):
                                 node0 = self.temp_node_win[0]
                                 self.temp_task_win.remove(task)
                                 self.temp_node_win.remove(node0)
-                                t = threading.Thread(target=self.build, args=(task, node0, 'win'))
-                                node0.state = 'Busy'
-                                self.count_task_win += 1
-                                task.set_state('ASSEMBLING')
-                                t.start()
-                                print('current len of temp node {}'.format(len(self.temp_node_win)))
+                                try:
+                                    t = threading.Thread(target=self.build, args=(task, node0, 'win'))
+                                    node0.state = 'Busy'
+                                    self.count_task_win += 1
+                                    task.set_state('ASSEMBLING')
+                                    t.start()
+                                except Exception as e:
+                                    print('exception in win assemble {}'.format(str(e)))
+                                    node0.state = 'Idle'
+                                    self.count_task_win -= 1
+                                    task.set_state('WAIT ASSEMBLE')
                             else:
                                 self.temp_node_win = self.create_temp_node('win')
                         else:
@@ -309,12 +314,17 @@ class AssembleEngine(Engine):
                                 node0 = self.temp_node_linux[0]
                                 self.temp_task_linux.remove(task)
                                 self.temp_node_linux.remove(node0)
-                                t = threading.Thread(target=self.build, args=(task, node0, 'linux'))
-                                node0.state = 'Busy'
-                                self.count_task_linux += 1
-                                task.set_state('ASSEMBLING')
-                                t.start()
-                                print('current len of temp node {}'.format(len(self.temp_node_linux)))
+                                try:
+                                    t = threading.Thread(target=self.build, args=(task, node0, 'linux'))
+                                    node0.state = 'Busy'
+                                    self.count_task_linux += 1
+                                    task.set_state('ASSEMBLING')
+                                    t.start()
+                                except Exception as e:
+                                    print('exception in linux assemble {}'.format(str(e)))
+                                    node0.state = 'Idle'
+                                    self.count_task_linux -= 1
+                                    task.set_state('WAIT ASSEMBLE')
                             else:
                                 self.temp_node_linux = self.create_temp_node('linux')
                         else:
