@@ -66,6 +66,7 @@ class AssembleEngine(Engine):
         while True:
             file_list = self.scan_folder()
             self.get_task_from_folder(file_list)
+            self.validate_task()
 
     def scan_folder(self):
         assemble_log.info(
@@ -210,46 +211,37 @@ class AssembleEngine(Engine):
         build_server_os = ''
         for i in task.get_uut_list():
             if 'wes' in i._Host__version.lower():
-                build_server_os = 'windows'
+                build_server_os = 'win'
             elif 'tp' in i._Host__version.lower():
                 build_server_os = 'linux'
         return build_server_os
 
-    def refresh_node_state(self):
+    def refresh_node_state(self,os):
         pass
 
-    def create_temp_task_win(self):
-        self.temp_task_win = []
+    def create_temp_task(self,os):
+        temp_task=[]
         for task in self.assembleQueue.get_task_list():
             if task.get_state().upper() == 'WAIT ASSEMBLE':
-                if self.get_os_type(task) == 'windows':
-                    self.temp_task_win.append(task)
+                if self.get_os_type(task) == os:
+                    temp_task.append(task)
+        return temp_task
 
-    def create_temp_task_linux(self):
-        self.temp_task_linux = []
-        for task in self.assembleQueue.get_task_list():
-            if task.get_state().upper() == 'WAIT ASSEMBLE':
-                if self.get_os_type(task) == 'linux':
-                    self.temp_task_linux.append(task)
-
-    def create_temp_node_win(self):
-        self.temp_node_win = []
-        self.refresh_node_state()
+    def create_temp_node(self,os):
+        temp_node=[]
+        self.refresh_node_state(os)
         for build_node in self.__build_list:
-            if build_node.state:
-                if isinstance(build_node, WindowsBuildHost):
-                    self.temp_node_win.append(build_node)
+            if build_node.state=='Idle':
+                if os=='win':
+                    if isinstance(build_node, WindowsBuildHost):
+                        temp_node.append(build_node)
+                elif os=='linux':
+                    if isinstance(build_node, LinuxBuildHost):
+                        temp_node.append(build_node)
 
-    def create_temp_node_linux(self):
-        self.temp_node_linux = []
-        self.refresh_node_state()
-        for build_node in self.__build_list:
-            if build_node.state:
-                if isinstance(build_node, LinuxBuildHost):
-                    self.temp_node_linux.append(build_node)
+        return temp_node
 
     def validate_task(self):
-        h_validator = HostValidator()
         s_validator = ScriptValidator()
         for task in self.assembleQueue.get_task_list()[:]:
             res = s_validator.validate(task)
@@ -265,7 +257,6 @@ class AssembleEngine(Engine):
                 if not handle_res:
                     continue
 
-
     def build(self,task,node,os):
         print('start build {} on {}'.format(task.get_name(), node.get_hostname()))
         # for i in range(15):
@@ -280,71 +271,70 @@ class AssembleEngine(Engine):
         print(20 * '*')
         print('build finished {} on {}'.format(task.get_name(), node.get_hostname()))
         task.set_state('Assemble Finished')
-        node.state=True
+        node.state='Idle'
         if os=='win':
             self.count_task_win-=1
         elif os=='linux':
             self.count_task_linux-=1
 
-    def thread_f_win(self):
+    def thread_f(self,os):
         while True:
-            if self.temp_task_win:
-                for task in self.temp_task_win[:]:
-                    if self.count_task_win < self.max_count:
-                        if self.temp_node_win:
-                            node0=self.temp_node_win[0]
-                            self.temp_task_win.remove(task)
-                            self.temp_node_win.remove(node0)
-                            t = threading.Thread(target=self.build, args=(task, node0,'win'))
-                            node0.state=False
-                            self.count_task_win+=1
-                            task.set_state('ASSEMBLING')
-                            t.start()
-                            print('current len of temp node {}'.format(len(self.temp_node_win)))
+            if os=='win':
+                if self.temp_task_win:
+                    for task in self.temp_task_win[:]:
+                        if self.count_task_win < self.max_count:
+                            if self.temp_node_win:
+                                node0 = self.temp_node_win[0]
+                                self.temp_task_win.remove(task)
+                                self.temp_node_win.remove(node0)
+                                t = threading.Thread(target=self.build, args=(task, node0, 'win'))
+                                node0.state = 'Busy'
+                                self.count_task_win += 1
+                                task.set_state('ASSEMBLING')
+                                t.start()
+                                print('current len of temp node {}'.format(len(self.temp_node_win)))
+                            else:
+                                self.temp_node_win = self.create_temp_node('win')
                         else:
-                            temp_node_win = self.create_temp_node_win()
-                    else:
-                        print('win full running')
-                        time.sleep(2)
-            else:
-                self.create_temp_task_win()
-
-    def thread_f_linux(self):
-        while True:
-            if self.temp_task_linux:
-                for task in self.temp_task_linux[:]:
-                    if self.count_task_linux < self.max_count:
-                        if self.temp_node_linux:
-                            node0=self.temp_node_linux[0]
-                            self.temp_task_linux.remove(task)
-                            self.temp_node_linux.remove(node0)
-                            t = threading.Thread(target=self.build, args=(task, node0,'linux'))
-                            node0.state=False
-                            self.count_task_linux+=1
-                            task.set_state('ASSEMBLING')
-                            t.start()
-                            print('current len of temp node {}'.format(len(self.temp_node_linux)))
+                            print('win full running')
+                            time.sleep(2)
+                else:
+                    self.temp_task_win = self.create_temp_task('win')
+            elif os=='linux':
+                if self.temp_task_linux:
+                    for task in self.temp_task_linux[:]:
+                        if self.count_task_linux < self.max_count:
+                            if self.temp_node_linux:
+                                node0 = self.temp_node_linux[0]
+                                self.temp_task_linux.remove(task)
+                                self.temp_node_linux.remove(node0)
+                                t = threading.Thread(target=self.build, args=(task, node0, 'linux'))
+                                node0.state = 'Busy'
+                                self.count_task_linux += 1
+                                task.set_state('ASSEMBLING')
+                                t.start()
+                                print('current len of temp node {}'.format(len(self.temp_node_linux)))
+                            else:
+                                self.temp_node_linux = self.create_temp_node('linux')
                         else:
-                            self.create_temp_node_linux()
-                    else:
-                        print('linux full running')
-                        time.sleep(1)
-            else:
-                self.create_temp_task_linux()
+                            print('linux full running')
+                            time.sleep(1)
+                else:
+                    time.sleep(10)
+                    self.temp_task_linux = self.create_temp_task('linux')
 
     def __assemble(self):
 
         self.count_task_win = 0
         self.count_task_linux = 0
         self.max_count=2
-        # self.validate_task()
-        self.create_temp_task_win()
-        self.create_temp_node_win()
-        self.create_temp_task_linux()
-        self.create_temp_node_linux()
-        win_thread=threading.Thread(target=self.thread_f_win)
+        self.temp_task_win=self.create_temp_task('win')
+        self.temp_node_win=self.create_temp_node('win')
+        self.temp_task_linux=self.create_temp_task('linux')
+        self.temp_node_linux=self.create_temp_node('linux')
+        win_thread=threading.Thread(target=self.thread_f,args=('win',))
         win_thread.start()
-        linux_thread=threading.Thread(target=self.thread_f_linux)
+        linux_thread=threading.Thread(target=self.thread_f,args=('linux',))
         linux_thread.start()
         win_thread.join()
         linux_thread.join()
