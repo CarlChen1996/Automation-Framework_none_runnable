@@ -71,11 +71,11 @@ class HostValidator(Validator):
     def get_jenkins_node_state(host):
         jenkins_host = jenkins_operator.JenkinsServer()
         jenkins_host.connect()
-        jenkins_host.get_jenkins_node_state(host)
+        host.state=jenkins_host.get_jenkins_node_state(host.get_hostname())
 
     @staticmethod
     def __validate_QTP(host):
-        return True
+        # return True
         try:
             pythoncom.CoInitialize()
             DispatchEx('QuickTest.Application', host.get_ip())
