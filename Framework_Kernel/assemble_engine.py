@@ -294,6 +294,7 @@ class AssembleEngine(Engine):
                                 self.temp_node_win.remove(node0)
                                 try:
                                     t = threading.Thread(target=self.build, args=(task, node0, 'win'))
+                                    time.sleep(1)
                                     node0.state = 'Busy'
                                     self.count_task_win += 1
                                     task.set_state('ASSEMBLING')
@@ -321,6 +322,7 @@ class AssembleEngine(Engine):
                                 self.temp_node_linux.remove(node0)
                                 try:
                                     t = threading.Thread(target=self.build, args=(task, node0, 'linux'))
+                                    time.sleep(1)
                                     node0.state = 'Busy'
                                     self.count_task_linux += 1
                                     task.set_state('ASSEMBLING')
