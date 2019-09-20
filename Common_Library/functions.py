@@ -3,7 +3,6 @@ import msvcrt
 import zipfile
 import os
 import jinja2
-import sys
 
 
 def get_keyboard_input(timeout):
@@ -63,7 +62,7 @@ def render_template(template, **kwargs):  # render jinja2 template into html
     if not os.path.exists(os.path.join(template_path, template)):
         print('No template file present: %s' % template)
         return False
-    templateLoader = jinja2.FileSystemLoader(searchpath=template_path)
-    templateEnv = jinja2.Environment(loader=templateLoader)
-    templ = templateEnv.get_template(template)
+    template_loader = jinja2.FileSystemLoader(searchpath=template_path)
+    template_env = jinja2.Environment(loader=template_loader)
+    templ = template_env.get_template(template)
     return templ.render(**kwargs)

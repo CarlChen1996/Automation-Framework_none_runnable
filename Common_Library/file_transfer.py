@@ -107,29 +107,3 @@ class FTPUtils:
 
     def close(self):
         self.ftp.close()
-
-
-if __name__ == '__main__':
-    # server='15.83.248.251',
-    # username='automation',
-    # password='Shanghai2010',
-    # base_Path='/Repository/Files/Captured'
-    ftp = FTPUtils('15.83.248.251', 'automation', 'Shanghai2010')
-    # ftp = FTPUtils('15.83.248.204', 'automation', 'Shanghai2010')
-    # ftp.change_dir('test_new_12')
-    # ftp.upload_file(r'c:\test\test2.txt', 'test2_new.txt')
-    # print(ftp.change_dir('test234'))
-    # ftp.delete_file(r'\test_new_dir\1.txt')
-    # ftp.change_dir('test1')
-    # ftp.upload_file(r'c:\test\test2.txt', 'test2_upload.txt')
-    # ftp.upload_dir(r'c:\test', 'test_new_12')
-    ftp.delete_dir('TEST')
-    # ftp.new_dir('test_new_dir')
-    # ftp.download_file('test2.txt', r'c:\test\test2.txt')
-    # ftp.download_dir('test1', r'c:\test\test1_new')
-    # ftp.change_dir('test1/test1-1')
-    # ftp.change_directory('test1-1')
-    # print(ftp.get_working_dir())
-    # for item in ftp.get_item_list(''):
-    #     print(item)
-    #     print(ftp.is_item_file(item))
