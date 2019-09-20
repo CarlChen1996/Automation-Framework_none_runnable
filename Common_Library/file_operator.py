@@ -15,14 +15,14 @@ class File:
     def __init__(self, folder_path, name, size=0):
         self.folder_path = folder_path
         self.name = name
-        self.file = os.path.join(self.folder_path, self.name)
+        self.current_file = os.path.join(self.folder_path, self.name)
         self.size = size
 
     def new(self):
         print(sys._getframe().f_code.co_name + "  finished")
 
     def open(self):
-        f = open(self.file)
+        f = open(self.current_file)
         return f
 
     def read(self):
@@ -35,26 +35,26 @@ class File:
         print(sys._getframe().f_code.co_name + " " + self.name + "  finished")
 
     def copy(self, des):
-        new_file = shutil.copyfile(self.file, des)
+        new_file = shutil.copyfile(self.current_file, des)
         return new_file
 
     def move(self, des):
-        new_file = shutil.move(self.file, des)
+        new_file = shutil.move(self.current_file, des)
         return new_file
 
     def delete(self):
-        os.remove(self.file)
+        os.remove(self.current_file)
         if not self.exist():
             return True
         else:
             return False
 
     def rename(self, new_name):
-        new_file = os.rename(self.file, os.path.join(self.folder_path, new_name))
+        new_file = os.rename(self.current_file, os.path.join(self.folder_path, new_name))
         return new_file
 
     def exist(self):
-        result = os.path.isfile(self.file)
+        result = os.path.isfile(self.current_file)
         return result
 
 
@@ -151,21 +151,6 @@ class XlsxFile(File):
         pass
 
 
-class MsgFile(File):
-    def __init__(self, folder_path, name, size, subject, receiver, sender,
-                 send_date, content, attachment):
-        File.__init__(self, folder_path, name, size)
-        self.subject = subject
-        self.receiver = receiver
-        self.sender = sender
-        self.send_date = send_date
-        self.content = content
-        self.attachment = attachment
-
-    def get_attachment(self):
-        print(sys._getframe().f_code.co_name + "  finished")
-
-
 class YamlFile(File):
 
     def read(self, file_handle):
@@ -191,9 +176,7 @@ class TxtFile(File):
 
 if __name__ == "__main__":
     folder_path = r"C:\Users\sich\Desktop\test_folder\1"
-    # tar = r"C:\Users\sich\Desktop\test_folder\1\123.txt"
     tar = r"C:\Users\sich\Desktop\test_folder\2\1233.xlsx"
-    # name = "text_file.txt"
     name = "test.xlsx"
 
     f = File(folder_path, name)
