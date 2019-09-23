@@ -5,7 +5,8 @@
 # @File    : Validator.py
 # @Project : Automation-Framework
 import shlex
-import stat, errno
+import stat
+import errno
 import subprocess
 
 import jenkins
@@ -30,7 +31,9 @@ class Validator:
         cmd = "ping -n 1 {}".format(ip)
         args = shlex.split(cmd)
         try:
-            subprocess.check_call(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            subprocess.check_call(args,
+                                  stdout=subprocess.PIPE,
+                                  stderr=subprocess.PIPE)
             return True
 
         except subprocess.CalledProcessError:
@@ -44,11 +47,13 @@ class HostValidator(Validator):
         return True
 
     def validate_jenkins_server(self):
-        config_file = os.path.join(os.getcwd(), r'.\Configuration\config_framework_list.yml')
+        config_file = os.path.join(
+            os.getcwd(), r'.\Configuration\config_framework_list.yml')
         analyzer = Analyzer()
-        jenkins_settings = analyzer.analyze_file(config_file)['jenkins_settings']
+        jenkins_settings = analyzer.analyze_file(
+            config_file)['jenkins_settings']
         try:
-            jenkins.Jenkins(jenkins_settings['server_address'],jenkins_settings['username'],jenkins_settings['token'])\
+            jenkins.Jenkins(jenkins_settings['server_address'], jenkins_settings['username'], jenkins_settings['token'])\
                 .get_info()
             return True
         except Exception as e:
@@ -71,11 +76,10 @@ class HostValidator(Validator):
     def get_jenkins_node_state(host):
         jenkins_host = jenkins_operator.JenkinsServer()
         jenkins_host.connect()
-        host.state=jenkins_host.get_jenkins_node_state(host.get_hostname())
+        host.state = jenkins_host.get_jenkins_node_state(host.get_hostname())
 
     @staticmethod
     def __validate_QTP(host):
-        # return True
         try:
             pythoncom.CoInitialize()
             DispatchEx('QuickTest.Application', host.get_ip())
@@ -89,12 +93,12 @@ class HostValidator(Validator):
     def __validate_HPDM(host):
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy)
-        ssh.connect(host.get_ip(), 22, host.get_username(), host.get_password())
+        ssh.connect(host.get_ip(), 22, host.get_username(),
+                    host.get_password())
         stdin, stdout, stderr = ssh.exec_command("sc queryex HPDMServer")
         res = stdout.readlines()
         if 'OPENSERVICE FAILED 1060' in res[0].upper():
-            configuration_log.info('validate_deploy_server ' + host.get_ip() +
-                                   ' fail, HPDM service not exist')
+            configuration_log.info('validate_deploy_server ' + host.get_ip() + ' fail, HPDM service not exist')
             return False
         for i in res:
             if 'STATE' in i.upper():
@@ -102,22 +106,20 @@ class HostValidator(Validator):
                 if i.split(":")[1].strip().split(" ")[-1].upper() == 'RUNNING':
                     return True
                 else:
-                    configuration_log.info('validate_deploy_server ' + host.get_ip() +
-                                           ' fail, HPDM service is not running')
+                    configuration_log.info(
+                        'validate_deploy_server ' + host.get_ip() + ' fail, HPDM service is not running')
                     return False
 
     def validate_deploy_server(self, host):
         if not self.__validate_QTP(host):
             host.status = 'off'
-            configuration_log.info('validate_deploy_server ' + host.get_ip() +
-                                   ' fail, QTP check fail')
+            configuration_log.info('validate_deploy_server ' + host.get_ip() + ' fail, QTP check fail')
             return False
         else:
             configuration_log.info('validate_deploy_QTP ' + host.get_ip() + ' Pass')
         if not self.__validate_HPDM(host):
             host.status = 'off'
-            configuration_log.info('validate_deploy_server ' + host.get_ip() +
-                                   ' fail, HPDM check fail')
+            configuration_log.info('validate_deploy_server ' + host.get_ip() + ' fail, HPDM check fail')
             return False
         else:
             configuration_log.info('validate_deploy_HPDM ' + host.get_ip() + ' Pass')
@@ -139,7 +141,8 @@ class HostValidator(Validator):
     @staticmethod
     def validate_ftp(ftp_settings):
         try:
-            ftp = FTPUtils(ftp_settings['server_address'], ftp_settings['username'], ftp_settings['password'])
+            ftp = FTPUtils(ftp_settings['server_address'],
+                           ftp_settings['username'], ftp_settings['password'])
             ftp.close()
             execution_log.info('validate_ftp ' + ftp_settings['server_address'] + ' success')
             return True
@@ -151,10 +154,8 @@ class HostValidator(Validator):
 class ScriptValidator(Validator):
     # To validate github .py file.
     def validate(self, task):
-        # return True
         git_script_list = self.get_git_scripts(task)
         task_script_list = [i.get_name() for i in task.get_script_list()]
-        # task_script_list = task.get_script_list()
         if set(task_script_list) <= set(git_script_list):
             print('validate ' + task.get_name() + ' scripts finished')
             # controller_log.info('validate ' + task.get_name() + ' scripts finished')
@@ -165,11 +166,12 @@ class ScriptValidator(Validator):
 
     def handle_remove_read_only(self, func, path, exc):
         excvalue = exc[1]
-        if func in (os.rmdir, os.remove, os.unlink) and excvalue.errno == errno.EACCES:
+        if func in (os.rmdir, os.remove,
+                    os.unlink) and excvalue.errno == errno.EACCES:
             os.chmod(path, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)  # 0777
             func(path)
 
-    def get_git_scripts(self,task):
+    def get_git_scripts(self, task):
         repo_path = task.get_repository()
         local_path = os.getcwd() + '/git_temp'
         if os.path.exists(local_path):
