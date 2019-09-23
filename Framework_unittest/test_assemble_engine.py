@@ -8,6 +8,7 @@ from Framework_Kernel import assemble_engine
 from Framework_Kernel.task import Task
 from multiprocessing import Pipe
 from unittest.mock import patch
+from Framework_Kernel.host import WindowsBuildHost, LinuxBuildHost, WindowsExecuteHost, LinuxExecuteHost
 import unittest
 import os
 
@@ -34,7 +35,9 @@ test_validate_task_false: test validate_task can return False after validate scr
 class AssembleEngineTest(unittest.TestCase):
     def setUp(self):
         self.pipe = Pipe()
-        self.build_list = []
+        self.windows_build_host = WindowsBuildHost(ip='1.1.1.1', mac=666666)
+        self.linux_build_host = LinuxBuildHost(ip='1.1.1.1', mac=666666)
+        self.build_list = [self.windows_build_host, self.linux_build_host]
         self.assemble = assemble_engine.AssembleEngine(self.pipe[0], self.build_list)
         self.task_name = 'task_1'
         self.task = Task(name=self.task_name)
@@ -148,3 +151,52 @@ class AssembleEngineTest(unittest.TestCase):
     def test_validate_task_false(self, validate_mock):
         validate_mock.return_value = False
         self.assertFalse(self.assemble.validate_task(self.task))
+
+    def test_get_os_type_windows(self):
+        self.task.insert_uut_list(WindowsExecuteHost(ip='1.1.1.1', mac=666666, version='wes'))
+        self.assertEqual(self.assemble.get_os_type(self.task), 'win')
+
+    def test_get_os_type_linux(self):
+        self.task.insert_uut_list(WindowsExecuteHost(ip='1.1.1.1', mac=666666, version='tp'))
+        self.assertEqual(self.assemble.get_os_type(self.task), 'linux')
+
+    def test_get_os_type_none(self):
+        self.task.insert_uut_list(WindowsExecuteHost(ip='1.1.1.1', mac=666666, version='wt'))
+        self.assertEqual(self.assemble.get_os_type(self.task), '')
+
+    @patch('Framework_Kernel.assemble_engine.AssembleEngine.get_os_type')
+    def test_create_temp_task(self, os_mock):
+        os_mock.return_value = 'win'
+        self.task.set_state('WAIT ASSEMBLE')
+        self.assemble.assembleQueue.insert_task(task=self.task)
+        self.assertEqual([self.task], self.assemble.create_temp_task(os_mock.return_value))
+
+    @patch('Framework_Kernel.assemble_engine.AssembleEngine.get_os_type')
+    def test_create_temp_task_none_os(self, os_mock):
+        os_mock.return_value = ''
+        self.task.set_state('WAIT ASSEMBLE')
+        self.assemble.assembleQueue.insert_task(task=self.task)
+        self.assertEqual([], self.assemble.create_temp_task('win'))
+
+    @patch('Framework_Kernel.assemble_engine.AssembleEngine.get_os_type')
+    def test_create_temp_task_none_task(self, os_mock):
+        self.task.set_state('ASSEMBLING')
+        self.assemble.assembleQueue.insert_task(task=self.task)
+        self.assertEqual([], self.assemble.create_temp_task('win'))
+        os_mock.assert_not_called()
+
+    def test_create_temp_node_windows(self):
+        self.assertEqual(self.assemble.create_temp_node('win'), [self.windows_build_host])
+
+    def test_create_temp_node_linux(self):
+        self.assertEqual(self.assemble.create_temp_node('linux'), [self.linux_build_host])
+
+    def test_create_temp_node_windows_busy(self):
+        self.assemble._AssembleEngine__build_list = []
+        self.assertEqual(self.assemble.create_temp_node('win'), [])
+        self.windows_build_host.state = 'Busy'
+        self.assemble._AssembleEngine__build_list = [self.windows_build_host]
+        self.assertEqual(self.assemble.create_temp_node('win'), [])
+        self.linux_build_host.state = 'Busy'
+        self.assemble._AssembleEngine__build_list = [self.linux_build_host]
+        self.assertEqual(self.assemble.create_temp_node('linux'), [])
