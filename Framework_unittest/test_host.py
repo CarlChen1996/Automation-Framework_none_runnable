@@ -81,3 +81,35 @@ class HostTest(unittest.TestCase):
         self.assertIn('/jenkins/windows/{0}/{1}.exe'.format(self.jenkins_host.job_params['publish_path'],
                                                             self.jenkins_host.job_params['result_file']),
                       self.task.get_exe_file_list())
+
+    @patch('Framework_Kernel.host.Build.generate_scripts_config')
+    @patch('Framework_Kernel.host.Build.jenkins_build')
+    @patch('Framework_Kernel.validator.HostValidator.validate_jenkins_server')
+    @patch('Framework_Kernel.task.Task.get_script_list')
+    def test_build_task(self, script_mock, validate_mock, build_mock, generate_scripts_mock):
+        script_mock.return_value = True
+        validate_mock.return_value = True
+        build_mock.return_value = True
+        self.assertEqual(self.build_task.build_task(self.task), self.task)
+
+    @patch('Framework_Kernel.task.Task.get_script_list')
+    def test_build_task_false_none_scripts(self, script_mock):
+        script_mock.return_value = False
+        self.assertFalse(self.build_task.build_task(self.task))
+        self.assertEqual(self.task.get_status(), 'FAIL')
+
+    @patch('Framework_Kernel.validator.HostValidator.validate_jenkins_server')
+    @patch('Framework_Kernel.task.Task.get_script_list')
+    def test_build_task_false_validate(self, script_mock, validate_mock):
+        script_mock.return_value = True
+        validate_mock.return_value = False
+        self.assertFalse(self.build_task.build_task(self.task))
+
+    @patch('Framework_Kernel.host.Build.jenkins_build')
+    @patch('Framework_Kernel.validator.HostValidator.validate_jenkins_server')
+    @patch('Framework_Kernel.task.Task.get_script_list')
+    def test_build_task_false_build(self, script_mock, validate_mock, build_mock):
+        script_mock.return_value = True
+        validate_mock.return_value = True
+        build_mock.return_value = False
+        self.assertFalse(self.build_task.build_task(self.task))
