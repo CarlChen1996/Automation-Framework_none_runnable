@@ -127,10 +127,10 @@ class Report:
             uut_result_file = os.path.join(self.__test_report_root, '{}\\test_report\\{}.yaml'.format(i.get_ip(), i.get_ip()))
             if not os.path.exists(uut_result_file):
                 empty_result = [{
-                    'uut_name': i,
-                    'case_name': 'Error',
+                    'uut_name': i.get_ip(),
+                    'case_name': 'No result return',
                     'steps': [],
-                    'result': 'Fail'
+                    'result': 'fail'
                 }]
                 result.extend(empty_result)
                 continue
