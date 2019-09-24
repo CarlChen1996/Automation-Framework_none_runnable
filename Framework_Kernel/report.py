@@ -93,7 +93,7 @@ class Report:
         df_raw = pandas.DataFrame(source_data)
         # remove the unnecessary column
         df_new = df_raw[[key_name, 'result']]
-        table_raw = pandas.pivot_table(df_new, index=key_name, columns='result', aggfunc=len, margins=True)
+        table_raw = pandas.pivot_table(df_new, index=key_name, columns='result', aggfunc=len, fill_value=0, margins=True)
         # Turn index to new column
         table_raw[key_name] = table_raw.index
         table_format = table_raw[[key_name, 'pass', 'fail']]
