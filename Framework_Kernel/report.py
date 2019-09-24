@@ -128,9 +128,9 @@ class Report:
             if not os.path.exists(uut_result_file):
                 empty_result = [{
                     'uut_name': i.get_ip(),
-                    'case_name': 'Error',
+                    'case_name': 'No result return',
                     'steps': [],
-                    'result': 'Fail'
+                    'result': 'fail'
                 }]
                 result.extend(empty_result)
                 continue

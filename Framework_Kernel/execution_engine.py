@@ -81,16 +81,23 @@ class ExecutionEngine(Engine):
         time.sleep(1) # can be removed
 
     def __execute(self, task, host):
-
-        self.deploy(host, task)
-        task.end_time = datetime.datetime.now()
-        self.download_result()
-        self.send_report(task)
-        execution_log.info('[thread_executor] task left in execute queue: {}'.format(
-            len(self.execution_queue.get_task_list())))
-        time.sleep(1) # can be removed
-        execution_log.info('[thread_executor] task_list now is : {}'.
-                           format(list(map(lambda i: i.get_name(), self.execution_queue.get_task_list()))))
+        try:
+            self.deploy(host, task)
+            task.end_time = datetime.datetime.now()
+            self.download_result()
+            self.send_report(task)
+            execution_log.info('[thread_executor] task left in execute queue: {}'.format(
+                len(self.execution_queue.get_task_list())))
+            time.sleep(1) # can be removed
+            execution_log.info('[thread_executor] task_list now is : {}'.
+                               format(list(map(lambda i: i.get_name(), self.execution_queue.get_task_list()))))
+            self.__current_thread_count -= 1
+            task.set_state('Execute Finished')
+            host.state = 'Idle'
+        except:
+            self.__current_thread_count -= 1
+            task.set_state('Assemble Finished')
+            host.state = 'Idle'
 
     def __multi_execute(self):
         while 1:
