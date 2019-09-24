@@ -196,6 +196,7 @@ class ExecutionEngine(Engine):
             email_handler.send_email(email_subject, email_to, html.encode('utf-8'), 'html', attachment=att_zip)
             email_handler.disconnect()
             report.remove_report_folder(task_report_path)
+            os.remove(att_zip)
             self.execution_queue.remove_task(task)
             execution_log.info("[thread_executor] remove {} from task_list".format(task.get_name()))
             execution_log.info('[thread_executor] remove {} from execute queue'.format(task.get_name()))
@@ -220,8 +221,8 @@ class ExecutionEngine(Engine):
             'failed': report.total['Fail']
         }
         # Zip Attachment
-        att_file = os.path.basename(os.path.normpath(task_report_path)) + '.zip'
-        result_path = os.path.join(task_report_path, att_file)
+        # att_file = os.path.basename(os.path.normpath(task_report_path)) + '.zip'
+        result_path = task_report_path + '.zip'
         att_zip = zip_dir(task_report_path, result_path)
         # Render Email
         analyze_handler = Analyzer()
