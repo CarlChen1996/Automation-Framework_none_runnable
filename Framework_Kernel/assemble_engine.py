@@ -267,21 +267,29 @@ class AssembleEngine(Engine):
         #         pass
 
     def build(self, task, node, os):
-        print('start build {} on {}'.format(task.get_name(), node.get_hostname()))
-        # for i in range(15):
-        #     print('building {} on {}'.format(task.get_name(), node.get_hostname()))
-        #     time.sleep(1)
-        task.build(node)
-        print(20 * '*')
-        print(task.get_status(), task.get_exe_file_list())
-        print(20 * '*')
-        print('build finished {} on {}'.format(task.get_name(), node.get_hostname()))
-        task.set_state('Assemble Finished')
-        node.state = 'Idle'
-        if os == 'win':
-            self.count_task_win -= 1
-        elif os == 'linux':
-            self.count_task_linux -= 1
+        try:
+            print('start build {} on {}'.format(task.get_name(), node.get_hostname()))
+            # for i in range(15):
+            #     print('building {} on {}'.format(task.get_name(), node.get_hostname()))
+            #     time.sleep(1)
+            task.build(node)
+            print(20 * '*')
+            print(task.get_status(), task.get_exe_file_list())
+            print(20 * '*')
+            print('build finished {} on {}'.format(task.get_name(), node.get_hostname()))
+            task.set_state('Assemble Finished')
+            node.state = 'Idle'
+            if os == 'win':
+                self.count_task_win -= 1
+            elif os == 'linux':
+                self.count_task_linux -= 1
+        except:
+            task.set_state('WAIT ASSEMBLE')
+            node.state = 'Idle'
+            if os == 'win':
+                self.count_task_win -= 1
+            elif os == 'linux':
+                self.count_task_linux -= 1
 
     def create_task_thread(self, os):
         if os == 'win':

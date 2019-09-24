@@ -80,7 +80,7 @@ class ExecutionEngine(Engine):
                            format(list(map(lambda i: i.get_name(), self.execution_queue.get_task_list()))))
         time.sleep(1) # can be removed
 
-    def __execute(self, task, host, count):
+    def __execute(self, task, host):
         try:
             self.deploy(host, task)
             task.end_time = datetime.datetime.now()
@@ -91,11 +91,11 @@ class ExecutionEngine(Engine):
             time.sleep(1) # can be removed
             execution_log.info('[thread_executor] task_list now is : {}'.
                                format(list(map(lambda i: i.get_name(), self.execution_queue.get_task_list()))))
-            count -= 1
+            self.__current_thread_count -= 1
             task.set_state('Execute Finished')
             host.state = 'Idle'
         except:
-            count -= 1
+            self.__current_thread_count -= 1
             task.set_state('Assemble Finished')
             host.state = 'Idle'
 
@@ -124,7 +124,7 @@ class ExecutionEngine(Engine):
                         execute_task.set_state('Executing')
                         deploy_host.state = 'Busy'
                         self.__current_thread_count += 1
-                        new_thread = threading.Thread(target=self.__execute, args=(execute_task, deploy_host, self.__current_thread_count))
+                        new_thread = threading.Thread(target=self.__execute, args=(execute_task, deploy_host))
                         new_thread.setDaemon(True)
                         new_thread.start()
                         new_thread.join(2)
