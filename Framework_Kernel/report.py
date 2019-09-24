@@ -93,7 +93,7 @@ class Report:
         df_raw = pandas.DataFrame(source_data)
         # remove the unnecessary column
         df_new = df_raw[[key_name, 'result']]
-        table_raw = pandas.pivot_table(df_new, index=key_name, columns='result', aggfunc=len, margins=True)
+        table_raw = pandas.pivot_table(df_new, index=key_name, columns='result', aggfunc=len, fill_value=0, margins=True)
         # Turn index to new column
         table_raw[key_name] = table_raw.index
         table_format = table_raw[[key_name, 'pass', 'fail']]
@@ -127,7 +127,7 @@ class Report:
             uut_result_file = os.path.join(self.__test_report_root, '{}\\test_report\\{}.yaml'.format(i.get_ip(), i.get_ip()))
             if not os.path.exists(uut_result_file):
                 empty_result = [{
-                    'uut_name': i,
+                    'uut_name': i.get_ip(),
                     'case_name': 'Error',
                     'steps': [],
                     'result': 'Fail'
