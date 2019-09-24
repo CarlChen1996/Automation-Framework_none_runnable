@@ -425,3 +425,25 @@ class AssembleEngineTest(unittest.TestCase):
         self.assertEqual(task.mock_calls, task_mock_list)
         self.assertEqual(node.mock_calls, node_mock_list)
         self.assertEqual(self.assemble.count_task_linux, count_task_linux - 1)
+
+    @patch('Framework_Kernel.task.Task.build')
+    def test_build_except_win(self, build_mock):
+        build_mock.side_effect = AttributeError
+        count_task_win = 2
+        os = 'win'
+        self.assemble.count_task_win = count_task_win
+        self.assemble.build(self.task, self.windows_build_host, os)
+        self.assertEqual(self.task.get_state(), 'WAIT ASSEMBLE')
+        self.assertEqual(self.windows_build_host.state, 'Idle')
+        self.assertEqual(self.assemble.count_task_win, count_task_win - 1)
+
+    @patch('Framework_Kernel.task.Task.build')
+    def test_build_except_linux(self, build_mock):
+        build_mock.side_effect = AttributeError
+        count_task_linux = 2
+        os = 'linux'
+        self.assemble.count_task_linux = count_task_linux
+        self.assemble.build(self.task, self.linux_build_host, os)
+        self.assertEqual(self.task.get_state(), 'WAIT ASSEMBLE')
+        self.assertEqual(self.linux_build_host.state, 'Idle')
+        self.assertEqual(self.assemble.count_task_linux, count_task_linux - 1)
