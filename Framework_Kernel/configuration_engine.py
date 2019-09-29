@@ -11,6 +11,7 @@ from Framework_Kernel.validator import HostValidator
 from Framework_Kernel.log import configuration_log
 import os
 from multiprocessing import Process, Pipe
+from Framework_Kernel.error_handler import ERROR_MSG, ERROR_LEVEL, ErrorHandler, ENGINE_CODE
 
 
 class ConfigurationEngine(Engine):
@@ -102,6 +103,11 @@ class ConfigurationEngine(Engine):
             server = self.__init_server(server_item)
             if self.validate_server(server):
                 valid_server_list.append(server)
+            else:
+                error_msg_instance=ERROR_MSG(ENGINE_CODE().config_engine,ERROR_LEVEL().continue_task,
+                                         "validate server {} fail".format(server_item.get_hostname()))
+                error_handle_instance=ErrorHandler(error_msg_instance)
+                error_handle_instance.handle()
         self.send_signal.send(valid_server_list)
         return valid_server_list
 

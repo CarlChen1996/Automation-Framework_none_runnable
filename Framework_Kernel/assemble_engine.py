@@ -184,14 +184,7 @@ class AssembleEngine(Engine):
                 handle_res = error_handle_instance.handle(task=task, task_queue=self.assembleQueue)
                 if not handle_res:
                     continue
-                # self.assembleQueue.remove_task(task)
-                # e = Email()
-                # e.send_email('send_task_to_execution', task.get_email(),
-                #              '[send_task_to_execution] !!!ERROR ERROR!!!, {} is removed from assemble queue', 'html')
-                # e.disconnect()
-                # assemble_log.error(
-                #     '[send_task_to_execution] !!!ERROR ERROR!!!, {} is removed from assemble queue'
-                #         .format(task.get_name()))
+
         time.sleep(10)
 
     def get_signal_after_send(self, task):
@@ -246,25 +239,21 @@ class AssembleEngine(Engine):
     def validate_task(self, task):
         s_validator = ScriptValidator()
         if not s_validator.validate(task):
-            assemble_log.info('Validate task scripts fail ,not insert into queue')
+            error_msg_instance = ERROR_MSG(ENGINE_CODE().assembly_engine, ERROR_LEVEL().continue_task,
+                                           "validate task {} fail".format(task.get_name()))
+            error_handle_instance = ErrorHandler(error_msg_instance)
+            error_handle_instance.handle()
             return False
         h_validator = HostValidator()
         for uut in task.get_uut_list():
             if not h_validator.validate_uut(uut):
-                assemble_log.info('Validate task uut fail ,not insert into queue')
+                error_msg_instance = ERROR_MSG(ENGINE_CODE().assembly_engine, ERROR_LEVEL().continue_task,
+                                               "validate task uut {} fail".format(task.get_name()))
+                error_handle_instance = ErrorHandler(error_msg_instance)
+                error_handle_instance.handle()
                 return False
         return True
-        # """
-        # check task is ok
-        # """
-        # if not res:
-        #     error_msg_instance = ERROR_MSG(ENGINE_CODE().assembly_engine,
-        #                                    ERROR_LEVEL().drop_task,
-        #                                    "check task fail,drop it")
-        #     error_handle_instance = ErrorHandler(error_msg_instance)
-        #     handle_res = error_handle_instance.handle(task=task, task_queue=self.assembleQueue)
-        #     if not handle_res:
-        #         pass
+
 
     def build(self, task, node, os):
         try:
