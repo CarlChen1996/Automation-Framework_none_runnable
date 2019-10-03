@@ -12,7 +12,7 @@ from Framework_Kernel.analyzer import Analyzer
 from Common_Library.file_transfer import FTPUtils
 
 
-class QTP_HPDM:
+class HPDMOperator:
     def __init__(self):
         self.__config_file = os.path.join(os.getcwd(), r'.\Configuration\config_framework_list.yml')
         self.__load_config()
@@ -30,7 +30,6 @@ class QTP_HPDM:
         config_qtp = settings_dict['qtp_settings']
         config_qtp_script = config_qtp['scripts_path']
         self.__test_data_path = r'Configuration\{}'.format(config_qtp['test_data'])
-        # self.__ip = config_qtp['server_address']
         self.__create_filter_path = config_qtp_script['create_filter']
         self.__send_command_path = config_qtp_script['send_command']
         self.__send_packages_path = config_qtp_script['send_packages']
@@ -57,7 +56,7 @@ class QTP_HPDM:
                 """
                 Delete all the data in sheet
                 """
-                sheet_uut.delete_rows(2)
+                sheet_uut.delete_rows(i)
                 data_workbook.save(self.__test_data_path)
         return data_workbook
 
@@ -94,13 +93,13 @@ class QTP_HPDM:
         ftp.upload_file(file_name=self.__test_data_path, save_as_name='{}.xlsx'.format(deploy_host.get_hostname()))
         ftp.close()
 
-    def __run_qtp_script(self, testPath):
+    def __run_qtp_script(self, test_path):
         import pythoncom
         pythoncom.CoInitialize()
         qtp = win32com.client.DispatchEx("QuickTest.Application", self.__ip)
         qtp.Launch()
         qtp.Visible = True
-        qtp.Open(testPath)
+        qtp.Open(test_path)
         qtp.Test.Run()
         qtp.Quit()
         pythoncom.CoUninitialize()

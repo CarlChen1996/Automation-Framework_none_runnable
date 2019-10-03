@@ -81,7 +81,7 @@ class Task:
     #     host.execute_task(self)
 
     def execute(self, deploy_host):
-        QTPutils.QTP_HPDM().execute_task(deploy_host)
+        QTPutils.HPDMOperator.execute_task(deploy_host)
 
     def deploy(self, deploy_host):
         deploy_host.deploy_task(self)
@@ -95,7 +95,7 @@ class Task:
     #     host.collect_result(self)
 
     def collect_result(self, deploy_host):
-        QTPutils.QTP_HPDM().get_result(deploy_host)
+        QTPutils.HPDMOperator.get_result(deploy_host)
 
     def terminate(self, host):
         pass

@@ -17,7 +17,7 @@ test_collect_result: test collect result by QTP
 
 
 from Framework_Kernel import task
-from Framework_Kernel.QTPutils import QTP_HPDM
+from Framework_Kernel.QTPutils import HPDMOperator
 from Framework_Kernel.host import Host
 import unittest
 from unittest.mock import patch
@@ -26,7 +26,7 @@ import pywintypes
 
 class QTPutilsTest(unittest.TestCase):
     def setUp(self):
-        self.qtp = QTP_HPDM()
+        self.qtp = HPDMOperator()
         self.task = task.Task(name='test')
         self.deploy_host = Host(ip='15.83.240.98', mac='1A2B3C4D5E6F')
 
