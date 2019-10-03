@@ -45,16 +45,16 @@ report_settings:
 
 log_settings:
   # Default log setting
-  NAME: ''
-  LOG_TYPE: 'default'
-  LEVEL: 'debug'
-  SEPARATOR: '-'
-  USE_CONSOLE: True
-  IF_SCREENSHOT: False
+  log_name: ''
+  log_type: 'default'
+  log_level: 'debug'
+  log_seperator: '-'
+  use_console: True
+  if_screenshot: False
   # Start time
   # LOG_PATH = "%Y-%m-%d_%H-%M-%S"
   # LOG_PATH = "%Y-%m-%d_%H-%M"
-  LOG_PATH: "%Y-%m-%d_%H"
+  log_path: "%Y-%m-%d_%H"
   #TimedRotatingFileHandler
   #    WHEN:
           # S - Seconds
@@ -64,9 +64,9 @@ log_settings:
           # midnight - roll over at midnight
           # W{0-6} - roll over on a certain day; 0 - Monday
   # 1 hour 1 file, no count limit
-  WHEN: 'H'
-  INTERVAL: 1
-  BACKUP_COUNT: 0
+  when: 'H'
+  interval: 1
+  backup_count: 0
 
 global_settings:
   LOOP_INTERVAL: 10
