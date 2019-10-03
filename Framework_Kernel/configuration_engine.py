@@ -37,21 +37,13 @@ class ConfigurationEngine(Engine):
         self.status = self.__configuration_process
         receive_signal = self.receive_signal.recv()
         for valid_server in receive_signal:
-            if isinstance(valid_server, WindowsBuildHost):
+            if isinstance(valid_server, (WindowsBuildHost, LinuxBuildHost)):
                 self.build_server_list.append(valid_server)
-                configuration_log.info("Add Windows Build Host {}".format(
+                configuration_log.info("Add Build Host {}".format(
                     valid_server.get_hostname()))
-            elif isinstance(valid_server, WindowsDeployHost):
+            elif isinstance(valid_server, (WindowsDeployHost, LinuxDeployHost)):
                 self.deploy_server_list.append(valid_server)
-                configuration_log.info("Add Windows Deploy Host {}".format(
-                    valid_server.get_hostname()))
-            elif isinstance(valid_server, LinuxBuildHost):
-                self.build_server_list.append(valid_server)
-                configuration_log.info("Add linux Build Host {}".format(
-                    valid_server.get_hostname()))
-            elif isinstance(valid_server, LinuxDeployHost):
-                self.deploy_server_list.append(valid_server)
-                configuration_log.info("Add linux Deploy Host {}".format(
+                configuration_log.info("Add Deploy Host {}".format(
                     valid_server.get_hostname()))
         self.list_status = True
         return self.list_status
@@ -82,15 +74,10 @@ class ConfigurationEngine(Engine):
     def validate_server(self, server):
         validator = HostValidator()
         validation_result = False
-        if isinstance(server, WindowsBuildHost):
-            if validator.validate_jenkins_server():
-                validation_result = validator.validate_build_server(server)
-        elif isinstance(server, LinuxBuildHost):
-            if validator.validate_jenkins_server():
-                validation_result = validator.validate_build_server(server)
-        elif isinstance(server, WindowsDeployHost):
+        if isinstance(server, (WindowsBuildHost, LinuxBuildHost) and validator.validate_jenkins_server()):
+            validation_result = validator.validate_build_server(server)
+        elif isinstance(server, (WindowsDeployHost, LinuxDeployHost)):
             validation_result = validator.validate_deploy_server(server)
-
         # TODO Need to check more here
         return validation_result
 
@@ -104,9 +91,8 @@ class ConfigurationEngine(Engine):
             if self.validate_server(server):
                 valid_server_list.append(server)
             else:
-                error_msg_instance=ERROR_MSG(ENGINE_CODE().config_engine,ERROR_LEVEL().continue_task,
-                                         "validate server {} fail".format(server_item.get_hostname()))
-                error_handle_instance=ErrorHandler(error_msg_instance)
+                error_msg_instance = ERROR_MSG(ENGINE_CODE().config_engine, ERROR_LEVEL().continue_task, "validate server {} fail".format(server_item.get_hostname()))
+                error_handle_instance = ErrorHandler(error_msg_instance)
                 error_handle_instance.handle()
         self.send_signal.send(valid_server_list)
         return valid_server_list
