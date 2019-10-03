@@ -16,11 +16,6 @@ from Common_Library.functions import render_template, zip_dir
 from Framework_Kernel.task_queue import Queue
 from Framework_Kernel.analyzer import Analyzer
 from Framework_Kernel.validator import HostValidator
-import traceback
-'''
-from Framework_Kernel.task import Task
-from Framework_Kernel.host import WindowsDeployHost, WindowsExecuteHost
-'''
 from Framework_Kernel.report import Report
 from Framework_Kernel.log import execution_log
 
@@ -78,7 +73,7 @@ class ExecutionEngine(Engine):
         execution_log.info('[thread_execution_queue_monitor] append {} to task_list'.format(receive.get_name()))
         execution_log.info('[thread_execution_queue_monitor] task_list now is {}'.
                            format(list(map(lambda i: i.get_name(), self.execution_queue.get_task_list()))))
-        time.sleep(1) # can be removed
+        time.sleep(1)  # can be removed
 
     def __execute(self, task, host):
         try:
@@ -88,13 +83,14 @@ class ExecutionEngine(Engine):
             self.send_report(task)
             execution_log.info('[thread_executor] task left in execute queue: {}'.format(
                 len(self.execution_queue.get_task_list())))
-            time.sleep(1) # can be removed
+            time.sleep(1)  # can be removed
             execution_log.info('[thread_executor] task_list now is : {}'.
                                format(list(map(lambda i: i.get_name(), self.execution_queue.get_task_list()))))
             self.__current_thread_count -= 1
             task.set_state('Execute Finished')
             host.state = 'Idle'
-        except:
+        except Exception as e:
+            execution_log.info('Unexpect error happen, roll back the task state and host state. Details reason:\n {}'.format(e))
             self.__current_thread_count -= 1
             task.set_state('Assemble Finished')
             host.state = 'Idle'
@@ -129,8 +125,8 @@ class ExecutionEngine(Engine):
                         new_thread.start()
                         new_thread.join(2)
                         break
-                except:
-                    execution_log.error('New thread Error, Exception:\n{}'.format(traceback.format_exc()))
+                except Exception as e:
+                    execution_log.error('New thread Error, Exception:\n{}'.format(e))
                     self.__current_thread_count -= 1
                     deploy_host.state = 'Idle'
                     execute_task.set_state('Assemble Finished')
