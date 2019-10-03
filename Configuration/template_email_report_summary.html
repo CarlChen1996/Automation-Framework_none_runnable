@@ -1,5 +1,6 @@
 <!-- link to external css file -->
 <head>
+  <title>Email Report Template</title>
   <style>
     @font-face {
     margin: auto;
@@ -60,11 +61,12 @@
 <!-- Show Executation Result for status 'Normal' -->
 {% if vars['status'] == 'Normal' %}
 <table class="project_detail">
+  <caption></caption>
     <tr>
-      <th>Planned Case</th>
-      <th>Passed Case</th>
-      <th>Failed Case</th>
-      <th>Pass Rate</th>
+      <th scope="col">Planned Case</th>
+      <th scope='col'>Passed Case</th>
+      <th scope='col'>Failed Case</th>
+      <th scope='col'>Pass Rate</th>
     </tr>
     <tr>
       <td>{{ vars['planned'] }}</td>
