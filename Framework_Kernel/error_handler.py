@@ -8,7 +8,7 @@
 from Framework_Kernel.log import error_handler_log
 
 
-class ENGINE_CODE:
+class EngineCode:
     def __init__(self):
         self.controller = '00'
         self.config_engine = '01'
@@ -17,7 +17,7 @@ class ENGINE_CODE:
         self.report = '04'
 
 
-class ERROR_LEVEL:
+class ErrorLevel:
     def __init__(self):
         self.terminate_framework = '00'
         self.reset_framework = '01'
@@ -27,7 +27,7 @@ class ERROR_LEVEL:
         self.continue_task = '05'
 
 
-class ERROR_MSG():
+class ErrorMsg():
     def __init__(self, engine_code, error_level, msg):
         self.engine_code = engine_code
         self.error_level = error_level
@@ -39,28 +39,30 @@ class ERROR_MSG():
 
 
 class ErrorHandler:
-    def __init__(self, error_msg: ERROR_MSG):
+    def __init__(self, error_msg: ErrorMsg):
         self.error_msg = error_msg.error_msg
         self.engine_code = ''
         self.error_level = ''
         self.error_details = ''
 
-    def handle(self, engine=None,task=None,task_queue=None):
+    def __get_handler(self):
         self.engine_code = self.error_msg[:2]
         self.error_level = self.error_msg[2:4]
         self.error_details = self.error_msg[4:]
-        if self.error_level == ERROR_LEVEL().terminate_framework:
-            return self.terminate_framework()
-        elif self.error_level == ERROR_LEVEL().reset_framework:
-            return self.reset_framework()
-        elif self.error_level == ERROR_LEVEL().reset_engine:
-            return self.reset_engine(engine)
-        elif self.error_level == ERROR_LEVEL().rerun_task:
-            return self.rerun_task()
-        elif self.error_level == ERROR_LEVEL().drop_task:
-            return self.drop_task(task,task_queue)
-        elif self.error_level == ERROR_LEVEL().continue_task:
-            return self.continue_task()
+        self.error_handle_map_dict = {
+            ErrorLevel().terminate_framework: self.terminate_framework,
+            ErrorLevel().reset_framework: self.reset_framework,
+            ErrorLevel().reset_engine: self.reset_engine,
+            ErrorLevel().rerun_task: self.rerun_task,
+            ErrorLevel().drop_task: self.drop_task,
+            ErrorLevel().continue_task: self.continue_task
+        }
+        if self.error_level in self.error_handle_map_dict.keys():
+            return self.error_handle_map_dict[self.error_level]
+
+    def handle(self, **kargs):
+        handle_func = self.__get_handler()
+        return handle_func(**kargs)
 
     def terminate_framework(self):
         error_handler_log.critical(self.error_msg)
@@ -90,7 +92,7 @@ class ErrorHandler:
         print("rerun_task")
         print(self.engine_code, ':', self.error_level, ':', self.error_details)
 
-    def drop_task(self,task,task_queue):
+    def drop_task(self, task, task_queue):
         error_handler_log.critical(self.error_msg)
         print("drop_task")
         print(self.engine_code, ':', self.error_level, ':', self.error_details)
@@ -104,6 +106,6 @@ class ErrorHandler:
 
 
 if __name__ == '__main__':
-    error_msg_instance = ERROR_MSG(ENGINE_CODE().controller, ERROR_LEVEL().drop_task, 'test msg')
+    error_msg_instance = ErrorMsg(EngineCode().controller, ErrorLevel().drop_task, 'test msg')
     error_handle_instance = ErrorHandler(error_msg_instance)
     error_handle_instance.handle()

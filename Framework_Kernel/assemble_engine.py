@@ -7,14 +7,13 @@
 from Framework_Kernel.engine import Engine
 from Framework_Kernel.task_queue import Queue
 from Framework_Kernel.analyzer import Analyzer
-from Common_Library.email_operator import Email
 from Framework_Kernel.task import Task
 from Framework_Kernel.host import WindowsExecuteHost, LinuxExecuteHost, WindowsBuildHost, LinuxBuildHost
 from Framework_Kernel.validator import HostValidator
 from Framework_Kernel.validator import ScriptValidator
 from Framework_Kernel.script import Script
 from Framework_Kernel.log import assemble_log
-from Framework_Kernel.error_handler import ERROR_MSG, ERROR_LEVEL, ErrorHandler, ENGINE_CODE
+from Framework_Kernel.error_handler import ErrorMsg, ErrorLevel, ErrorHandler, EngineCode
 from multiprocessing import Process
 import time
 import threading
@@ -177,8 +176,8 @@ class AssembleEngine(Engine):
                 '''
                 deal with build fail
                 '''
-                error_msg_instance = ERROR_MSG(ENGINE_CODE().assembly_engine,
-                                               ERROR_LEVEL().drop_task,
+                error_msg_instance = ErrorMsg(EngineCode().assembly_engine,
+                                               ErrorLevel().drop_task,
                                                "build task fail,drop it")
                 error_handle_instance = ErrorHandler(error_msg_instance)
                 handle_res = error_handle_instance.handle(task=task, task_queue=self.assembleQueue)
@@ -205,9 +204,9 @@ class AssembleEngine(Engine):
     def get_os_type(self, task):
         build_server_os = ''
         for i in task.get_uut_list():
-            if 'wes' in i._Host__version.lower():
+            if 'wes' in i.get_version.lower():
                 build_server_os = 'win'
-            elif 'tp' in i._Host__version.lower():
+            elif 'tp' in i.get_version.lower():
                 build_server_os = 'linux'
         return build_server_os
 
@@ -239,7 +238,7 @@ class AssembleEngine(Engine):
     def validate_task(self, task):
         s_validator = ScriptValidator()
         if not s_validator.validate(task):
-            error_msg_instance = ERROR_MSG(ENGINE_CODE().assembly_engine, ERROR_LEVEL().continue_task,
+            error_msg_instance = ErrorMsg(EngineCode().assembly_engine, ErrorLevel().continue_task,
                                            "validate task {} fail".format(task.get_name()))
             error_handle_instance = ErrorHandler(error_msg_instance)
             error_handle_instance.handle()
@@ -247,7 +246,7 @@ class AssembleEngine(Engine):
         h_validator = HostValidator()
         for uut in task.get_uut_list():
             if not h_validator.validate_uut(uut):
-                error_msg_instance = ERROR_MSG(ENGINE_CODE().assembly_engine, ERROR_LEVEL().continue_task,
+                error_msg_instance = ErrorMsg(EngineCode().assembly_engine, ErrorLevel().continue_task,
                                                "validate task uut {} fail".format(task.get_name()))
                 error_handle_instance = ErrorHandler(error_msg_instance)
                 error_handle_instance.handle()
