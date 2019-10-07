@@ -12,7 +12,7 @@ from Framework_Kernel import QTPutils
 from Framework_Kernel.analyzer import Analyzer
 from Common_Library import file_operator, file_transfer, jenkins_operator
 from Framework_Kernel.validator import HostValidator
-import random,datetime
+import datetime
 
 
 class Host:
@@ -65,16 +65,6 @@ class Host:
     def get_domain(self):
         return self.__domain
 
-    # def get_status(self):
-    #     return self.__status
-    #
-    # def set_status(self, status):
-    #     if status == "on" or status == "off":
-    #         self.__status = status
-    #     else:
-    #         print("status format input error, confirm your input is 'on' or 'off'")
-    #     return False
-
 
 class WindowsHost(Host):
     pass
@@ -89,8 +79,8 @@ class Build:
         self.log = assemble_log
 
     def get_scripts(self, task):
-        for script in task.get_script_list():
-            pass
+        # for script in task.get_script_list():
+        pass
         # self.log.info('get  {} scripts PASS'.format(task.get_name()))
 
     def jenkins_build(self, task):
@@ -129,32 +119,29 @@ class Build:
 
     def build_job(self, task, jenkins_host, job_os):
         last_build_number = jenkins_host.get_last_build_number(self.job_name)
-        if jenkins_host.create_job(self.job_name, jenkins_host.initial_job_configuration()):
-            if jenkins_host.build_job(self.job_name):
-                while last_build_number == jenkins_host.get_last_build_number(self.job_name):
-                    # self.log.info('New build record is not available, wait 5 seconds')
-                    time.sleep(5)
-                current_build_number = jenkins_host.get_last_build_number(self.job_name)
-                build_result = jenkins_host.get_build_result(self.job_name, current_build_number)
-                task.set_status(build_result)
-                jenkins_host.delete_job(self.job_name)
-                if build_result == 'SUCCESS':
-                    if job_os == 'windows':
-                        task.insert_exe_file_list(
-                            r'/jenkins/windows/' + jenkins_host.job_params['publish_path'] + r'/' +
-                            jenkins_host.job_params['result_file'] + '.exe')
-                    elif job_os == 'linux':
-                        task.insert_exe_file_list(r'/jenkins/linux/' + jenkins_host.job_params['publish_path'] + r'/' +
-                                                  jenkins_host.job_params['result_file'])
-                task.folder_name = task.get_exe_file_list()[0].split('/')[-2]
+        if jenkins_host.create_job(self.job_name, jenkins_host.initial_job_configuration()) and jenkins_host.build_job(self.job_name):
+            while last_build_number == jenkins_host.get_last_build_number(self.job_name):
+                # self.log.info('New build record is not available, wait 5 seconds')
+                time.sleep(5)
+            current_build_number = jenkins_host.get_last_build_number(self.job_name)
+            build_result = jenkins_host.get_build_result(self.job_name, current_build_number)
+            task.set_status(build_result)
+            jenkins_host.delete_job(self.job_name)
+            if build_result == 'SUCCESS':
+                if job_os == 'windows':
+                    task.insert_exe_file_list(
+                        r'/jenkins/windows/' + jenkins_host.job_params['publish_path'] + r'/' + jenkins_host.job_params['result_file'] + '.exe')
+                elif job_os == 'linux':
+                    task.insert_exe_file_list(r'/jenkins/linux/' + jenkins_host.job_params['publish_path'] + r'/' + jenkins_host.job_params['result_file'])
+            task.folder_name = task.get_exe_file_list()[0].split('/')[-2]
         return task
 
     def get_os_type(self, task):
         build_server_os = ''
         for i in task.get_uut_list():
-            if 'wes' in i._Host__version.lower():
+            if 'wes' in i.get_version.lower():
                 build_server_os = 'windows'
-            elif 'tp' in i._Host__version.lower():
+            elif 'tp' in i.get_version.lower():
                 build_server_os = 'linux'
         return build_server_os
 
@@ -240,7 +227,6 @@ class WindowsBuildHost(WindowsHost, Build):
                              password, domain, status)
         Build.__init__(self)
 
-    pass
 
 class LinuxBuildHost(LinuxHost, Build):
     def __init__(self,
@@ -252,11 +238,9 @@ class LinuxBuildHost(LinuxHost, Build):
                  password='',
                  domain='',
                  status='off'):
-        LinuxHost.__init__(self, ip, mac, hostname, version, username,
-                             password, domain, status)
+        LinuxHost.__init__(self, ip, mac, hostname, version, username, password, domain, status)
         Build.__init__(self)
 
-    pass
 
 class WindowsDeployHost(WindowsHost, Deploy):
     def __init__(self,
@@ -268,11 +252,8 @@ class WindowsDeployHost(WindowsHost, Deploy):
                  password='',
                  domain='',
                  status='off'):
-        WindowsHost.__init__(self, ip, mac, hostname, version, username,
-                             password, domain, status)
+        WindowsHost.__init__(self, ip, mac, hostname, version, username, password, domain, status)
         Deploy.__init__(self, self)
-
-    pass
 
 
 class WindowsExecuteHost(WindowsHost, Execute):
@@ -288,12 +269,6 @@ class WindowsExecuteHost(WindowsHost, Execute):
         WindowsHost.__init__(self, ip, mac, hostname, version, username,
                              password, domain, status)
         Execute.__init__(self, self)
-
-    pass
-
-
-class LinuxBuildHost(LinuxHost, Build):
-    pass
 
 
 class LinuxDeployHost(LinuxHost, Deploy):
