@@ -41,15 +41,15 @@ class AssembleEngine(Engine):
         self.__assembler.terminate()
 
     def start_thread(self):
-        refreshQ_thread = threading.Thread(target=self.__fresh_queue_testplan,
-                                           name='fresh_queue_testplan',
-                                           args=())
-        refreshQ_thread.setDaemon(True)
-        refreshQ_thread.start()
-        refreshQ_execute = threading.Thread(
+        refresh_queue_thread = threading.Thread(target=self.__fresh_queue_testplan,
+                                                name='fresh_queue_testplan',
+                                                args=())
+        refresh_queue_thread.setDaemon(True)
+        refresh_queue_thread.start()
+        refresh_queue_execute = threading.Thread(
             target=self.__fresh_queue_execution)
-        refreshQ_execute.setDaemon(True)
-        refreshQ_execute.start()
+        refresh_queue_execute.setDaemon(True)
+        refresh_queue_execute.start()
         assembler_thread = threading.Thread(target=self.__assemble,
                                             name='thread_assemble_task',
                                             args=())
@@ -128,19 +128,15 @@ class AssembleEngine(Engine):
                     uut = LinuxExecuteHost(ip=uutitem['ip'], version=uutitem['os'], mac=uutitem['mac'])
                     task.insert_uut_list(uut)
             assemble_log.info(
-                '[Thread_fresh_testplan]--insert {} to assemble queue list'.
-                    format(task.get_name()))
+                '[Thread_fresh_testplan]--insert {} to assemble queue list'.format(task.get_name()))
 
             if self.validate_task(task):
                 self.assembleQueue.insert_task(task=task)
 
             # -------------------rename task plan name -------------------------
             os.rename(
-                taskitem['file_path'], taskitem['file_path']
-                                       [:taskitem['file_path'].index('TEST_PLAN')] + 'Loaded_' + taskitem['file_path']
-                                       [taskitem['file_path'].index('TEST_PLAN'):])
-            assemble_log.info('rename finished' + taskitem['file_path']
-            [:taskitem['file_path'].index('TEST_PLAN')] + 'Loaded_' + taskitem['file_path']
+                taskitem['file_path'], taskitem['file_path'][:taskitem['file_path'].index('TEST_PLAN')] + 'Loaded_' + taskitem['file_path'][taskitem['file_path'].index('TEST_PLAN'):])
+            assemble_log.info('rename finished' + taskitem['file_path'][:taskitem['file_path'].index('TEST_PLAN')] + 'Loaded_' + taskitem['file_path']
                               [taskitem['file_path'].index('TEST_PLAN'):])
         assemble_log.info(
             '[Thread_fresh_testplan] ***************finish refresh queue *****************'
@@ -166,8 +162,7 @@ class AssembleEngine(Engine):
                 if task.get_state().upper() == "ASSEMBLE FINISHED":
                     self.__pipe.send(task)
                     assemble_log.info(
-                        '[send_task_to_execution]-Send {} to execution engine'.
-                            format(task.get_name()))
+                        '[send_task_to_execution]-Send {} to execution engine'.format(task.get_name()))
                     self.get_signal_after_send(task)
                 else:
                     time.sleep(1)
@@ -176,9 +171,7 @@ class AssembleEngine(Engine):
                 '''
                 deal with build fail
                 '''
-                error_msg_instance = ErrorMsg(EngineCode().assembly_engine,
-                                               ErrorLevel().drop_task,
-                                               "build task fail,drop it")
+                error_msg_instance = ErrorMsg(EngineCode().assembly_engine, ErrorLevel().drop_task, "build task fail,drop it")
                 error_handle_instance = ErrorHandler(error_msg_instance)
                 handle_res = error_handle_instance.handle(task=task, task_queue=self.assembleQueue)
                 if not handle_res:
@@ -191,8 +184,7 @@ class AssembleEngine(Engine):
         if send_status == task.get_name():
             self.assembleQueue.remove_task(task)
             assemble_log.info(
-                '[fresh_queue_execution] {} is removed from assemble queue'.
-                    format(task.get_name()))
+                '[fresh_queue_execution] {} is removed from assemble queue'.format(task.get_name()))
             assemble_log.info(
                 '[fresh_queue_execution]task left in assemble queue: %d' %
                 len(self.assembleQueue.get_task_list()))
@@ -216,9 +208,8 @@ class AssembleEngine(Engine):
     def create_temp_task(self, os):
         temp_task = []
         for task in self.assembleQueue.get_task_list():
-            if task.get_state().upper() == 'WAIT ASSEMBLE':
-                if self.get_os_type(task) == os:
-                    temp_task.append(task)
+            if task.get_state().upper() == 'WAIT ASSEMBLE' and self.get_os_type(task) == os:
+                temp_task.append(task)
         return temp_task
 
     def create_temp_node(self, os):
@@ -238,28 +229,22 @@ class AssembleEngine(Engine):
     def validate_task(self, task):
         s_validator = ScriptValidator()
         if not s_validator.validate(task):
-            error_msg_instance = ErrorMsg(EngineCode().assembly_engine, ErrorLevel().continue_task,
-                                           "validate task {} fail".format(task.get_name()))
+            error_msg_instance = ErrorMsg(EngineCode().assembly_engine, ErrorLevel().continue_task, "validate task {} fail".format(task.get_name()))
             error_handle_instance = ErrorHandler(error_msg_instance)
             error_handle_instance.handle()
             return False
         h_validator = HostValidator()
         for uut in task.get_uut_list():
             if not h_validator.validate_uut(uut):
-                error_msg_instance = ErrorMsg(EngineCode().assembly_engine, ErrorLevel().continue_task,
-                                               "validate task uut {} fail".format(task.get_name()))
+                error_msg_instance = ErrorMsg(EngineCode().assembly_engine, ErrorLevel().continue_task, "validate task uut {} fail".format(task.get_name()))
                 error_handle_instance = ErrorHandler(error_msg_instance)
                 error_handle_instance.handle()
                 return False
         return True
 
-
     def build(self, task, node, os):
         try:
             print('start build {} on {}'.format(task.get_name(), node.get_hostname()))
-            # for i in range(15):
-            #     print('building {} on {}'.format(task.get_name(), node.get_hostname()))
-            #     time.sleep(1)
             task.build(node)
             print(20 * '*')
             print(task.get_status(), task.get_exe_file_list())
@@ -271,7 +256,8 @@ class AssembleEngine(Engine):
                 self.count_task_win -= 1
             elif os == 'linux':
                 self.count_task_linux -= 1
-        except:
+        except Exception as e:
+            assemble_log.error('New thread Error, Exception:\n{}'.format(e))
             task.set_state('WAIT ASSEMBLE')
             node.state = 'Idle'
             if os == 'win':
@@ -348,7 +334,6 @@ class AssembleEngine(Engine):
         analyze_hanlder = Analyzer()
         global_settings = analyze_hanlder.analyze_file(config_file)['global_settings']
         self.loop_interval = int(global_settings['LOOP_INTERVAL'])
-
         self.count_task_win = 0
         self.count_task_linux = 0
         self.max_count = 2
@@ -362,34 +347,3 @@ class AssembleEngine(Engine):
         linux_thread.start()
         win_thread.join()
         linux_thread.join()
-
-        # h_validator = HostValidator()
-        # s_validator = ScriptValidator()
-        # try:
-        #     for task in self.assembleQueue.get_task_list():
-        #         if task.get_state().upper() == 'WAIT ASSEMBLE':
-        #             task.set_state('ASSEMBLING')
-        #             b_host = self.__build_list[0]
-        #             for uut in task.get_uut_list():
-        #                 h_validator.validate_uut(uut)
-        #             assemble_log.info(
-        #                 'assemble_engine build {} on {}'.format(task.get_name(), b_host.get_hostname()))
-        #             print("**************************************************")
-        #             print("**************************************************")
-        #             print("**************************************************")
-        #             print("**************************************************")
-        #             print("**************************************************")
-        #             task.build(b_host)
-        #             print(20 * '*')
-        #             print(task.get_status(), task.get_exe_file_list())
-        #             print(20 * '*')
-        #             task.set_state('Assemble Finished')
-        #             assemble_log.info(
-        #                 '[thread_assemble_task] **************{} assemble finished****************'
-        #                     .format(task.get_name()))
-        # except Exception as e:
-        #     print(e)
-        # # print(
-        # #     '[thread_assemble_task]--------------------------------------------------------------------------------'
-        # # )
-        # time.sleep(10)
