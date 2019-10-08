@@ -189,6 +189,13 @@ class AssembleEngine(Engine):
                 '[fresh_queue_execution]task left in assemble queue: %d' %
                 len(self.assembleQueue.get_task_list()))
         else:
+            '''
+            deal with send task to execute engine fail
+            '''
+            error_msg_instance = ErrorMsg(EngineCode().assembly_engine, ErrorLevel().continue_task,
+                                          "send task to execute engine fail,continue")
+            error_handle_instance = ErrorHandler(error_msg_instance)
+            error_handle_instance.handle(task=task, task_queue=self.assembleQueue)
             assemble_log.info(
                 '[fresh_queue_execution]-----send task and received task is not the same one- ----------'
             )
