@@ -139,9 +139,9 @@ class Build:
     def get_os_type(self, task):
         build_server_os = ''
         for i in task.get_uut_list():
-            if 'wes' in i.get_version.lower():
+            if 'wes' in i.get_version().lower():
                 build_server_os = 'windows'
-            elif 'tp' in i.get_version.lower():
+            elif 'tp' in i.get_version().lower():
                 build_server_os = 'linux'
         return build_server_os
 
