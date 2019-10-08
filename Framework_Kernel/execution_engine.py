@@ -21,7 +21,6 @@ from Framework_Kernel.log import execution_log
 
 
 class ExecutionEngine(Engine):
-
     def __init__(self, deploy_list, pipe):
         self.__pipe = pipe
         self.__deploy_list = deploy_list

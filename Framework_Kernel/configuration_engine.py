@@ -74,7 +74,7 @@ class ConfigurationEngine(Engine):
     def validate_server(self, server):
         validator = HostValidator()
         validation_result = False
-        if isinstance(server, (WindowsBuildHost, LinuxBuildHost) and validator.validate_jenkins_server()):
+        if isinstance(server, (WindowsBuildHost, LinuxBuildHost)) and validator.validate_jenkins_server():
             validation_result = validator.validate_build_server(server)
         elif isinstance(server, (WindowsDeployHost, LinuxDeployHost)):
             validation_result = validator.validate_deploy_server(server)
@@ -91,7 +91,7 @@ class ConfigurationEngine(Engine):
             if self.validate_server(server):
                 valid_server_list.append(server)
             else:
-                error_msg_instance = ErrorMsg(EngineCode().config_engine, ErrorLevel().continue_task, "validate server {} fail".format(server_item.get_hostname()))
+                error_msg_instance = ErrorMsg(EngineCode().config_engine, ErrorLevel().continue_task, "validate server {} fail".format(server.get_hostname()))
                 error_handle_instance = ErrorHandler(error_msg_instance)
                 error_handle_instance.handle()
         self.send_signal.send(valid_server_list)
