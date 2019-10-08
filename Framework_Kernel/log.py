@@ -72,7 +72,7 @@ class SafeLog(TimedRotatingFileHandler):
 
 
 class Log:
-    def __init__(self, name=log_settings['NAME'], default_settings=log_settings):
+    def __init__(self, name=log_settings['log_name'], default_settings=log_settings):
         self.__name = name
         self.__type = log_settings['log_type']
         self.__level = log_settings['log_level']
