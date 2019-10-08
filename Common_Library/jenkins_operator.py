@@ -59,7 +59,7 @@ class JenkinsServer():
             return False
 
     # TODO release common library to parse xml and replace the implementation below
-    def initial_job_configuration(self):
+    def initial_job_configuration(self, need_build):
         try:
             with open(self.job_params['template_file']) as f:
                 ele_tree: et._ElementTree = et.parse(f)
@@ -79,8 +79,11 @@ class JenkinsServer():
                     assemble_log.info("Unknow os_type value: {}".format(self.job_params['os_type']))
                     return False
                 if ele_builder:
-                    ele_builder[0].text = ele_builder[0].text.replace("hello.py", self.job_params['entry_file'])
-                    ele_builder[0].text = ele_builder[0].text.replace("output_name", self.job_params['result_file'])
+                    if need_build:
+                        ele_builder[0].text = ele_builder[0].text.replace("hello.py", self.job_params['entry_file'])
+                        ele_builder[0].text = ele_builder[0].text.replace("output_name", self.job_params['result_file'])
+                    else:
+                        ele_builder[0].text = r"echo Don't need to build!"
                 else:
                     assemble_log.info("Command Module doesn't exist in the template file!")
                     return False

@@ -119,7 +119,7 @@ class Build:
 
     def build_job(self, task, jenkins_host, job_os):
         last_build_number = jenkins_host.get_last_build_number(self.job_name)
-        if jenkins_host.create_job(self.job_name, jenkins_host.initial_job_configuration()) and jenkins_host.build_job(self.job_name):
+        if jenkins_host.create_job(self.job_name, jenkins_host.initial_job_configuration(task.get_need_build())) and jenkins_host.build_job(self.job_name):
             while last_build_number == jenkins_host.get_last_build_number(self.job_name):
                 # self.log.info('New build record is not available, wait 5 seconds')
                 time.sleep(5)

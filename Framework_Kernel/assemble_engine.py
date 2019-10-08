@@ -98,7 +98,7 @@ class AssembleEngine(Engine):
         # taskitem: {               name:task1,
         #                           testscripts:[script1, script2,],
         #                           uutlist:[uutinformatio,uutinformation],
-        #                           needbuild:true
+        #                           needbuild:Y
                                     email:xxx.xxx@hp.com
                                     repository:https://hp.com
         #                           file_path:c:\\xxxx\\xxx\\testplan\\xxx.xlsx}
@@ -109,7 +109,7 @@ class AssembleEngine(Engine):
         """
         for taskitem in task_source_list:
             task = Task(taskitem['name'], taskitem['email'],
-                        taskitem['repository'], taskitem['needbuild'])
+                        taskitem['repository'], True if taskitem['needbuild']=='Y' else False)
             task.start_time = datetime.datetime.now()
             task.set_state('Wait Assemble')
             for script in taskitem['testscripts']:

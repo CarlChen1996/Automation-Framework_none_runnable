@@ -68,6 +68,9 @@ class Task:
     def set_state(self, state):
         self.__state = state
 
+    def get_need_build(self):
+        return self.__need_build
+
     # ---------Below is funtion for task-------------
     def build(self, host):
         host.build_task(self)
