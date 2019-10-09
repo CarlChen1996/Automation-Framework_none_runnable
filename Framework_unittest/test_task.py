@@ -82,12 +82,12 @@ class TaskTest(unittest.TestCase):
         self.task.deploy(self.deploy_host)
         deploy_mock.assert_called_once_with(self.task)
 
-    @patch('Framework_Kernel.QTPutils.QTP_HPDM.execute_task')
+    @patch('Framework_Kernel.QTPutils.HPDMOperator.execute_task')
     def test_execute(self, execute_mock):
         self.task.execute(self.deploy_host)
         execute_mock.assert_called_once_with(self.deploy_host)
 
-    @patch('Framework_Kernel.QTPutils.QTP_HPDM.get_result')
+    @patch('Framework_Kernel.QTPutils.HPDMOperator.get_result')
     def test_collect_result(self, get_result_mock):
         self.task.collect_result(self.deploy_host)
         get_result_mock.assert_called_once_with(self.deploy_host)

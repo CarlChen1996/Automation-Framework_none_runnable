@@ -74,14 +74,14 @@ class SafeLog(TimedRotatingFileHandler):
 class Log:
     def __init__(self, name=log_settings['log_name'], default_settings=log_settings):
         self.__name = name
-        self.__type = log_settings['log_type']
-        self.__level = log_settings['log_level']
-        self.separator = log_settings['log_seperator']
-        self.if_screenshot = log_settings['if_screenshot']
-        self.use_console = log_settings['use_console']
+        self.__type = default_settings['log_type']
+        self.__level = default_settings['log_level']
+        self.separator = default_settings['log_seperator']
+        self.if_screenshot = default_settings['if_screenshot']
+        self.use_console = default_settings['use_console']
         self.log_path = os.path.join(
             os.getcwd(),
-            'Log\\{}\\{}\\'.format(time.strftime(log_settings['log_path'], time.localtime()), self.__name)
+            'Log\\{}\\{}\\'.format(time.strftime(default_settings['log_path'], time.localtime()), self.__name)
         )
         self.logger = logging.getLogger(name)
         '''
@@ -107,8 +107,8 @@ class Log:
 
         if not os.path.exists(self.log_path):
             os.makedirs(self.log_path)
-        log_handler = SafeLog(self.log_path + self.__name, when=log_settings['when'], interval=log_settings['interval'],
-                              backupCount=log_settings['backup_count'], encoding='utf-8')
+        log_handler = SafeLog(self.log_path + self.__name, when=default_settings['when'], interval=default_settings['interval'],
+                              backupCount=default_settings['backup_count'], encoding='utf-8')
         log_handler.setFormatter(
             logging.Formatter(
                 "[%(asctime)s] {} %(name)s {} [%(levelname)s] {} %(message)s".format(self.separator, self.separator,

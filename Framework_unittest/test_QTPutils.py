@@ -38,37 +38,37 @@ class QTPutilsTest(unittest.TestCase):
 
     def test_launch_QTP(self):
         try:
-            self.qtp._QTP_HPDM__run_qtp_script('')
+            self.qtp._HPDMOperator__run_qtp_script('')
         except Exception as e:
             self.assertIsInstance(e, pywintypes.com_error)
 
-    @patch('Framework_Kernel.QTPutils.QTP_HPDM._QTP_HPDM__run_qtp_script')
+    @patch('Framework_Kernel.QTPutils.HPDMOperator._HPDMOperator__run_qtp_script')
     def test_discover_device(self, run_script_mock):
         self.qtp.discover_devices(self.task)
-        run_script_mock.assert_called_once_with(self.qtp._QTP_HPDM__discover_devices_path)
+        run_script_mock.assert_called_once_with(self.qtp._HPDMOperator__discover_devices_path)
 
-    @patch('Framework_Kernel.QTPutils.QTP_HPDM._QTP_HPDM__run_qtp_script')
+    @patch('Framework_Kernel.QTPutils.HPDMOperator._HPDMOperator__run_qtp_script')
     def test_create_template(self, run_script_mock):
-        self.qtp._QTP_HPDM__create_filter()
-        run_script_mock.assert_called_once_with(self.qtp._QTP_HPDM__create_filter_path)
+        self.qtp._HPDMOperator__create_filter()
+        run_script_mock.assert_called_once_with(self.qtp._HPDMOperator__create_filter_path)
 
-    @patch('Framework_Kernel.QTPutils.QTP_HPDM._QTP_HPDM__initial_test_data')
-    @patch('Framework_Kernel.QTPutils.QTP_HPDM._QTP_HPDM__upload_test_data')
-    @patch('Framework_Kernel.QTPutils.QTP_HPDM.discover_devices')
-    @patch('Framework_Kernel.QTPutils.QTP_HPDM._QTP_HPDM__run_qtp_script')
+    @patch('Framework_Kernel.QTPutils.HPDMOperator._HPDMOperator__initial_test_data')
+    @patch('Framework_Kernel.QTPutils.HPDMOperator._HPDMOperator__upload_test_data')
+    @patch('Framework_Kernel.QTPutils.HPDMOperator.discover_devices')
+    @patch('Framework_Kernel.QTPutils.HPDMOperator._HPDMOperator__run_qtp_script')
     def test_deploy_package(self, run_script_mock, discover_devices_mock, upload_excek_mock, initial_mock):
         initial_mock.return_value = True
         self.qtp.deploy_task(self.task, self.deploy_host)
         upload_excek_mock.assert_called_once()
         discover_devices_mock.assert_called_once_with(self.task)
-        run_script_mock.assert_called_once_with(self.qtp._QTP_HPDM__send_packages_path)
+        run_script_mock.assert_called_once_with(self.qtp._HPDMOperator__send_packages_path)
 
-    @patch('Framework_Kernel.QTPutils.QTP_HPDM._QTP_HPDM__run_qtp_script')
+    @patch('Framework_Kernel.QTPutils.HPDMOperator._HPDMOperator__run_qtp_script')
     def test_execute_package(self, run_script_mock):
         self.qtp.execute_task(self.deploy_host)
-        run_script_mock.assert_called_once_with(self.qtp._QTP_HPDM__send_command_path)
+        run_script_mock.assert_called_once_with(self.qtp._HPDMOperator__send_command_path)
 
-    @patch('Framework_Kernel.QTPutils.QTP_HPDM._QTP_HPDM__run_qtp_script')
+    @patch('Framework_Kernel.QTPutils.HPDMOperator._HPDMOperator__run_qtp_script')
     def test_collect_result(self, run_script_mock):
         self.qtp.get_result(self.deploy_host)
-        run_script_mock.assert_called_once_with(self.qtp._QTP_HPDM__get_result_path)
+        run_script_mock.assert_called_once_with(self.qtp._HPDMOperator__get_result_path)

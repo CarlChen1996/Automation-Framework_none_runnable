@@ -8,6 +8,7 @@ from Framework_Kernel import log
 from unittest.mock import patch
 import unittest
 import os
+import yaml
 
 '''
 read_log: read last log message
@@ -28,11 +29,18 @@ test_custom_console_True: test with user console
 '''
 
 
+with open(os.path.join(os.getcwd() + r'/Configuration/config_framework_list.yml'), 'r', encoding='utf-8') as f:
+    unittest_log_settings = yaml.safe_load(f.read())['log_settings']
 log_folder_name = 'unittest'
-unittest_log = log.Log(name=log_folder_name, level='INFO')
+unittest_log_level = unittest_log_settings
+unittest_log_level['log_level'] = 'info'
+unittest_log = log.Log(name=log_folder_name, default_settings=unittest_log_settings)
+custom_log_settings = unittest_log_settings
 custom_log_name = 'custom'
-custom_separator = '?'
-custom_log = log.Log(name=custom_log_name, level='ERROR', separator=custom_separator)
+custom_log_settings['log_seperator'] = '?'
+custom_log_settings['log_level'] = 'error'
+custom_separator = custom_log_settings['log_seperator']
+custom_log = log.Log(name=custom_log_name, default_settings=custom_log_settings)
 
 
 class LogTest(unittest.TestCase):
@@ -59,6 +67,14 @@ class LogTest(unittest.TestCase):
         lists = os.listdir(log_path)
         lists.sort(key=lambda fn: os.path.getmtime(log_path + '\\' + fn))
         return os.path.join(log_path, lists[-1])
+
+    def test_log_settings(self):
+        with open(os.path.join(os.getcwd() + r'/Configuration/config_framework_list.yml'), 'r', encoding='utf-8') as f:
+            log_settings = yaml.safe_load(f.read())['log_settings']
+        self.assertEqual(log_settings,
+                         {'log_name': '', 'log_type': 'default', 'log_level': 'debug', 'log_seperator': '-',
+                          'use_console': True, 'if_screenshot': False, 'log_path': '%Y-%m-%d_%H',
+                          'when': 'H', 'interval': 1, 'backup_count': 0})
 
     def test_lower_level_log(self):
         unittest_log.debug('lower level log')
@@ -134,7 +150,11 @@ class LogTest(unittest.TestCase):
     @patch('logging.Formatter')
     def test_custom_console_False(self, separator_mock):
         user_console = False
-        log.Log(name='user_console', level='INFO', separator=custom_separator, use_console=user_console)
+        log_test_settings = unittest_log_settings
+        log_test_settings['log_level'] = 'info'
+        log_test_settings['log_separator'] = custom_separator
+        log_test_settings['use_console'] = user_console
+        log.Log(name='user_console', default_settings=log_test_settings)
         separator_mock.assert_called_once_with("[%(asctime)s] {} %(name)s {} [%(levelname)s] {} %(message)s"
                                                .format(custom_separator, custom_separator, custom_separator))
         self.assertEqual(separator_mock.call_count, 1)
@@ -142,5 +162,8 @@ class LogTest(unittest.TestCase):
     @patch('logging.Formatter')
     def test_custom_console_True(self, separator_mock):
         user_console = True
-        log.Log(name='user_console', level='INFO', separator=custom_separator, use_console=user_console)
+        log_test = log.Log(name='user_console')
+        log_test._Log__level = 'INFO'
+        log_test.separator = custom_separator
+        log_test.use_console = user_console
         self.assertEqual(separator_mock.call_count, 2)
