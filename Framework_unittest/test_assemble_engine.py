@@ -236,8 +236,8 @@ class AssembleEngineTest(unittest.TestCase):
     @patch('threading.Thread.start')
     def test_create_task_thread_win(self, thread_mock):
         self.assemble.temp_task_win = [self.task]
-        self.assemble.count_task_win = 1
-        self.assemble.max_count = 2
+        self.assemble.current_thread_count_win = 1
+        self.assemble.max_thread_count_win = 2
         self.assemble.temp_node_win = [self.windows_build_host]
         self.assemble.create_task_thread('win')
         thread_mock.assert_called_once()
@@ -248,8 +248,8 @@ class AssembleEngineTest(unittest.TestCase):
     @patch('threading.Thread.start')
     def test_create_task_thread_win_none_node(self, thread_mock, node_mock):
         self.assemble.temp_task_win = [self.task]
-        self.assemble.count_task_win = 1
-        self.assemble.max_count = 2
+        self.assemble.current_thread_count_win = 1
+        self.assemble.max_thread_count_win = 2
         self.assemble.temp_node_win = []
         self.assemble.create_task_thread('win')
         thread_mock.assert_not_called()
@@ -264,8 +264,8 @@ class AssembleEngineTest(unittest.TestCase):
         loop_interval = 1
         self.assemble.loop_interval = loop_interval
         self.assemble.temp_task_win = [self.task]
-        self.assemble.count_task_win = 2
-        self.assemble.max_count = 2
+        self.assemble.current_thread_count_win = 2
+        self.assemble.max_thread_count_win = 2
         self.assemble.temp_node_win = [self.windows_build_host]
         self.assemble.create_task_thread('win')
         thread_mock.assert_not_called()
@@ -281,8 +281,8 @@ class AssembleEngineTest(unittest.TestCase):
         loop_interval = 1
         self.assemble.loop_interval = loop_interval
         self.assemble.temp_task_win = [self.task]
-        self.assemble.count_task_win = 3
-        self.assemble.max_count = 2
+        self.assemble.current_thread_count_win = 3
+        self.assemble.max_thread_count_win = 2
         self.assemble.temp_node_win = [self.windows_build_host]
         self.assemble.create_task_thread('win')
         thread_mock.assert_not_called()
@@ -299,8 +299,8 @@ class AssembleEngineTest(unittest.TestCase):
         loop_interval = 1
         self.assemble.loop_interval = loop_interval
         self.assemble.temp_task_win = []
-        self.assemble.count_task_win = 1
-        self.assemble.max_count = 2
+        self.assemble.current_thread_count_win = 1
+        self.assemble.max_thread_count_win = 2
         self.assemble.temp_node_win = [self.windows_build_host]
         self.assemble.create_task_thread('win')
         thread_mock.assert_not_called()
@@ -313,8 +313,8 @@ class AssembleEngineTest(unittest.TestCase):
     @patch('threading.Thread.start')
     def test_create_task_thread_linux(self, thread_mock):
         self.assemble.temp_task_linux = [self.task]
-        self.assemble.count_task_linux = 1
-        self.assemble.max_count = 2
+        self.assemble.current_thread_count_linux = 1
+        self.assemble.max_thread_count_linux = 2
         self.assemble.temp_node_linux = [self.linux_build_host]
         self.assemble.create_task_thread('linux')
         thread_mock.assert_called_once()
@@ -325,8 +325,8 @@ class AssembleEngineTest(unittest.TestCase):
     @patch('threading.Thread.start')
     def test_create_task_thread_win_none_node(self, thread_mock, node_mock):
         self.assemble.temp_task_linux = [self.task]
-        self.assemble.count_task_linux = 1
-        self.assemble.max_count = 2
+        self.assemble.current_thread_count_linux = 1
+        self.assemble.max_thread_count_linux = 2
         self.assemble.temp_node_linux = []
         self.assemble.create_task_thread('linux')
         thread_mock.assert_not_called()
@@ -341,8 +341,8 @@ class AssembleEngineTest(unittest.TestCase):
         loop_interval = 1
         self.assemble.loop_interval = loop_interval
         self.assemble.temp_task_linux = [self.task]
-        self.assemble.count_task_linux = 2
-        self.assemble.max_count = 2
+        self.assemble.current_thread_count_linux = 2
+        self.assemble.max_thread_count_linux = 2
         self.assemble.temp_node_linux = [self.linux_build_host]
         self.assemble.create_task_thread('linux')
         thread_mock.assert_not_called()
@@ -358,8 +358,8 @@ class AssembleEngineTest(unittest.TestCase):
         loop_interval = 1
         self.assemble.loop_interval = loop_interval
         self.assemble.temp_task_linux = [self.task]
-        self.assemble.count_task_linux = 3
-        self.assemble.max_count = 2
+        self.assemble.current_thread_count_linux = 3
+        self.assemble.max_thread_count_linux = 2
         self.assemble.temp_node_linux = [self.linux_build_host]
         self.assemble.create_task_thread('linux')
         thread_mock.assert_not_called()
@@ -376,8 +376,8 @@ class AssembleEngineTest(unittest.TestCase):
         loop_interval = 1
         self.assemble.loop_interval = loop_interval
         self.assemble.temp_task_linux = []
-        self.assemble.count_task_linux = 1
-        self.assemble.max_count = 2
+        self.assemble.current_thread_count_linux = 1
+        self.assemble.max_thread_count_linux = 2
         self.assemble.temp_node_linux = [self.linux_build_host]
         self.assemble.create_task_thread('linux')
         thread_mock.assert_not_called()
@@ -402,48 +402,48 @@ class AssembleEngineTest(unittest.TestCase):
         task = Mock(spec=Task)
         node = Mock(spec=WindowsBuildHost)
         os = 'win'
-        count_task_win = 2
-        self.assemble.count_task_win = count_task_win
+        current_thread_count_win = 2
+        self.assemble.current_thread_count_win = current_thread_count_win
         self.assemble.build(task, node, os)
         task_mock_list = [call.get_name(), call.build(node), call.get_status(), call.get_exe_file_list(),
                           call.get_name(), call.set_state('Assemble Finished')]
         node_mock_list = [call.get_hostname(), call.get_hostname()]
         self.assertEqual(task.mock_calls, task_mock_list)
         self.assertEqual(node.mock_calls, node_mock_list)
-        self.assertEqual(self.assemble.count_task_win, count_task_win - 1)
+        self.assertEqual(self.assemble.current_thread_count_win, current_thread_count_win - 1)
 
     def test_build_linux(self):
         task = Mock(spec=Task)
         node = Mock(spec=LinuxBuildHost)
         os = 'linux'
-        count_task_linux = 2
-        self.assemble.count_task_linux = count_task_linux
+        current_thread_count_linux = 2
+        self.assemble.current_thread_count_linux = current_thread_count_linux
         self.assemble.build(task, node, os)
         task_mock_list = [call.get_name(), call.build(node), call.get_status(), call.get_exe_file_list(),
                           call.get_name(), call.set_state('Assemble Finished')]
         node_mock_list = [call.get_hostname(), call.get_hostname()]
         self.assertEqual(task.mock_calls, task_mock_list)
         self.assertEqual(node.mock_calls, node_mock_list)
-        self.assertEqual(self.assemble.count_task_linux, count_task_linux - 1)
+        self.assertEqual(self.assemble.current_thread_count_linux, current_thread_count_linux - 1)
 
     @patch('Framework_Kernel.task.Task.build')
     def test_build_except_win(self, build_mock):
         build_mock.side_effect = AttributeError
-        count_task_win = 2
+        current_thread_count_win = 2
         os = 'win'
-        self.assemble.count_task_win = count_task_win
+        self.assemble.current_thread_count_win = current_thread_count_win
         self.assemble.build(self.task, self.windows_build_host, os)
         self.assertEqual(self.task.get_state(), 'WAIT ASSEMBLE')
         self.assertEqual(self.windows_build_host.state, 'Idle')
-        self.assertEqual(self.assemble.count_task_win, count_task_win - 1)
+        self.assertEqual(self.assemble.current_thread_count_win, current_thread_count_win - 1)
 
     @patch('Framework_Kernel.task.Task.build')
     def test_build_except_linux(self, build_mock):
         build_mock.side_effect = AttributeError
-        count_task_linux = 2
+        current_thread_count_linux = 2
         os = 'linux'
-        self.assemble.count_task_linux = count_task_linux
+        self.assemble.current_thread_count_linux = current_thread_count_linux
         self.assemble.build(self.task, self.linux_build_host, os)
         self.assertEqual(self.task.get_state(), 'WAIT ASSEMBLE')
         self.assertEqual(self.linux_build_host.state, 'Idle')
-        self.assertEqual(self.assemble.count_task_linux, count_task_linux - 1)
+        self.assertEqual(self.assemble.current_thread_count_linux, current_thread_count_linux - 1)

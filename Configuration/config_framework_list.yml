@@ -69,4 +69,7 @@ log_settings:
   backup_count: 0
 
 global_settings:
-  LOOP_INTERVAL: 10
+  loop_interval: 10
+  max_execution_thread: 5
+  max_build_thread_win: 2
+  max_build_thread_linux: 2

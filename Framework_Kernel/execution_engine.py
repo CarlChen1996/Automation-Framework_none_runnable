@@ -25,21 +25,18 @@ class ExecutionEngine(Engine):
         self.__pipe = pipe
         self.__deploy_list = deploy_list
         self.execution_queue = Queue()
-        self.__max_thread_count = 5
-        self.__current_thread_count = 0
+        self.global_settings = self.__load_config()
+        self.loop_interval = self.global_settings['loop_interval']
+        self.max_thread_count = self.global_settings['max_execution_thread']
+        self.current_thread_count = 0
         self.__temp_task_list = []
         self.__temp_host_list = []
-        self.__fresh_temp_list_interval = self.__load_config()
-        # self.execution_queue.task_list=[]
-        # -----------execute结束后需要同时删除task list-----------------
-        # execution_queue.task_list = task_list.copy()
 
     def __load_config(self):
         analyer = Analyzer()
         settings_dict = analyer.analyze_file(os.path.join(os.getcwd(), r'Configuration\config_framework_list.yml'))
-        # -----------FTP settings ----------------
-        fresh_temp_list_interval = settings_dict['global_settings']['LOOP_INTERVAL']
-        return fresh_temp_list_interval
+        global_settings = settings_dict['global_settings']
+        return global_settings
 
     def start(self):
         self.__executor = Process(target=self.start_thread, name='framework_executor', args=())
@@ -85,12 +82,12 @@ class ExecutionEngine(Engine):
             time.sleep(1)  # can be removed
             execution_log.info('[thread_executor] task_list now is : {}'.
                                format(list(map(lambda i: i.get_name(), self.execution_queue.get_task_list()))))
-            self.__current_thread_count -= 1
+            self.current_thread_count -= 1
             task.set_state('Execute Finished')
             host.state = 'Idle'
         except Exception as e:
             execution_log.info('Unexpect error happen, roll back the task state and host state. Details reason:\n {}'.format(e))
-            self.__current_thread_count -= 1
+            self.current_thread_count -= 1
             task.set_state('Assemble Finished')
             host.state = 'Idle'
 
@@ -111,14 +108,14 @@ class ExecutionEngine(Engine):
             while 1:
                 # loop when thread queue is full
                 try:
-                    if self.__current_thread_count > self.__max_thread_count:
+                    if self.current_thread_count > self.max_thread_count:
                         execution_log.info(
                             'current thread queue is full, waiting task finished')
-                        time.sleep(self.__fresh_temp_list_interval)
+                        time.sleep(self.loop_interval)
                     else:
                         execute_task.set_state('Executing')
                         deploy_host.state = 'Busy'
-                        self.__current_thread_count += 1
+                        self.current_thread_count += 1
                         new_thread = threading.Thread(target=self.__execute, args=(execute_task, deploy_host))
                         new_thread.setDaemon(True)
                         new_thread.start()
@@ -126,7 +123,7 @@ class ExecutionEngine(Engine):
                         break
                 except Exception as e:
                     execution_log.error('New thread Error, Exception:\n{}'.format(e))
-                    self.__current_thread_count -= 1
+                    self.current_thread_count -= 1
                     deploy_host.state = 'Idle'
                     execute_task.set_state('Assemble Finished')
 
@@ -150,7 +147,7 @@ class ExecutionEngine(Engine):
                     self.__temp_task_list.append(_task)
             if not self.__temp_task_list:
                 execution_log.info('---No valid task, waiting for new task-----')
-                time.sleep(self.__fresh_temp_list_interval)
+                time.sleep(self.loop_interval)
             else:
                 return
 
@@ -163,7 +160,7 @@ class ExecutionEngine(Engine):
                     self.__temp_host_list.append(_host)
             if not self.__temp_host_list:
                 execution_log.info('---No valid Deploy host, waiting for new host-----')
-                time.sleep(self.__fresh_temp_list_interval)
+                time.sleep(self.loop_interval)
             else:
                 return
 
