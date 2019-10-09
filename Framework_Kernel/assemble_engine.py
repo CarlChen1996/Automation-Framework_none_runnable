@@ -24,10 +24,26 @@ import datetime
 class AssembleEngine(Engine):
     def __init__(self, pipe, build_list):
         self.__pipe = pipe
-        self.assembleQueue = Queue()
-        self.tasklist = []
         self.__build_list = build_list
+        self.assembleQueue = Queue()
+        self.global_settings = self.__load_config()
+        self.loop_interval = self.global_settings['loop_interval']
+        self.max_thread_count_win = self.global_settings['max_build_thread_win']
+        self.max_thread_count_linux = self.global_settings['max_build_thread_linux']
+        self.current_thread_count_win = 0
+        self.current_thread_count_linux = 0
+        self.tasklist = []
         self.test_plan_folder = os.path.join(os.getcwd(), 'Test_Plan')
+        self.temp_task_win = []
+        self.temp_node_win = []
+        self.temp_task_linux = []
+        self.temp_node_linux = []
+
+    def __load_config(self):
+        analyer = Analyzer()
+        settings_dict = analyer.analyze_file(os.path.join(os.getcwd(), r'Configuration\config_framework_list.yml'))
+        global_settings = settings_dict['global_settings']
+        return global_settings
 
     def start(self):
         self.__assembler = Process(target=self.start_thread,
@@ -109,7 +125,7 @@ class AssembleEngine(Engine):
         """
         for taskitem in task_source_list:
             task = Task(taskitem['name'], taskitem['email'],
-                        taskitem['repository'], True if taskitem['needbuild']=='Y' else False)
+                        taskitem['repository'], True if taskitem['needbuild'] == 'Y' else False)
             task.start_time = datetime.datetime.now()
             task.set_state('Wait Assemble')
             for script in taskitem['testscripts']:
@@ -209,29 +225,30 @@ class AssembleEngine(Engine):
                 build_server_os = 'linux'
         return build_server_os
 
-    def refresh_node_state(self, os):
-        pass
+    def __refresh_temp_task_list(self, os, temp_task_list):
+        while True:
+            assemble_log.info('=======================Begin to fresh temp task list==========================')
+            for task in self.assembleQueue.get_task_list():
+                if task.get_state().upper() == 'WAIT ASSEMBLE' and self.get_os_type(task) == os:
+                    temp_task_list.append(task)
+            if not temp_task_list:
+                assemble_log.info('---No valid task, waiting for new task-----')
+                time.sleep(self.loop_interval)
+            else:
+                return
 
-    def create_temp_task(self, os):
-        temp_task = []
-        for task in self.assembleQueue.get_task_list():
-            if task.get_state().upper() == 'WAIT ASSEMBLE' and self.get_os_type(task) == os:
-                temp_task.append(task)
-        return temp_task
-
-    def create_temp_node(self, os):
-        temp_node = []
-        self.refresh_node_state(os)
-        for build_node in self.__build_list:
-            if build_node.state == 'Idle':
-                if os == 'win':
-                    if isinstance(build_node, WindowsBuildHost):
-                        temp_node.append(build_node)
-                elif os == 'linux':
-                    if isinstance(build_node, LinuxBuildHost):
-                        temp_node.append(build_node)
-
-        return temp_node
+    def __refresh_temp_node_list(self, temp_node_list, build_node_type):
+        while True:
+            assemble_log.info('=======================Begin to fresh temp node list==========================')
+            # May need to refresh the node status in JIRA, so far so good
+            for build_node in temp_node_list:
+                if build_node.state == 'Idle' and isinstance(build_node, build_node_type):
+                    temp_node_list.append(build_node)
+            if not temp_node_list:
+                assemble_log.info('---No valid build host, waiting for new node-----')
+                time.sleep(self.loop_interval)
+            else:
+                return
 
     def validate_task(self, task):
         s_validator = ScriptValidator()
@@ -260,97 +277,58 @@ class AssembleEngine(Engine):
             task.set_state('Assemble Finished')
             node.state = 'Idle'
             if os == 'win':
-                self.count_task_win -= 1
+                self.current_thread_count_win -= 1
             elif os == 'linux':
-                self.count_task_linux -= 1
+                self.current_thread_count_linux -= 1
         except Exception as e:
             assemble_log.error('New thread Error, Exception:\n{}'.format(e))
             task.set_state('WAIT ASSEMBLE')
             node.state = 'Idle'
             if os == 'win':
-                self.count_task_win -= 1
+                self.current_thread_count_win -= 1
             elif os == 'linux':
-                self.count_task_linux -= 1
+                self.current_thread_count_linux -= 1
 
-    def create_task_thread(self, os):
-        if os == 'win':
-            if self.temp_task_win:
-                for task in self.temp_task_win[:]:
-                    if self.count_task_win < self.max_count:
-                        if self.temp_node_win:
-                            node0 = self.temp_node_win[0]
-                            self.temp_task_win.remove(task)
-                            self.temp_node_win.remove(node0)
-                            try:
-                                t = threading.Thread(target=self.build, args=(task, node0, 'win'))
-                                time.sleep(1)
-                                node0.state = 'Busy'
-                                self.count_task_win += 1
-                                task.set_state('ASSEMBLING')
-                                t.start()
-                            except Exception as e:
-                                print('exception in win assemble {}'.format(str(e)))
-                                node0.state = 'Idle'
-                                self.count_task_win -= 1
-                                task.set_state('WAIT ASSEMBLE')
-                        else:
-                            self.temp_node_win = self.create_temp_node('win')
-                    else:
-                        print('win full running')
-                        time.sleep(self.loop_interval)
-            else:
-                time.sleep(self.loop_interval)
-                self.temp_task_win = self.create_temp_task('win')
-        elif os == 'linux':
-            if self.temp_task_linux:
-                for task in self.temp_task_linux[:]:
-                    if self.count_task_linux < self.max_count:
-                        if self.temp_node_linux:
-                            node0 = self.temp_node_linux[0]
-                            self.temp_task_linux.remove(task)
-                            self.temp_node_linux.remove(node0)
-                            try:
-                                t = threading.Thread(target=self.build, args=(task, node0, 'linux'))
-                                time.sleep(1)
-                                node0.state = 'Busy'
-                                self.count_task_linux += 1
-                                task.set_state('ASSEMBLING')
-                                t.start()
-                            except Exception as e:
-                                print('exception in linux assemble {}'.format(str(e)))
-                                node0.state = 'Idle'
-                                self.count_task_linux -= 1
-                                task.set_state('WAIT ASSEMBLE')
-                        else:
-                            self.temp_node_linux = self.create_temp_node('linux')
-                    else:
-                        print('linux full running')
-                        time.sleep(self.loop_interval)
-            else:
-                time.sleep(self.loop_interval)
-                self.temp_task_linux = self.create_temp_task('linux')
-        else:
-            return False
-
-    def thread_f(self, os):
+    def create_os_thread(self, os, build_node_type, temp_task_list, temp_node_list, current_thread, max_thread):
         while True:
-            self.create_task_thread(os)
+            print('=======================================================')
+            print('==========Begin to Start New Assemble Thread==============')
+            print('=======================================================')
+            assemble_log.info('[thread_assembler] task_list left: {}'.format(len(temp_task_list)))
+            if not temp_task_list:
+                time.sleep(self.loop_interval)
+                temp_task_list = self.__refresh_temp_task_list(os, temp_task_list)
+            assemble_task = temp_task_list[0]
+            temp_task_list.remove(assemble_task)
+            if not temp_node_list:
+                temp_node_list = self.__refresh_temp_node_list(temp_node_list, build_node_type)
+            assemble_node = temp_node_list[0]
+            temp_node_list.remove(assemble_node)
+            while True:
+                try:
+                    if current_thread > max_thread:
+                        assemble_log.info('Windows Assemble Thread is full, wait for task finish')
+                        time.sleep(self.loop_interval)
+                    else:
+                        assemble_task.set_state('ASSEMBLING')
+                        assemble_node.state = 'Busy'
+                        current_thread += 1
+                        new_thread = threading.Thread(target=self.build, args=(assemble_task, assemble_node, os))
+                        new_thread.setDaemon(True)
+                        new_thread.start()
+                        new_thread.join(2)
+                        break
+                except Exception as e:
+                    assemble_log.error('New Thread Error, Exception: \n{}'.format(e))
+                    current_thread -= 1
+                    assemble_task.set_state('WAIT ASSEMBLE')
+                    assemble_node.state = 'Idle'
 
     def __assemble(self):
-        config_file = os.path.join(os.getcwd(), r'.\Configuration\config_framework_list.yml')
-        analyze_hanlder = Analyzer()
-        global_settings = analyze_hanlder.analyze_file(config_file)['global_settings']
-        self.loop_interval = int(global_settings['LOOP_INTERVAL'])
-        self.count_task_win = 0
-        self.count_task_linux = 0
-        self.max_count = 2
-        self.temp_task_win = self.create_temp_task('win')
-        self.temp_node_win = self.create_temp_node('win')
-        self.temp_task_linux = self.create_temp_task('linux')
-        self.temp_node_linux = self.create_temp_node('linux')
-        win_thread = threading.Thread(target=self.thread_f, args=('win',))
-        win_thread.start()
-        linux_thread = threading.Thread(target=self.thread_f, args=('linux',))
-        linux_thread.start()
-        win_thread.join()
-        linux_thread.join()
+        while True:
+            win_thread = threading.Thread(target=self.create_os_thread, args=('win', WindowsBuildHost, self.temp_task_win, self.temp_node_win, self.current_thread_count_win, self.max_thread_count_win))
+            win_thread.start()
+            linux_thread = threading.Thread(target=self.create_os_thread, args=('linux', LinuxBuildHost, self.temp_task_linux, self.temp_node_linux, self.current_thread_count_linux, self.max_thread_count_linux))
+            linux_thread.start()
+            win_thread.join()
+            linux_thread.join()
