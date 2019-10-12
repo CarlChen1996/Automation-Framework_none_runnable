@@ -60,9 +60,8 @@ class ErrorHandler:
         if self.error_level in self.error_handle_map_dict.keys():
             return self.error_handle_map_dict[self.error_level]
 
-    def handle(self, **kargs):
-        handle_func = self.__get_handler()
-        return handle_func(**kargs)
+    def handle(self):
+        return self.__get_handler()()
 
     def terminate_framework(self):
         error_handler_log.critical(self.error_msg)

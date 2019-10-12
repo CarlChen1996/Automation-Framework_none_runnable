@@ -189,9 +189,10 @@ class AssembleEngine(Engine):
                 '''
                 error_msg_instance = ErrorMsg(EngineCode().assembly_engine, ErrorLevel().drop_task, "build task fail,drop it")
                 error_handle_instance = ErrorHandler(error_msg_instance)
-                handle_res = error_handle_instance.handle(task=task, task_queue=self.assembleQueue)
-                if not handle_res:
-                    continue
+                error_handle_instance.handle()
+                assemble_log.info(
+                    '[fresh_queue_execution]-----build task fail, drop task from assemble queue ----------'
+                )
 
         time.sleep(10)
 
@@ -211,7 +212,7 @@ class AssembleEngine(Engine):
             error_msg_instance = ErrorMsg(EngineCode().assembly_engine, ErrorLevel().continue_task,
                                           "send task to execute engine fail,continue")
             error_handle_instance = ErrorHandler(error_msg_instance)
-            error_handle_instance.handle(task=task, task_queue=self.assembleQueue)
+            error_handle_instance.handle()
             assemble_log.info(
                 '[fresh_queue_execution]-----send task and received task is not the same one- ----------'
             )
