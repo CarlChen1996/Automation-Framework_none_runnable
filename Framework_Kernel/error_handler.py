@@ -59,9 +59,17 @@ class ErrorHandler:
         }
         if self.error_level in self.error_handle_map_dict.keys():
             return self.error_handle_map_dict[self.error_level]
+        else:
+            return False
 
     def handle(self):
-        return self.__get_handler()()
+        handle_func = self.__get_handler()
+        if handle_func:
+            handle_func()
+            return True
+        else:
+            print('unknown error level')
+            return False
 
     def terminate_framework(self):
         error_handler_log.critical(self.error_msg)
