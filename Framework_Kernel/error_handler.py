@@ -62,11 +62,10 @@ class ErrorHandler:
         else:
             return False
 
-    def handle(self):
+    def handle(self, **kargs):
         handle_func = self.__get_handler()
         if handle_func:
-            handle_func()
-            return True
+            return handle_func(**kargs)
         else:
             print('unknown error level')
             return False
