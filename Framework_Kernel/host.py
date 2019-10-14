@@ -186,7 +186,7 @@ class Deploy:
         self.host = host
 
     def deploy_task(self, task):
-        QTPutils.HPDMOperator.deploy_task(task, self.host)
+        QTPutils.HPDMOperator().deploy_task(task, self.host)
         self.log.info('deploy package: ' + task.get_name() + ' Pass')
 
 
@@ -196,7 +196,7 @@ class Execute:
         self.host = host
 
     def execute_task(self, task):
-        QTPutils.HPDMOperator.execute_task(self.host, task)
+        QTPutils.HPDMOperator().execute_task(self.host, task)
         self.log.info('execute {} on  {}'.format(
             task.get_name(),
             task.get_uut_list()[0].get_hostname()))
@@ -207,7 +207,7 @@ class Execute:
             task.get_uut_list()[0].get_hostname()))
 
     def collect_result(self, task):
-        QTPutils.HPDMOperator.get_result(task)
+        QTPutils.HPDMOperator().get_result(task)
         self.log.info('collect {} result from {}'.format(
             task.get_name(),
             task.get_uut_list()[0].get_hostname()))
