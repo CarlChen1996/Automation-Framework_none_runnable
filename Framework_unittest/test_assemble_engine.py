@@ -11,6 +11,8 @@ from unittest.mock import patch, call, Mock
 from Framework_Kernel.host import WindowsBuildHost, LinuxBuildHost, WindowsExecuteHost, LinuxExecuteHost
 import unittest
 import os
+import time
+import threading
 
 '''
 setUp: Instantiated pipe, instantiated Assemble Engine
@@ -176,227 +178,164 @@ class AssembleEngineTest(unittest.TestCase):
         self.task.insert_uut_list(WindowsExecuteHost(ip='1.1.1.1', mac=666666, version='wt'))
         self.assertEqual(self.assemble.get_os_type(self.task), '')
 
+    @patch('time.sleep')
+    @patch('Framework_Kernel.task_queue.Queue.get_task_list')
     @patch('Framework_Kernel.assemble_engine.AssembleEngine.get_os_type')
-    def test_create_temp_task(self, os_mock):
+    def test_refresh_temp_task_list(self, os_mock, task_queue_mock, sleep_mock):
+        self.task.set_state('WAIT ASSEMBLE')
+        task_queue_mock.side_effect = [[], [self.task]]
         os_mock.return_value = 'win'
-        self.task.set_state('WAIT ASSEMBLE')
-        self.assemble.assembleQueue.insert_task(task=self.task)
-        self.assertEqual([self.task], self.assemble.create_temp_task(os_mock.return_value))
+        os = 'win'
+        temp_task_list = []
+        self.assertIn(self.task, self.assemble._AssembleEngine__refresh_temp_task_list(os, temp_task_list))
+        sleep_mock.assert_called_once_with(self.assemble.loop_interval)
+        self.assertEqual(task_queue_mock.call_count, 2)
 
+    @patch('time.sleep')
+    @patch('Framework_Kernel.task_queue.Queue.get_task_list')
     @patch('Framework_Kernel.assemble_engine.AssembleEngine.get_os_type')
-    def test_create_temp_task_none_os(self, os_mock):
-        os_mock.return_value = ''
+    def test_refresh_temp_task_list_false_task(self, os_mock, task_queue_mock, sleep_mock):
+        task = Task(name='test')
+        task.set_state('wait')
         self.task.set_state('WAIT ASSEMBLE')
-        self.assemble.assembleQueue.insert_task(task=self.task)
-        self.assertEqual([], self.assemble.create_temp_task('win'))
+        task_queue_mock.side_effect = [[task], [self.task]]
+        os_mock.return_value = 'win'
+        os = 'win'
+        temp_task_list = []
+        self.assertIn(self.task, self.assemble._AssembleEngine__refresh_temp_task_list(os, temp_task_list))
+        sleep_mock.assert_called_once_with(self.assemble.loop_interval)
+        self.assertEqual(task_queue_mock.call_count, 2)
 
+    @patch('time.sleep')
+    @patch('Framework_Kernel.task_queue.Queue.get_task_list')
     @patch('Framework_Kernel.assemble_engine.AssembleEngine.get_os_type')
-    def test_create_temp_task_none_task(self, os_mock):
-        self.task.set_state('ASSEMBLING')
-        self.assemble.assembleQueue.insert_task(task=self.task)
-        self.assertEqual([], self.assemble.create_temp_task('win'))
-        os_mock.assert_not_called()
+    def test_refresh_temp_task_list_false_os(self, os_mock, task_queue_mock, sleep_mock):
+        self.task.set_state('WAIT ASSEMBLE')
+        task_queue_mock.side_effect = [[self.task], [self.task]]
+        os_mock.side_effect = ['linux', 'win']
+        os = 'win'
+        temp_task_list = []
+        self.assertIn(self.task, self.assemble._AssembleEngine__refresh_temp_task_list(os, temp_task_list))
+        sleep_mock.assert_called_once_with(self.assemble.loop_interval)
+        self.assertEqual(task_queue_mock.call_count, 2)
 
-    def test_create_temp_node_windows(self):
-        self.assertEqual(self.assemble.create_temp_node('win'), [self.windows_build_host])
+    @staticmethod
+    def refresh_node_list(build_node_list, build_host):
+        time.sleep(0.1)
+        build_node_list.append(build_host)
 
-    def test_create_temp_node_linux(self):
-        self.assertEqual(self.assemble.create_temp_node('linux'), [self.linux_build_host])
+    def test_refresh_node_task_list(self):
+        self.linux_build_host.state = 'Idle'
+        self.assemble._AssembleEngine__build_node_list = []
+        p = threading.Thread(target=self.refresh_node_list,
+                             args=(self.assemble._AssembleEngine__build_node_list, self.linux_build_host))
+        p.daemon = True
+        p.start()
+        temp_node_list = []
+        build_node_type = LinuxBuildHost
+        with patch('time.sleep') as time_mock:
+            self.assertIn(self.linux_build_host,
+                          self.assemble._AssembleEngine__refresh_temp_node_list(temp_node_list, build_node_type))
+            time_mock.assert_called_with(self.assemble.loop_interval)
 
-    def test_create_temp_node_windows_busy(self):
-        self.assemble._AssembleEngine__build_list = []
-        self.assertEqual(self.assemble.create_temp_node('win'), [])
-        self.windows_build_host.state = 'Busy'
-        self.assemble._AssembleEngine__build_list = [self.windows_build_host]
-        self.assertEqual(self.assemble.create_temp_node('win'), [])
+    def set_host_state(self):
+        time.sleep(0.1)
+        self.linux_build_host.state = 'Idle'
+
+    def test_refresh_node_task_list_false_host_state(self):
         self.linux_build_host.state = 'Busy'
-        self.assemble._AssembleEngine__build_list = [self.linux_build_host]
-        self.assertEqual(self.assemble.create_temp_node('linux'), [])
+        self.assemble._AssembleEngine__build_node_list = [self.linux_build_host]
+        p = threading.Thread(target=self.set_host_state)
+        p.daemon = True
+        p.start()
+        temp_node_list = []
+        build_node_type = LinuxBuildHost
+        with patch('time.sleep') as time_mock:
+            self.assertIn(self.linux_build_host,
+                          self.assemble._AssembleEngine__refresh_temp_node_list(temp_node_list, build_node_type))
+            time_mock.assert_called_with(self.assemble.loop_interval)
 
-    @patch('Framework_Kernel.analyzer.Analyzer.analyze_file')
+    def set_host_type(self):
+        time.sleep(0.1)
+        self.assemble._AssembleEngine__build_node_list = [self.linux_build_host]
+
+    def test_refresh_node_task_list_false_host_type(self):
+        self.linux_build_host.state = 'Idle'
+        self.windows_build_host.state = 'Idle'
+        self.assemble._AssembleEngine__build_node_list = [self.windows_build_host]
+        p = threading.Thread(target=self.set_host_type)
+        p.daemon = True
+        p.start()
+        temp_node_list = []
+        build_node_type = LinuxBuildHost
+        with patch('time.sleep') as time_mock:
+            self.assertIn(self.linux_build_host,
+                          self.assemble._AssembleEngine__refresh_temp_node_list(temp_node_list, build_node_type))
+            time_mock.assert_called_with(self.assemble.loop_interval)
+
+    @patch('time.sleep')
+    @patch('threading.Thread.start')
     @patch('threading.Thread.join')
+    def test_create_build_thread(self, join_mock, start_mock, sleep_mock):
+        os = 'win'
+        build_node_type = WindowsBuildHost
+        temp_task_list = [self.task]
+        temp_node_list = [self.windows_build_host]
+        current_thread = 1
+        max_thread = 2
+        self.assemble.create_build_thread(os, build_node_type, temp_task_list, temp_node_list, current_thread,
+                                          max_thread)
+        start_mock.assert_called_once()
+        join_mock.assert_called_once()
+
+    def test_create_build_thread_equal_thread(self):
+        pass
+
+    def test_create_build_thread_more_than_max_thread(self):
+        pass
+
+    @patch('time.sleep')
     @patch('threading.Thread.start')
-    @patch('Framework_Kernel.assemble_engine.AssembleEngine.create_temp_task')
-    @patch('Framework_Kernel.assemble_engine.AssembleEngine.create_temp_node')
-    def test_assemble(self, node_mock, task_mock, thread_mock, join_mock, analyzer_mock):
-        loop_interval = 2
-        analyzer_mock.return_value = {'global_settings': {'LOOP_INTERVAL': loop_interval}}
-        node_mock.side_effect = [[self.windows_build_host], [self.linux_build_host]]
+    @patch('threading.Thread.join')
+    @patch('Framework_Kernel.assemble_engine.AssembleEngine._AssembleEngine__refresh_temp_task_list')
+    @patch('Framework_Kernel.assemble_engine.AssembleEngine._AssembleEngine__refresh_temp_node_list')
+    def test_create_build_thread_none_task_node(self, node_mock, task_mock, join_mock, start_mock, sleep_mock):
+        node_mock.return_value = [self.windows_build_host]
         task_mock.return_value = [self.task]
-        self.assemble._AssembleEngine__assemble()
-        self.assertEqual(self.assemble.loop_interval, loop_interval)
-        self.assertEqual(thread_mock.call_count, 2)
-        self.assertEqual(node_mock.call_args_list, [call('win'), call('linux')])
-        self.assertEqual(task_mock.call_args_list, [call('win'), call('linux')])
-        self.assertEqual(self.assemble.temp_node_win, [self.windows_build_host])
-        self.assertEqual(self.assemble.temp_node_linux, [self.linux_build_host])
-        self.assertEqual(self.assemble.temp_task_win, task_mock.return_value)
-        self.assertEqual(self.assemble.temp_task_linux, task_mock.return_value)
+        os = 'win'
+        build_node_type = WindowsBuildHost
+        temp_task_list = []
+        temp_node_list = []
+        current_thread = 1
+        max_thread = 2
+        self.assemble.create_build_thread(os, build_node_type, temp_task_list, temp_node_list, current_thread,
+                                          max_thread)
+        task_mock.assert_called_once_with(os, temp_task_list)
+        node_mock.assert_called_once_with(temp_node_list, build_node_type)
+        start_mock.assert_called_once()
+        join_mock.assert_called_once()
 
-    @patch('threading.Thread.start')
-    def test_create_task_thread_win(self, thread_mock):
-        self.assemble.temp_task_win = [self.task]
-        self.assemble.current_thread_count_win = 1
-        self.assemble.max_thread_count_win = 2
-        self.assemble.temp_node_win = [self.windows_build_host]
-        self.assemble.create_task_thread('win')
-        thread_mock.assert_called_once()
-        self.assertEqual(self.assemble.temp_task_win, [])
-        self.assertEqual(self.assemble.temp_node_win, [])
-
-    @patch('Framework_Kernel.assemble_engine.AssembleEngine.create_temp_node')
-    @patch('threading.Thread.start')
-    def test_create_task_thread_win_none_node(self, thread_mock, node_mock):
-        self.assemble.temp_task_win = [self.task]
-        self.assemble.current_thread_count_win = 1
-        self.assemble.max_thread_count_win = 2
-        self.assemble.temp_node_win = []
-        self.assemble.create_task_thread('win')
-        thread_mock.assert_not_called()
-        self.assertEqual(self.assemble.temp_task_win, [self.task])
-        self.assertEqual(self.assemble.temp_node_win, node_mock.return_value)
-        node_mock.assert_called_once_with('win')
-
+    @patch('Framework_Kernel.task.Task.set_state')
+    @patch('Framework_Kernel.assemble_engine.AssembleEngine._AssembleEngine__refresh_temp_task_list')
+    @patch('Framework_Kernel.assemble_engine.AssembleEngine._AssembleEngine__refresh_temp_node_list')
     @patch('time.sleep')
-    @patch('Framework_Kernel.assemble_engine.AssembleEngine.create_temp_node')
     @patch('threading.Thread.start')
-    def test_create_task_thread_win_equal_count(self, thread_mock, node_mock, sleep_mock):
-        loop_interval = 1
-        self.assemble.loop_interval = loop_interval
-        self.assemble.temp_task_win = [self.task]
-        self.assemble.current_thread_count_win = 2
-        self.assemble.max_thread_count_win = 2
-        self.assemble.temp_node_win = [self.windows_build_host]
-        self.assemble.create_task_thread('win')
-        thread_mock.assert_not_called()
-        node_mock.assert_not_called()
-        self.assertEqual(self.assemble.temp_task_win, [self.task])
-        self.assertEqual(self.assemble.temp_node_win, [self.windows_build_host])
-        sleep_mock.assert_called_once_with(loop_interval)
-
-    @patch('time.sleep')
-    @patch('Framework_Kernel.assemble_engine.AssembleEngine.create_temp_node')
-    @patch('threading.Thread.start')
-    def test_create_task_thread_win_max_count(self, thread_mock, node_mock, sleep_mock):
-        loop_interval = 1
-        self.assemble.loop_interval = loop_interval
-        self.assemble.temp_task_win = [self.task]
-        self.assemble.current_thread_count_win = 3
-        self.assemble.max_thread_count_win = 2
-        self.assemble.temp_node_win = [self.windows_build_host]
-        self.assemble.create_task_thread('win')
-        thread_mock.assert_not_called()
-        node_mock.assert_not_called()
-        self.assertEqual(self.assemble.temp_task_win, [self.task])
-        self.assertEqual(self.assemble.temp_node_win, [self.windows_build_host])
-        sleep_mock.assert_called_once_with(loop_interval)
-
-    @patch('time.sleep')
-    @patch('Framework_Kernel.assemble_engine.AssembleEngine.create_temp_node')
-    @patch('Framework_Kernel.assemble_engine.AssembleEngine.create_temp_task')
-    @patch('threading.Thread.start')
-    def test_create_task_thread_win_none_task(self, thread_mock, task_mock, node_mock, sleep_mock):
-        loop_interval = 1
-        self.assemble.loop_interval = loop_interval
-        self.assemble.temp_task_win = []
-        self.assemble.current_thread_count_win = 1
-        self.assemble.max_thread_count_win = 2
-        self.assemble.temp_node_win = [self.windows_build_host]
-        self.assemble.create_task_thread('win')
-        thread_mock.assert_not_called()
-        node_mock.assert_not_called()
-        self.assertEqual(self.assemble.temp_task_win, task_mock.return_value)
-        self.assertEqual(self.assemble.temp_node_win, [self.windows_build_host])
-        sleep_mock.assert_called_once_with(loop_interval)
-        task_mock.assert_called_once_with('win')
-
-    @patch('threading.Thread.start')
-    def test_create_task_thread_linux(self, thread_mock):
-        self.assemble.temp_task_linux = [self.task]
-        self.assemble.current_thread_count_linux = 1
-        self.assemble.max_thread_count_linux = 2
-        self.assemble.temp_node_linux = [self.linux_build_host]
-        self.assemble.create_task_thread('linux')
-        thread_mock.assert_called_once()
-        self.assertEqual(self.assemble.temp_task_linux, [])
-        self.assertEqual(self.assemble.temp_node_linux, [])
-
-    @patch('Framework_Kernel.assemble_engine.AssembleEngine.create_temp_node')
-    @patch('threading.Thread.start')
-    def test_create_task_thread_win_none_node(self, thread_mock, node_mock):
-        self.assemble.temp_task_linux = [self.task]
-        self.assemble.current_thread_count_linux = 1
-        self.assemble.max_thread_count_linux = 2
-        self.assemble.temp_node_linux = []
-        self.assemble.create_task_thread('linux')
-        thread_mock.assert_not_called()
-        self.assertEqual(self.assemble.temp_task_linux, [self.task])
-        self.assertEqual(self.assemble.temp_node_linux, node_mock.return_value)
-        node_mock.assert_called_once_with('linux')
-
-    @patch('time.sleep')
-    @patch('Framework_Kernel.assemble_engine.AssembleEngine.create_temp_node')
-    @patch('threading.Thread.start')
-    def test_create_task_thread_linux_equal_count(self, thread_mock, node_mock, sleep_mock):
-        loop_interval = 1
-        self.assemble.loop_interval = loop_interval
-        self.assemble.temp_task_linux = [self.task]
-        self.assemble.current_thread_count_linux = 2
-        self.assemble.max_thread_count_linux = 2
-        self.assemble.temp_node_linux = [self.linux_build_host]
-        self.assemble.create_task_thread('linux')
-        thread_mock.assert_not_called()
-        node_mock.assert_not_called()
-        self.assertEqual(self.assemble.temp_task_linux, [self.task])
-        self.assertEqual(self.assemble.temp_node_linux, [self.linux_build_host])
-        sleep_mock.assert_called_once_with(loop_interval)
-
-    @patch('time.sleep')
-    @patch('Framework_Kernel.assemble_engine.AssembleEngine.create_temp_node')
-    @patch('threading.Thread.start')
-    def test_create_task_thread_linux_equal_count(self, thread_mock, node_mock, sleep_mock):
-        loop_interval = 1
-        self.assemble.loop_interval = loop_interval
-        self.assemble.temp_task_linux = [self.task]
-        self.assemble.current_thread_count_linux = 3
-        self.assemble.max_thread_count_linux = 2
-        self.assemble.temp_node_linux = [self.linux_build_host]
-        self.assemble.create_task_thread('linux')
-        thread_mock.assert_not_called()
-        node_mock.assert_not_called()
-        self.assertEqual(self.assemble.temp_task_linux, [self.task])
-        self.assertEqual(self.assemble.temp_node_linux, [self.linux_build_host])
-        sleep_mock.assert_called_once_with(loop_interval)
-
-    @patch('time.sleep')
-    @patch('Framework_Kernel.assemble_engine.AssembleEngine.create_temp_node')
-    @patch('Framework_Kernel.assemble_engine.AssembleEngine.create_temp_task')
-    @patch('threading.Thread.start')
-    def test_create_task_thread_win_none_task(self, thread_mock, task_mock, node_mock, sleep_mock):
-        loop_interval = 1
-        self.assemble.loop_interval = loop_interval
-        self.assemble.temp_task_linux = []
-        self.assemble.current_thread_count_linux = 1
-        self.assemble.max_thread_count_linux = 2
-        self.assemble.temp_node_linux = [self.linux_build_host]
-        self.assemble.create_task_thread('linux')
-        thread_mock.assert_not_called()
-        node_mock.assert_not_called()
-        self.assertEqual(self.assemble.temp_task_linux, task_mock.return_value)
-        self.assertEqual(self.assemble.temp_node_linux, [self.linux_build_host])
-        sleep_mock.assert_called_once_with(loop_interval)
-        task_mock.assert_called_once_with('linux')
-
-    @patch('time.sleep')
-    @patch('Framework_Kernel.assemble_engine.AssembleEngine.create_temp_node')
-    @patch('Framework_Kernel.assemble_engine.AssembleEngine.create_temp_task')
-    @patch('threading.Thread.start')
-    def test_create_task_thread_false(self, thread_mock, task_mock, node_mock, sleep_mock):
-        self.assertFalse(self.assemble.create_task_thread('wt'))
-        thread_mock.assert_not_called()
-        task_mock.assert_not_called()
-        node_mock.assert_not_called()
-        sleep_mock.assert_not_called()
+    @patch('threading.Thread.join')
+    def test_create_build_thread_except(self, join_mock, start_mock, sleep_mock, node_mock, task_mock, state_mock):
+        node_mock.return_value = [self.windows_build_host]
+        task_mock.return_value = [self.task]
+        join_mock.side_effect = [EOFError, None]
+        os = 'win'
+        build_node_type = WindowsBuildHost
+        temp_task_list = [self.task]
+        temp_node_list = [self.windows_build_host]
+        current_thread = 1
+        max_thread = 2
+        self.assemble.create_build_thread(os, build_node_type, temp_task_list, temp_node_list, current_thread,
+                                          max_thread)
+        self.assertEqual(start_mock.call_count, 2)
+        self.assertEqual(join_mock.call_count, 2)
+        self.assertEqual(state_mock.call_count, 3)
 
     def test_build_win(self):
         task = Mock(spec=Task)
