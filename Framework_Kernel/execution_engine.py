@@ -108,7 +108,7 @@ class ExecutionEngine(Engine):
             while 1:
                 # loop when thread queue is full
                 try:
-                    if self.current_thread_count > self.max_thread_count:
+                    if self.current_thread_count >= self.max_thread_count:
                         execution_log.info(
                             'current thread queue is full, waiting task finished')
                         time.sleep(self.loop_interval)

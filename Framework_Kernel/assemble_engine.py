@@ -319,7 +319,7 @@ class AssembleEngine(Engine):
         temp_node_list.remove(assemble_node)
         while True:
             try:
-                if current_thread > max_thread:
+                if current_thread >= max_thread:
                     assemble_log.info('Windows Assemble Thread is full, wait for task finish')
                     time.sleep(self.loop_interval)
                 else:
