@@ -146,12 +146,12 @@ def keep_assemble_alive():
         if not isinstance(instance_assemble_engine.status, Process):
             error_msg_instance = ErrorMsg(EngineCode().controller, ErrorLevel().reset_engine, 'reset assemble_engine for process instance check fail')
             error_handle_instance = ErrorHandler(error_msg_instance)
-            error_handle_instance.handle(engine=instance_assemble_engine)
+            error_handle_instance.handle(**{"engine":instance_assemble_engine})
 
         if not instance_assemble_engine.status.is_alive():
             error_msg_instance = ErrorMsg(EngineCode().controller, ErrorLevel().reset_engine, 'reset assemble_engine for process alive check fail')
             error_handle_instance = ErrorHandler(error_msg_instance)
-            error_handle_instance.handle(engine=instance_assemble_engine)
+            error_handle_instance.handle(**{"engine":instance_assemble_engine})
 
 
 def keep_executor_alive():
@@ -160,12 +160,12 @@ def keep_executor_alive():
         if not isinstance(instance_execution_engine.status, Process):
             error_msg_instance = ErrorMsg(EngineCode().controller, ErrorLevel().reset_engine, 'reset execution_engine for process instance check fail')
             error_handle_instance = ErrorHandler(error_msg_instance)
-            error_handle_instance.handle(engine=instance_execution_engine)
+            error_handle_instance.handle(**{"engine":instance_execution_engine})
 
         if not instance_execution_engine.status.is_alive():
             error_msg_instance = ErrorMsg(EngineCode().controller, ErrorLevel().reset_engine, 'reset execution_engine for process alive check fail')
             error_handle_instance = ErrorHandler(error_msg_instance)
-            error_handle_instance.handle(engine=instance_execution_engine)
+            error_handle_instance.handle(**{"engine":instance_execution_engine})
 
 
 if __name__ == '__main__':

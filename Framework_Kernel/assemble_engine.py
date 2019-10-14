@@ -189,7 +189,7 @@ class AssembleEngine(Engine):
                 '''
                 error_msg_instance = ErrorMsg(EngineCode().assembly_engine, ErrorLevel().drop_task, "build task fail,drop it")
                 error_handle_instance = ErrorHandler(error_msg_instance)
-                handle_res = error_handle_instance.handle(task=task, task_queue=self.assembleQueue)
+                handle_res = error_handle_instance.handle(**{"task":task, "task_queue":self.assembleQueue})
                 if not handle_res:
                     continue
 

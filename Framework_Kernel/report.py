@@ -11,6 +11,7 @@ import yaml
 import os
 import shutil
 import pandas
+from Framework_Kernel.error_handler import ErrorMsg, ErrorLevel, ErrorHandler, EngineCode
 
 
 class Report:
@@ -133,6 +134,12 @@ class Report:
                     'result': 'fail'
                 }]
                 result.extend(empty_result)
+                """
+                error handle for execute fail
+                """
+                error_msg_instance = ErrorMsg(EngineCode().execute_engine, ErrorLevel().continue_task, "execute task {} fail on uut {}".format(self.__name,i.get_ip()))
+                error_handle_instance = ErrorHandler(error_msg_instance)
+                error_handle_instance.handle()
                 continue
             with open(uut_result_file, encoding='utf-8') as f:
                 empty_result = yaml.safe_load(f.read())
