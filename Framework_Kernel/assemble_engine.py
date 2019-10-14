@@ -24,7 +24,7 @@ import datetime
 class AssembleEngine(Engine):
     def __init__(self, pipe, build_list):
         self.__pipe = pipe
-        self.__build_list = build_list
+        self.__build_node_list = build_list
         self.assembleQueue = Queue()
         self.global_settings = self.__load_config()
         self.loop_interval = self.global_settings['loop_interval']
@@ -241,7 +241,7 @@ class AssembleEngine(Engine):
         while True:
             assemble_log.info('=======================Begin to fresh temp node list==========================')
             # May need to refresh the node status in JIRA, so far so good
-            for build_node in temp_node_list:
+            for build_node in self.__build_node_list:
                 if build_node.state == 'Idle' and isinstance(build_node, build_node_type):
                     temp_node_list.append(build_node)
             if not temp_node_list:
