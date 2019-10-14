@@ -235,7 +235,7 @@ class AssembleEngine(Engine):
                 assemble_log.info('---No valid task, waiting for new task-----')
                 time.sleep(self.loop_interval)
             else:
-                return
+                return temp_task_list
 
     def __refresh_temp_node_list(self, temp_node_list, build_node_type):
         while True:
@@ -248,7 +248,7 @@ class AssembleEngine(Engine):
                 assemble_log.info('---No valid build host, waiting for new node-----')
                 time.sleep(self.loop_interval)
             else:
-                return
+                return temp_node_list
 
     def validate_task(self, task):
         s_validator = ScriptValidator()
