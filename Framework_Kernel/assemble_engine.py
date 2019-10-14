@@ -151,9 +151,15 @@ class AssembleEngine(Engine):
 
             # -------------------rename task plan name -------------------------
             os.rename(
-                taskitem['file_path'], taskitem['file_path'][:taskitem['file_path'].index('TEST_PLAN')] + 'Loaded_' + taskitem['file_path'][taskitem['file_path'].index('TEST_PLAN'):])
-            assemble_log.info('rename finished' + taskitem['file_path'][:taskitem['file_path'].index('TEST_PLAN')] + 'Loaded_' + taskitem['file_path']
-                              [taskitem['file_path'].index('TEST_PLAN'):])
+                taskitem['file_path'],
+                taskitem['file_path'][:taskitem['file_path'].index('TEST_PLAN')] + 'Loaded_' + taskitem['file_path'][
+                                                                                               taskitem[
+                                                                                                   'file_path'].index(
+                                                                                                   'TEST_PLAN'):])
+            assemble_log.info(
+                'rename finished' + taskitem['file_path'][:taskitem['file_path'].index('TEST_PLAN')] + 'Loaded_' +
+                taskitem['file_path']
+                [taskitem['file_path'].index('TEST_PLAN'):])
         assemble_log.info(
             '[Thread_fresh_testplan] ***************finish refresh queue *****************'
         )
@@ -187,9 +193,10 @@ class AssembleEngine(Engine):
                 '''
                 deal with build fail
                 '''
-                error_msg_instance = ErrorMsg(EngineCode().assembly_engine, ErrorLevel().drop_task, "build task fail,drop it")
+                error_msg_instance = ErrorMsg(EngineCode().assembly_engine, ErrorLevel().drop_task,
+                                              "build task fail,drop it")
                 error_handle_instance = ErrorHandler(error_msg_instance)
-                handle_res = error_handle_instance.handle(**{"task":task, "task_queue":self.assembleQueue})
+                handle_res = error_handle_instance.handle(**{"task": task, "task_queue": self.assembleQueue})
                 if not handle_res:
                     continue
 
@@ -253,14 +260,16 @@ class AssembleEngine(Engine):
     def validate_task(self, task):
         s_validator = ScriptValidator()
         if not s_validator.validate(task):
-            error_msg_instance = ErrorMsg(EngineCode().assembly_engine, ErrorLevel().continue_task, "validate task {} fail".format(task.get_name()))
+            error_msg_instance = ErrorMsg(EngineCode().assembly_engine, ErrorLevel().continue_task,
+                                          "validate task {} fail".format(task.get_name()))
             error_handle_instance = ErrorHandler(error_msg_instance)
             error_handle_instance.handle()
             return False
         h_validator = HostValidator()
         for uut in task.get_uut_list():
             if not h_validator.validate_uut(uut):
-                error_msg_instance = ErrorMsg(EngineCode().assembly_engine, ErrorLevel().continue_task, "validate task uut {} fail".format(task.get_name()))
+                error_msg_instance = ErrorMsg(EngineCode().assembly_engine, ErrorLevel().continue_task,
+                                              "validate task uut {} fail".format(task.get_name()))
                 error_handle_instance = ErrorHandler(error_msg_instance)
                 error_handle_instance.handle()
                 return False
@@ -294,41 +303,49 @@ class AssembleEngine(Engine):
             print('=======================================================')
             print('==========Begin to Start New Assemble Thread==============')
             print('=======================================================')
-            assemble_log.info('[thread_assembler] task_list left: {}'.format(len(temp_task_list)))
-            if not temp_task_list:
-                time.sleep(self.loop_interval)
-                temp_task_list = self.__refresh_temp_task_list(os, temp_task_list)
-            assemble_task = temp_task_list[0]
-            temp_task_list.remove(assemble_task)
-            if not temp_node_list:
-                temp_node_list = self.__refresh_temp_node_list(temp_node_list, build_node_type)
-            assemble_node = temp_node_list[0]
-            temp_node_list.remove(assemble_node)
-            while True:
-                try:
-                    if current_thread > max_thread:
-                        assemble_log.info('Windows Assemble Thread is full, wait for task finish')
-                        time.sleep(self.loop_interval)
-                    else:
-                        assemble_task.set_state('ASSEMBLING')
-                        assemble_node.state = 'Busy'
-                        current_thread += 1
-                        new_thread = threading.Thread(target=self.build, args=(assemble_task, assemble_node, os))
-                        new_thread.setDaemon(True)
-                        new_thread.start()
-                        new_thread.join(2)
-                        break
-                except Exception as e:
-                    assemble_log.error('New Thread Error, Exception: \n{}'.format(e))
-                    current_thread -= 1
-                    assemble_task.set_state('WAIT ASSEMBLE')
-                    assemble_node.state = 'Idle'
+            self.create_build_thread(os, build_node_type, temp_task_list, temp_node_list, current_thread,
+                                          max_thread)
+
+    def create_build_thread(self, os, build_node_type, temp_task_list, temp_node_list, current_thread, max_thread):
+        assemble_log.info('[thread_assembler] task_list left: {}'.format(len(temp_task_list)))
+        if not temp_task_list:
+            time.sleep(self.loop_interval)
+            temp_task_list = self.__refresh_temp_task_list(os, temp_task_list)
+        assemble_task = temp_task_list[0]
+        temp_task_list.remove(assemble_task)
+        if not temp_node_list:
+            temp_node_list = self.__refresh_temp_node_list(temp_node_list, build_node_type)
+        assemble_node = temp_node_list[0]
+        temp_node_list.remove(assemble_node)
+        while True:
+            try:
+                if current_thread > max_thread:
+                    assemble_log.info('Windows Assemble Thread is full, wait for task finish')
+                    time.sleep(self.loop_interval)
+                else:
+                    assemble_task.set_state('ASSEMBLING')
+                    assemble_node.state = 'Busy'
+                    current_thread += 1
+                    new_thread = threading.Thread(target=self.build, args=(assemble_task, assemble_node, os))
+                    new_thread.setDaemon(True)
+                    new_thread.start()
+                    new_thread.join(2)
+                    break
+            except Exception as e:
+                assemble_log.error('New Thread Error, Exception: \n{}'.format(e))
+                current_thread -= 1
+                assemble_task.set_state('WAIT ASSEMBLE')
+                assemble_node.state = 'Idle'
 
     def __assemble(self):
         while True:
-            win_thread = threading.Thread(target=self.create_os_thread, args=('win', WindowsBuildHost, self.temp_task_win, self.temp_node_win, self.current_thread_count_win, self.max_thread_count_win))
+            win_thread = threading.Thread(target=self.create_os_thread, args=(
+                'win', WindowsBuildHost, self.temp_task_win, self.temp_node_win, self.current_thread_count_win,
+                self.max_thread_count_win))
             win_thread.start()
-            linux_thread = threading.Thread(target=self.create_os_thread, args=('linux', LinuxBuildHost, self.temp_task_linux, self.temp_node_linux, self.current_thread_count_linux, self.max_thread_count_linux))
+            linux_thread = threading.Thread(target=self.create_os_thread, args=(
+                'linux', LinuxBuildHost, self.temp_task_linux, self.temp_node_linux, self.current_thread_count_linux,
+                self.max_thread_count_linux))
             linux_thread.start()
             win_thread.join()
             linux_thread.join()
