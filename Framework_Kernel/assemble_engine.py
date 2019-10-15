@@ -155,7 +155,8 @@ class AssembleEngine(Engine):
                 taskitem['file_path'][:taskitem['file_path'].index('TEST_PLAN')] + 'Loaded_' + taskitem['file_path']
                 [taskitem['file_path'].index('TEST_PLAN'):])
             assemble_log.info(
-                'rename finished' + taskitem['file_path'][:taskitem['file_path'].index('TEST_PLAN')] + 'Loaded_' + taskitem['file_path']
+                'rename finished' + taskitem['file_path'][:taskitem['file_path'].index('TEST_PLAN')] + 'Loaded_' +
+                taskitem['file_path']
                 [taskitem['file_path'].index('TEST_PLAN'):])
         assemble_log.info(
             '[Thread_fresh_testplan] ***************finish refresh queue *****************'
@@ -287,7 +288,7 @@ class AssembleEngine(Engine):
             task.set_state('WAIT ASSEMBLE')
             node.state = 'Idle'
         finally:
-            if os == 'win'and self.current_thread_count_win > 0:
+            if os == 'win' and self.current_thread_count_win > 0:
                 self.current_thread_count_win -= 1
             elif os == 'linux' and self.current_thread_count_linux > 0:
                 self.current_thread_count_linux -= 1
@@ -302,10 +303,10 @@ class AssembleEngine(Engine):
 
     def get_current(self, os, int=0):
         if os == 'win':
-            self.current_thread_count_win+= int
+            self.current_thread_count_win += int
             return self.current_thread_count_win
         elif os == 'linux':
-            self.current_thread_count_linux+= int
+            self.current_thread_count_linux += int
             return self.current_thread_count_linux
 
     def create_build_thread(self, os, build_node_type, temp_task_list, temp_node_list, max_thread):
@@ -342,10 +343,10 @@ class AssembleEngine(Engine):
     def __assemble(self):
         while True:
             win_thread = threading.Thread(target=self.create_os_thread, args=(
-                'win', WindowsBuildHost, self.temp_task_win, self.temp_node_win,self.max_thread_count_win))
+                'win', WindowsBuildHost, self.temp_task_win, self.temp_node_win, self.max_thread_count_win))
             win_thread.start()
             linux_thread = threading.Thread(target=self.create_os_thread, args=(
-                'linux', LinuxBuildHost, self.temp_task_linux, self.temp_node_linux,self.max_thread_count_linux))
+                'linux', LinuxBuildHost, self.temp_task_linux, self.temp_node_linux, self.max_thread_count_linux))
             linux_thread.start()
             win_thread.join()
             linux_thread.join()
