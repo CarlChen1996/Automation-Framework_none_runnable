@@ -266,7 +266,7 @@ class AssembleEngine(Engine):
         for uut in task.get_uut_list():
             if not h_validator.validate_uut(uut):
                 error_msg_instance = ErrorMsg(EngineCode().assembly_engine, ErrorLevel().record_and_continue,
-                                              "validate task uut in {} fail on {}".format(task.get_name(),uut))
+                                              "validate task uut in {} fail on {}".format(task.get_name(), uut))
                 error_handle_instance = ErrorHandler(error_msg_instance)
                 error_handle_instance.handle()
                 return False
@@ -282,17 +282,14 @@ class AssembleEngine(Engine):
             print('build finished {} on {}'.format(task.get_name(), node.get_hostname()))
             task.set_state('Assemble Finished')
             node.state = 'Idle'
-            if os == 'win':
-                self.current_thread_count_win -= 1
-            elif os == 'linux':
-                self.current_thread_count_linux -= 1
         except Exception as e:
             assemble_log.error('New thread Error, Exception:\n{}'.format(e))
             task.set_state('WAIT ASSEMBLE')
             node.state = 'Idle'
-            if os == 'win':
+        finally:
+            if os == 'win'and self.current_thread_count_win > 0:
                 self.current_thread_count_win -= 1
-            elif os == 'linux':
+            elif os == 'linux' and self.current_thread_count_linux > 0:
                 self.current_thread_count_linux -= 1
 
     def create_os_thread(self, os, build_node_type, temp_task_list, temp_node_list, current_thread, max_thread):
