@@ -386,3 +386,15 @@ class AssembleEngineTest(unittest.TestCase):
         self.assertEqual(self.task.get_state(), 'WAIT ASSEMBLE')
         self.assertEqual(self.linux_build_host.state, 'Idle')
         self.assertEqual(self.assemble.current_thread_count_linux, current_thread_count_linux - 1)
+
+    @patch('multiprocessing.Process.start')
+    def test_start(self, start_mock):
+        self.assemble.start()
+        start_mock.assert_called_once()
+
+    @patch('multiprocessing.Process.start')
+    @patch('multiprocessing.Process.terminate')
+    def test_stop(self, stop_mock, start_mock):
+        self.assemble.start()
+        self.assemble.stop()
+        stop_mock.assert_called_once()

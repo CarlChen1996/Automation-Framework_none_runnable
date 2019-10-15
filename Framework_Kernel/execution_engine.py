@@ -96,36 +96,39 @@ class ExecutionEngine(Engine):
             print('=======================================================')
             print('==========Begin to Start New Execute Thread==============')
             print('=======================================================')
-            execution_log.info('[thread_executor] task_list left: {}'.format(len(self.__temp_task_list)))
-            if not self.__temp_task_list:
-                self.__fresh_temp_task_list()
-            execute_task = self.__temp_task_list[0]
-            self.__temp_task_list.remove(execute_task)
-            if not self.__temp_host_list:
-                self.__fresh_temp_host_list()
-            deploy_host = self.__temp_host_list[0]
-            self.__temp_host_list.remove(deploy_host)
-            while 1:
-                # loop when thread queue is full
-                try:
-                    if self.current_thread_count >= self.max_thread_count:
-                        execution_log.info(
-                            'current thread queue is full, waiting task finished')
-                        time.sleep(self.loop_interval)
-                    else:
-                        execute_task.set_state('Executing')
-                        deploy_host.state = 'Busy'
-                        self.current_thread_count += 1
-                        new_thread = threading.Thread(target=self.__execute, args=(execute_task, deploy_host))
-                        new_thread.setDaemon(True)
-                        new_thread.start()
-                        new_thread.join(2)
-                        break
-                except Exception as e:
-                    execution_log.error('New thread Error, Exception:\n{}'.format(e))
-                    self.current_thread_count -= 1
-                    deploy_host.state = 'Idle'
-                    execute_task.set_state('Assemble Finished')
+            self.create_execute_thread()
+
+    def create_execute_thread(self):
+        execution_log.info('[thread_executor] task_list left: {}'.format(len(self.__temp_task_list)))
+        if not self.__temp_task_list:
+            self.__fresh_temp_task_list()
+        execute_task = self.__temp_task_list[0]
+        self.__temp_task_list.remove(execute_task)
+        if not self.__temp_host_list:
+            self.__fresh_temp_host_list()
+        deploy_host = self.__temp_host_list[0]
+        self.__temp_host_list.remove(deploy_host)
+        while 1:
+            # loop when thread queue is full
+            try:
+                if self.current_thread_count >= self.max_thread_count:
+                    execution_log.info(
+                        'current thread queue is full, waiting task finished')
+                    time.sleep(self.loop_interval)
+                else:
+                    execute_task.set_state('Executing')
+                    deploy_host.state = 'Busy'
+                    self.current_thread_count += 1
+                    new_thread = threading.Thread(target=self.__execute, args=(execute_task, deploy_host))
+                    new_thread.setDaemon(True)
+                    new_thread.start()
+                    new_thread.join(2)
+                    break
+            except Exception as e:
+                execution_log.error('New thread Error, Exception:\n{}'.format(e))
+                self.current_thread_count -= 1
+                deploy_host.state = 'Idle'
+                execute_task.set_state('Assemble Finished')
 
     @staticmethod
     def deploy(deploy_server_host, task):
