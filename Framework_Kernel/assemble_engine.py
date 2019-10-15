@@ -152,13 +152,10 @@ class AssembleEngine(Engine):
             # -------------------rename task plan name -------------------------
             os.rename(
                 taskitem['file_path'],
-                taskitem['file_path'][:taskitem['file_path'].index('TEST_PLAN')] + 'Loaded_' + taskitem['file_path'][
-                                                                                               taskitem[
-                                                                                                   'file_path'].index(
-                                                                                                   'TEST_PLAN'):])
+                taskitem['file_path'][:taskitem['file_path'].index('TEST_PLAN')] + 'Loaded_' + taskitem['file_path']
+                [taskitem['file_path'].index('TEST_PLAN'):])
             assemble_log.info(
-                'rename finished' + taskitem['file_path'][:taskitem['file_path'].index('TEST_PLAN')] + 'Loaded_' +
-                taskitem['file_path']
+                'rename finished' + taskitem['file_path'][:taskitem['file_path'].index('TEST_PLAN')] + 'Loaded_' + taskitem['file_path']
                 [taskitem['file_path'].index('TEST_PLAN'):])
         assemble_log.info(
             '[Thread_fresh_testplan] ***************finish refresh queue *****************'
@@ -304,7 +301,7 @@ class AssembleEngine(Engine):
             print('==========Begin to Start New Assemble Thread==============')
             print('=======================================================')
             self.create_build_thread(os, build_node_type, temp_task_list, temp_node_list, current_thread,
-                                          max_thread)
+                                     max_thread)
 
     def create_build_thread(self, os, build_node_type, temp_task_list, temp_node_list, current_thread, max_thread):
         assemble_log.info('[thread_assembler] task_list left: {}'.format(len(temp_task_list)))
