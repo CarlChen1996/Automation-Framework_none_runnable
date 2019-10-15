@@ -293,13 +293,12 @@ class AssembleEngine(Engine):
             elif os == 'linux' and self.current_thread_count_linux > 0:
                 self.current_thread_count_linux -= 1
 
-    def create_os_thread(self, os, build_node_type, temp_task_list, temp_node_list, current_thread, max_thread):
+    def create_os_thread(self, os, build_node_type, temp_task_list, temp_node_list, max_thread):
         while True:
             print('=======================================================')
             print('==========Begin to Start New Assemble Thread==============')
             print('=======================================================')
-            self.create_build_thread(os, build_node_type, temp_task_list, temp_node_list, current_thread,
-                                     max_thread)
+            self.create_build_thread(os, build_node_type, temp_task_list, temp_node_list, max_thread)
 
     def get_current(self, os, int=0):
         if os == 'win':
