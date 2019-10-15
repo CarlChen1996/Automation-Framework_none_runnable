@@ -42,7 +42,7 @@ class AssembleEngineTest(unittest.TestCase):
         self.build_list = [self.windows_build_host, self.linux_build_host]
         self.assemble = assemble_engine.AssembleEngine(self.pipe[0], self.build_list)
         self.task_name = 'task_1'
-        self.task = Task(name=self.task_name)
+        self.task = Task(name=self.task_name, email=['jie.liu1@hp.com'])
         self.excel_name = '.\\Test_Plan\\TEST_PLAN_unittest.xlsx'
         self.loaded_excel = '.\\Test_Plan\\Loaded_TEST_PLAN_unittest.xlsx'
         self.uut_windows = WindowsExecuteHost(ip='1.1.1.1', mac=666666, version='wes')
@@ -99,7 +99,7 @@ class AssembleEngineTest(unittest.TestCase):
         self.task.set_status('SUCCES')
         self.assemble.assembleQueue.insert_task(task=self.task)
         self.assemble.send_task_to_execution()
-        error_handle_mock.assert_called_once_with(task=self.task, task_queue=self.assemble.assembleQueue)
+        error_handle_mock.assert_called_once_with(task=self.task, state='unknown')
 
     @patch('time.sleep')
     def test_send_task_to_execution_unfinished(self, sleep_mock):
@@ -115,8 +115,9 @@ class AssembleEngineTest(unittest.TestCase):
         self.assemble.get_signal_after_send(self.task)
         remove.assert_called_once_with(self.task)
 
+    @patch('Common_Library.email_operator.Email.send_email')
     @patch('Framework_Kernel.task_queue.Queue.remove_task')
-    def test_get_ack_wrong_from_execution_engine(self, remove):
+    def test_get_ack_wrong_from_execution_engine(self, remove, email_mock):
         self.pipe[1].send(self.task)
         self.assemble.get_signal_after_send(self.task)
         remove.assert_not_called()
@@ -154,9 +155,10 @@ class AssembleEngineTest(unittest.TestCase):
         script_mock.return_value = True
         self.assertTrue(self.assemble.validate_task(self.task))
 
+    @patch('Common_Library.email_operator.Email.send_email')
     @patch('Framework_Kernel.validator.HostValidator.validate_uut')
     @patch('Framework_Kernel.validator.ScriptValidator.validate')
-    def test_validate_task_false(self, script_mock, uut_mock):
+    def test_validate_task_false(self, script_mock, uut_mock, email_mock):
         self.task.insert_uut_list(self.uut_windows)
         script_mock.return_value = False
         self.assertFalse(self.assemble.validate_task(self.task))
@@ -281,10 +283,8 @@ class AssembleEngineTest(unittest.TestCase):
         build_node_type = WindowsBuildHost
         temp_task_list = [self.task]
         temp_node_list = [self.windows_build_host]
-        current_thread = 1
         max_thread = 2
-        self.assemble.create_build_thread(os, build_node_type, temp_task_list, temp_node_list, current_thread,
-                                          max_thread)
+        self.assemble.create_build_thread(os, build_node_type, temp_task_list, temp_node_list, max_thread)
         start_mock.assert_called_once()
         join_mock.assert_called_once()
 
@@ -306,10 +306,8 @@ class AssembleEngineTest(unittest.TestCase):
         build_node_type = WindowsBuildHost
         temp_task_list = []
         temp_node_list = []
-        current_thread = 1
         max_thread = 2
-        self.assemble.create_build_thread(os, build_node_type, temp_task_list, temp_node_list, current_thread,
-                                          max_thread)
+        self.assemble.create_build_thread(os, build_node_type, temp_task_list, temp_node_list, max_thread)
         task_mock.assert_called_once_with(os, temp_task_list)
         node_mock.assert_called_once_with(temp_node_list, build_node_type)
         start_mock.assert_called_once()
@@ -329,10 +327,8 @@ class AssembleEngineTest(unittest.TestCase):
         build_node_type = WindowsBuildHost
         temp_task_list = [self.task]
         temp_node_list = [self.windows_build_host]
-        current_thread = 1
         max_thread = 2
-        self.assemble.create_build_thread(os, build_node_type, temp_task_list, temp_node_list, current_thread,
-                                          max_thread)
+        self.assemble.create_build_thread(os, build_node_type, temp_task_list, temp_node_list, max_thread)
         self.assertEqual(start_mock.call_count, 2)
         self.assertEqual(join_mock.call_count, 2)
         self.assertEqual(state_mock.call_count, 3)
@@ -386,6 +382,9 @@ class AssembleEngineTest(unittest.TestCase):
         self.assertEqual(self.task.get_state(), 'WAIT ASSEMBLE')
         self.assertEqual(self.linux_build_host.state, 'Idle')
         self.assertEqual(self.assemble.current_thread_count_linux, current_thread_count_linux - 1)
+
+    def test_load_config(self):
+        pass
 
     @patch('multiprocessing.Process.start')
     def test_start(self, start_mock):
