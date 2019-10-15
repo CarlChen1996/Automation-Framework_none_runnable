@@ -82,6 +82,14 @@ class ExecutionEngineTest(unittest.TestCase):
         self.execution.send_report(self.task)
         self.assertNotIn(self.task, self.execution.execution_queue.get_task_list())
 
+    @patch('multiprocessing.Process.start')
+    def test_start(self, start_mock):
+        self.execution.start()
+        start_mock.assert_called_once()
 
-if __name__ == '__main__':
-    unittest.main()
+    @patch('multiprocessing.Process.start')
+    @patch('multiprocessing.Process.terminate')
+    def test_stop(self, stop_mock, start_mock):
+        self.execution.start()
+        self.execution.stop()
+        stop_mock.assert_called_once()
