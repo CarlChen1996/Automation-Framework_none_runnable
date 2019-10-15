@@ -28,7 +28,6 @@ class ErrorLevel:
         self.record_and_continue = '06'
 
 
-
 class ErrorMsg():
     def __init__(self, engine_code, error_level, msg):
         self.engine_code = engine_code
@@ -115,7 +114,7 @@ class ErrorHandler:
         print(self.engine_code, ':', self.error_level, ':', self.error_details)
         return 1
 
-    def mark_task(self,task,state):
+    def mark_task(self, task, state):
         error_handler_log.info(self.error_msg)
         print("mark_task")
         task.set_state(state)

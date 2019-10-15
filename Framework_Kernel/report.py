@@ -21,7 +21,7 @@ class Report:
         self.__template_name = self.settings['template_name']
         self.__static_src = self.settings['static_src']
         self.__name = task.get_name()
-        self.task=task
+        self.task = task
         self.__uut_list = task.get_uut_list()
         self.__start_time = task.start_time
         self.__end_time = task.end_time
@@ -138,9 +138,9 @@ class Report:
                 """
                 error handle for execute fail
                 """
-                error_msg_instance = ErrorMsg(EngineCode().execute_engine, ErrorLevel().mark_task, "execute task {} fail on uut {}".format(self.__name,i.get_ip()))
+                error_msg_instance = ErrorMsg(EngineCode().execute_engine, ErrorLevel().mark_task, "execute task {} fail on uut {}".format(self.__name, i.get_ip()))
                 error_handle_instance = ErrorHandler(error_msg_instance)
-                error_handle_instance.handle(task=self.task,state="unknown")
+                error_handle_instance.handle(task=self.task, state="unknown")
                 continue
             with open(uut_result_file, encoding='utf-8') as f:
                 empty_result = yaml.safe_load(f.read())
