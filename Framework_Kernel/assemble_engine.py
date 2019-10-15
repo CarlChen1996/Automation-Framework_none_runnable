@@ -300,7 +300,15 @@ class AssembleEngine(Engine):
             self.create_build_thread(os, build_node_type, temp_task_list, temp_node_list, current_thread,
                                      max_thread)
 
-    def create_build_thread(self, os, build_node_type, temp_task_list, temp_node_list, current_thread, max_thread):
+    def get_current(self, os, int=0):
+        if os == 'win':
+            self.current_thread_count_win+= int
+            return self.current_thread_count_win
+        elif os == 'linux':
+            self.current_thread_count_linux+= int
+            return self.current_thread_count_linux
+
+    def create_build_thread(self, os, build_node_type, temp_task_list, temp_node_list, max_thread):
         assemble_log.info('[thread_assembler] task_list left: {}'.format(len(temp_task_list)))
         if not temp_task_list:
             time.sleep(self.loop_interval)
@@ -313,13 +321,13 @@ class AssembleEngine(Engine):
         temp_node_list.remove(assemble_node)
         while True:
             try:
-                if current_thread >= max_thread:
+                if self.get_current(os) >= max_thread:
                     assemble_log.info('Windows Assemble Thread is full, wait for task finish')
                     time.sleep(self.loop_interval)
                 else:
                     assemble_task.set_state('ASSEMBLING')
                     assemble_node.state = 'Busy'
-                    current_thread += 1
+                    self.get_current(os, 1)
                     new_thread = threading.Thread(target=self.build, args=(assemble_task, assemble_node, os))
                     new_thread.setDaemon(True)
                     new_thread.start()
@@ -327,19 +335,17 @@ class AssembleEngine(Engine):
                     break
             except Exception as e:
                 assemble_log.error('New Thread Error, Exception: \n{}'.format(e))
-                current_thread -= 1
+                self.get_current(os, -1)
                 assemble_task.set_state('WAIT ASSEMBLE')
                 assemble_node.state = 'Idle'
 
     def __assemble(self):
         while True:
             win_thread = threading.Thread(target=self.create_os_thread, args=(
-                'win', WindowsBuildHost, self.temp_task_win, self.temp_node_win, self.current_thread_count_win,
-                self.max_thread_count_win))
+                'win', WindowsBuildHost, self.temp_task_win, self.temp_node_win,self.max_thread_count_win))
             win_thread.start()
             linux_thread = threading.Thread(target=self.create_os_thread, args=(
-                'linux', LinuxBuildHost, self.temp_task_linux, self.temp_node_linux, self.current_thread_count_linux,
-                self.max_thread_count_linux))
+                'linux', LinuxBuildHost, self.temp_task_linux, self.temp_node_linux,self.max_thread_count_linux))
             linux_thread.start()
             win_thread.join()
             linux_thread.join()
