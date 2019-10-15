@@ -29,7 +29,6 @@ class ErrorLevel:
         self.record_and_continue = '06'
 
 
-
 class ErrorMsg():
     def __init__(self, engine_code, error_level, msg):
         self.engine_code = engine_code
@@ -74,17 +73,17 @@ class ErrorHandler:
             print('unknown error level')
             return False
 
-    def terminate_framework(self,mail_receiver):
+    def terminate_framework(self, mail_receiver):
         error_handler_log.critical(self.error_msg)
         self.notice(mail_receiver)
         return 0
 
-    def reset_framework(self,mail_receiver):
+    def reset_framework(self, mail_receiver):
         error_handler_log.critical(self.error_msg)
         self.notice(mail_receiver)
         return 1
 
-    def reset_engine(self, engine,mail_receiver):
+    def reset_engine(self, engine, mail_receiver):
         error_handler_log.critical(self.error_msg)
         self.notice(mail_receiver)
         engine.start()
@@ -97,34 +96,34 @@ class ErrorHandler:
             error_handler_log.info("[watch_executor_thread] can't start execution engine")
             return 0
 
-    def rerun_task(self,mail_receiver):
+    def rerun_task(self, mail_receiver):
         error_handler_log.critical(self.error_msg)
         self.notice(mail_receiver)
         return 1
 
-    def drop_task(self, task, task_queue,mail_receiver):
+    def drop_task(self, task, task_queue, mail_receiver):
         error_handler_log.critical(self.error_msg)
         self.notice(mail_receiver)
         task_queue.remove_task(task)
         return 0
 
-    def record_and_continue(self,mail_receiver):
+    def record_and_continue(self, mail_receiver):
         error_handler_log.info(self.error_msg)
         self.notice(mail_receiver)
         return 1
 
-    def mark_task(self,task,state,mail_receiver):
+    def mark_task(self, task, state, mail_receiver):
         error_handler_log.info(self.error_msg)
         self.notice(mail_receiver)
         task.set_state(state)
         return 1
 
-    def notice(self,mail_receiver):
-        email=email_operator.Email()
-        receiver=[email.default_receiver]
+    def notice(self, mail_receiver):
+        email = email_operator.Email()
+        receiver = [email.default_receiver]
         if mail_receiver:
             receiver.extend(mail_receiver)
-        email.send_email("error handle notice",receiver,self.error_msg, 'plain')
+        email.send_email("error handle notice", receiver, self.error_msg, 'plain')
 
 
 if __name__ == '__main__':
