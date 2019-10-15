@@ -193,7 +193,7 @@ class AssembleEngine(Engine):
                 error_msg_instance = ErrorMsg(EngineCode().assembly_engine, ErrorLevel().mark_task,
                                               "build task fail,mark state to unknown")
                 error_handle_instance = ErrorHandler(error_msg_instance)
-                handle_res = error_handle_instance.handle(task=task, state="unknown")
+                handle_res = error_handle_instance.handle(task=task, state="unknown",mail_receiver=task.get_email())
                 if not handle_res:
                     continue
 
@@ -215,7 +215,7 @@ class AssembleEngine(Engine):
             error_msg_instance = ErrorMsg(EngineCode().assembly_engine, ErrorLevel().record_and_continue,
                                           "send task to execute engine fail")
             error_handle_instance = ErrorHandler(error_msg_instance)
-            error_handle_instance.handle()
+            error_handle_instance.handle(mail_receiver=None)
             assemble_log.info(
                 '[fresh_queue_execution]-----send task and received task is not the same one- ----------'
             )
@@ -260,15 +260,15 @@ class AssembleEngine(Engine):
             error_msg_instance = ErrorMsg(EngineCode().assembly_engine, ErrorLevel().record_and_continue,
                                           "validate task script in  {} fail".format(task.get_name()))
             error_handle_instance = ErrorHandler(error_msg_instance)
-            error_handle_instance.handle()
+            error_handle_instance.handle(mail_receiver=task.get_email())
             return False
         h_validator = HostValidator()
         for uut in task.get_uut_list():
             if not h_validator.validate_uut(uut):
                 error_msg_instance = ErrorMsg(EngineCode().assembly_engine, ErrorLevel().record_and_continue,
-                                              "validate task uut in {} fail on {}".format(task.get_name(),uut))
+                                              "validate task uut in {} fail on {}".format(task.get_name(),uut.get_ip()))
                 error_handle_instance = ErrorHandler(error_msg_instance)
-                error_handle_instance.handle()
+                error_handle_instance.handle(mail_receiver=task.get_email())
                 return False
         return True
 

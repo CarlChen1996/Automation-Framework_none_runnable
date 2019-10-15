@@ -94,7 +94,7 @@ class ConfigurationEngine(Engine):
                 error_msg_instance = ErrorMsg(EngineCode().config_engine, ErrorLevel().record_and_continue,
                                               "validate server {} fail".format(server.get_hostname()))
                 error_handle_instance = ErrorHandler(error_msg_instance)
-                error_handle_instance.handle()
+                error_handle_instance.handle(mail_receiver=None)
         self.send_signal.send(valid_server_list)
         return valid_server_list
 

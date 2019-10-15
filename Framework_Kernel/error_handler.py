@@ -6,6 +6,7 @@
 # @Project : Automation-Framework
 
 from Framework_Kernel.log import error_handler_log
+from Common_Library import email_operator
 
 
 class EngineCode:
@@ -73,19 +74,19 @@ class ErrorHandler:
             print('unknown error level')
             return False
 
-    def terminate_framework(self):
+    def terminate_framework(self,mail_receiver):
         error_handler_log.critical(self.error_msg)
-        print("terminate_framework")
-        print(self.engine_code, ':', self.error_level, ':', self.error_details)
+        self.notice(mail_receiver)
         return 0
 
-    def reset_framework(self):
+    def reset_framework(self,mail_receiver):
         error_handler_log.critical(self.error_msg)
-        print("reset_framework")
-        print(self.engine_code, ':', self.error_level, ':', self.error_details)
+        self.notice(mail_receiver)
+        return 1
 
-    def reset_engine(self, engine):
+    def reset_engine(self, engine,mail_receiver):
         error_handler_log.critical(self.error_msg)
+        self.notice(mail_receiver)
         engine.start()
         if engine.status.is_alive():
             error_handler_log.info("[watch_executor_thread] start execution engine successfully")
@@ -96,31 +97,34 @@ class ErrorHandler:
             error_handler_log.info("[watch_executor_thread] can't start execution engine")
             return 0
 
-    def rerun_task(self):
+    def rerun_task(self,mail_receiver):
         error_handler_log.critical(self.error_msg)
-        print("rerun_task")
-        print(self.engine_code, ':', self.error_level, ':', self.error_details)
+        self.notice(mail_receiver)
         return 1
 
-    def drop_task(self, task, task_queue):
+    def drop_task(self, task, task_queue,mail_receiver):
         error_handler_log.critical(self.error_msg)
-        print("drop_task")
-        print(self.engine_code, ':', self.error_level, ':', self.error_details)
+        self.notice(mail_receiver)
         task_queue.remove_task(task)
         return 0
 
-    def record_and_continue(self):
+    def record_and_continue(self,mail_receiver):
         error_handler_log.info(self.error_msg)
-        print("continue_task")
-        print(self.engine_code, ':', self.error_level, ':', self.error_details)
+        self.notice(mail_receiver)
         return 1
 
-    def mark_task(self,task,state):
+    def mark_task(self,task,state,mail_receiver):
         error_handler_log.info(self.error_msg)
-        print("mark_task")
+        self.notice(mail_receiver)
         task.set_state(state)
-        print(self.engine_code, ':', self.error_level, ':', self.error_details)
         return 1
+
+    def notice(self,mail_receiver):
+        email=email_operator.Email()
+        receiver=[email.default_receiver]
+        if mail_receiver:
+            receiver.extend(mail_receiver)
+        email.send_email("error handle notice",receiver,self.error_msg, 'plain')
 
 
 if __name__ == '__main__':
