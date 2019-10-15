@@ -82,6 +82,9 @@ class ExecutionEngineTest(unittest.TestCase):
         self.execution.send_report(self.task)
         self.assertNotIn(self.task, self.execution.execution_queue.get_task_list())
 
+    def test_load_config(self):
+        pass
+
     @patch('multiprocessing.Process.start')
     def test_start(self, start_mock):
         self.execution.start()

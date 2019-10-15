@@ -216,7 +216,7 @@ class AssembleEngine(Engine):
             error_msg_instance = ErrorMsg(EngineCode().assembly_engine, ErrorLevel().record_and_continue,
                                           "send task to execute engine fail")
             error_handle_instance = ErrorHandler(error_msg_instance)
-            error_handle_instance.handle()
+            error_handle_instance.handle(mail_receiver=task.get_email())
             assemble_log.info(
                 '[fresh_queue_execution]-----send task and received task is not the same one- ----------'
             )
@@ -261,7 +261,7 @@ class AssembleEngine(Engine):
             error_msg_instance = ErrorMsg(EngineCode().assembly_engine, ErrorLevel().record_and_continue,
                                           "validate task script in  {} fail".format(task.get_name()))
             error_handle_instance = ErrorHandler(error_msg_instance)
-            error_handle_instance.handle()
+            error_handle_instance.handle(mail_receiver=task.get_email())
             return False
         h_validator = HostValidator()
         for uut in task.get_uut_list():
@@ -269,7 +269,7 @@ class AssembleEngine(Engine):
                 error_msg_instance = ErrorMsg(EngineCode().assembly_engine, ErrorLevel().record_and_continue,
                                               "validate task uut in {} fail on {}".format(task.get_name(), uut))
                 error_handle_instance = ErrorHandler(error_msg_instance)
-                error_handle_instance.handle()
+                error_handle_instance.handle(mail_receiver=task.get_email())
                 return False
         return True
 
