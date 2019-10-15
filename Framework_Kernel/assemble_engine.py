@@ -194,7 +194,7 @@ class AssembleEngine(Engine):
                 error_msg_instance = ErrorMsg(EngineCode().assembly_engine, ErrorLevel().mark_task,
                                               "build task fail,mark state to unknown")
                 error_handle_instance = ErrorHandler(error_msg_instance)
-                handle_res = error_handle_instance.handle(task=task, state="unknown",mail_receiver=task.get_email())
+                handle_res = error_handle_instance.handle(task=task, state="unknown", mail_receiver=task.get_email())
                 if not handle_res:
                     continue
 

@@ -109,7 +109,8 @@ def run_with_auto_mode():
     check build server not empty
     """
     if not build_server_list:
-        error_msg_instance_build = ErrorMsg(EngineCode().config_engine, ErrorLevel().terminate_framework, 'build server list is empty')
+        error_msg_instance_build = ErrorMsg(EngineCode().config_engine, ErrorLevel().terminate_framework,
+                                            'build server list is empty')
         error_handle_instance_build = ErrorHandler(error_msg_instance_build)
         res = error_handle_instance_build.handle(mail_receiver=None)
         if not res:
@@ -118,7 +119,8 @@ def run_with_auto_mode():
     check execute server not empty
     """
     if not deploy_list:
-        error_msg_instance_execute = ErrorMsg(EngineCode().config_engine, ErrorLevel().terminate_framework, 'execute server list is empty')
+        error_msg_instance_execute = ErrorMsg(EngineCode().config_engine, ErrorLevel().terminate_framework,
+                                              'execute server list is empty')
         error_handle_instance_execute = ErrorHandler(error_msg_instance_execute)
         res = error_handle_instance_execute.handle(mail_receiver=None)
         if not res:
@@ -144,28 +146,32 @@ def keep_assemble_alive():
     while True:
         time.sleep(5)
         if not isinstance(instance_assemble_engine.status, Process):
-            error_msg_instance = ErrorMsg(EngineCode().controller, ErrorLevel().reset_engine, 'reset assemble_engine for process instance check fail')
+            error_msg_instance = ErrorMsg(EngineCode().controller, ErrorLevel().reset_engine,
+                                          'reset assemble_engine for process instance check fail')
             error_handle_instance = ErrorHandler(error_msg_instance)
-            error_handle_instance.handle(engine=instance_assemble_engine,mail_receiver=None)
+            error_handle_instance.handle(engine=instance_assemble_engine, mail_receiver=None)
 
         if not instance_assemble_engine.status.is_alive():
-            error_msg_instance = ErrorMsg(EngineCode().controller, ErrorLevel().reset_engine, 'reset assemble_engine for process alive check fail')
+            error_msg_instance = ErrorMsg(EngineCode().controller, ErrorLevel().reset_engine,
+                                          'reset assemble_engine for process alive check fail')
             error_handle_instance = ErrorHandler(error_msg_instance)
-            error_handle_instance.handle(engine=instance_assemble_engine,mail_receiver=None)
+            error_handle_instance.handle(engine=instance_assemble_engine, mail_receiver=None)
 
 
 def keep_executor_alive():
     while True:
         time.sleep(5)
         if not isinstance(instance_execution_engine.status, Process):
-            error_msg_instance = ErrorMsg(EngineCode().controller, ErrorLevel().reset_engine, 'reset execution_engine for process instance check fail')
+            error_msg_instance = ErrorMsg(EngineCode().controller, ErrorLevel().reset_engine,
+                                          'reset execution_engine for process instance check fail')
             error_handle_instance = ErrorHandler(error_msg_instance)
-            error_handle_instance.handle(engine=instance_execution_engine,mail_receiver=None)
+            error_handle_instance.handle(engine=instance_execution_engine, mail_receiver=None)
 
         if not instance_execution_engine.status.is_alive():
-            error_msg_instance = ErrorMsg(EngineCode().controller, ErrorLevel().reset_engine, 'reset execution_engine for process alive check fail')
+            error_msg_instance = ErrorMsg(EngineCode().controller, ErrorLevel().reset_engine,
+                                          'reset execution_engine for process alive check fail')
             error_handle_instance = ErrorHandler(error_msg_instance)
-            error_handle_instance.handle(engine=instance_execution_engine,mail_receiver=None)
+            error_handle_instance.handle(engine=instance_execution_engine, mail_receiver=None)
 
 
 if __name__ == '__main__':

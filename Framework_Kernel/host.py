@@ -119,7 +119,8 @@ class Build:
 
     def build_job(self, task, jenkins_host, job_os):
         last_build_number = jenkins_host.get_last_build_number(self.job_name)
-        if jenkins_host.create_job(self.job_name, jenkins_host.initial_job_configuration(task.get_need_build())) and jenkins_host.build_job(self.job_name):
+        if jenkins_host.create_job(self.job_name, jenkins_host.initial_job_configuration(task.get_need_build())) and \
+                jenkins_host.build_job(self.job_name):
             while last_build_number == jenkins_host.get_last_build_number(self.job_name):
                 # self.log.info('New build record is not available, wait 5 seconds')
                 time.sleep(5)
@@ -130,9 +131,11 @@ class Build:
             if build_result == 'SUCCESS':
                 if job_os == 'windows':
                     task.insert_exe_file_list(
-                        r'/jenkins/windows/' + jenkins_host.job_params['publish_path'] + r'/' + jenkins_host.job_params['result_file'] + '.exe')
+                        r'/jenkins/windows/' + jenkins_host.job_params['publish_path'] + r'/'
+                        + jenkins_host.job_params['result_file'] + '.exe')
                 elif job_os == 'linux':
-                    task.insert_exe_file_list(r'/jenkins/linux/' + jenkins_host.job_params['publish_path'] + r'/' + jenkins_host.job_params['result_file'])
+                    task.insert_exe_file_list(r'/jenkins/linux/' + jenkins_host.job_params['publish_path']
+                                              + r'/' + jenkins_host.job_params['result_file'])
             task.folder_name = task.get_exe_file_list()[0].split('/')[-2]
         return task
 

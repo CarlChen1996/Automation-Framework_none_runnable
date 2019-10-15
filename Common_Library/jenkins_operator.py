@@ -97,7 +97,8 @@ class JenkinsServer():
                 # Update the publish path(FTP)
                 ele_publisher_node = ele_tree.xpath(r"//jenkins.plugins.publish__over__ftp.BapFtpTransfer/remoteDirectory")
                 if ele_publisher_node:
-                    ele_publisher_node[0].text = ele_publisher_node[0].text.replace('${JOB_NAME}', self.job_params['publish_path'])
+                    ele_publisher_node[0].text = ele_publisher_node[0].text.replace('${JOB_NAME}',
+                                                                                    self.job_params['publish_path'])
                 # Update the job notification
                 ele_mail_list = ele_tree.xpath(r'./publishers/hudson.tasks.Mailer/recipients')
                 if ele_mail_list:

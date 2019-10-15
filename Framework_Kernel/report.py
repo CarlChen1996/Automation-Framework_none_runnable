@@ -138,7 +138,8 @@ class Report:
                 """
                 error handle for execute fail
                 """
-                error_msg_instance = ErrorMsg(EngineCode().execute_engine, ErrorLevel().mark_task, "execute task {} fail on uut {}".format(self.__name, i.get_ip()))
+                error_msg_instance = ErrorMsg(EngineCode().execute_engine, ErrorLevel().mark_task,
+                                              "execute task {} fail on uut {}".format(self.__name, i.get_ip()))
                 error_handle_instance = ErrorHandler(error_msg_instance)
                 error_handle_instance.handle(task=self.task, state="unknown", mail_receiver=self.task.get_email())
                 continue

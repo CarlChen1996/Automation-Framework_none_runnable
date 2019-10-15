@@ -44,14 +44,14 @@ class ErrorLevel:
 
     @staticmethod
     def get_error_level(level_code):
-        error_level_map={
-            '00':'terminate_framework',
-            '01':'reset_framework',
-            '02':'reset_engine',
-            '03':'drop_task',
-            '04':'rerun_task',
-            '05':'mark_task',
-            '06':'record_and_continue'
+        error_level_map = {
+            '00': 'terminate_framework',
+            '01': 'reset_framework',
+            '02': 'reset_engine',
+            '03': 'drop_task',
+            '04': 'rerun_task',
+            '05': 'mark_task',
+            '06': 'record_and_continue'
         }
         if level_code in error_level_map.keys():
             return error_level_map.get(level_code)
@@ -71,15 +71,15 @@ class ErrorMsg():
         return self.engine_code + self.error_level + self.msg
 
     def create_error_msg_full(self):
-        error_level=ErrorLevel().get_error_level(self.error_level)
-        engine_name=EngineCode().get_engine_name(self.engine_code)
-        return 'Error Level: "{}"\nEngine: "{}"\nDetails: "{}"'.format(error_level,engine_name,self.msg)
+        error_level = ErrorLevel().get_error_level(self.error_level)
+        engine_name = EngineCode().get_engine_name(self.engine_code)
+        return 'Error Level: "{}"\nEngine: "{}"\nDetails: "{}"'.format(error_level, engine_name, self.msg)
 
 
 class ErrorHandler:
     def __init__(self, error_msg: ErrorMsg):
         self.error_msg = error_msg.error_msg
-        self.error_msg_full=error_msg.error_msg_full
+        self.error_msg_full = error_msg.error_msg_full
         self.engine_code = ''
         self.error_level = ''
         self.error_details = ''
@@ -110,17 +110,17 @@ class ErrorHandler:
             print('unknown error level')
             return False
 
-    def terminate_framework(self,mail_receiver):
+    def terminate_framework(self, mail_receiver):
         error_handler_log.critical(self.error_msg_full)
         self.notice(mail_receiver)
         return 0
 
-    def reset_framework(self,mail_receiver):
+    def reset_framework(self, mail_receiver):
         error_handler_log.critical(self.error_msg_full)
         self.notice(mail_receiver)
         return 1
 
-    def reset_engine(self, engine,mail_receiver):
+    def reset_engine(self, engine, mail_receiver):
         error_handler_log.critical(self.error_msg_full)
         self.notice(mail_receiver)
         engine.start()
@@ -133,34 +133,34 @@ class ErrorHandler:
             error_handler_log.info("[watch_executor_thread] can't start execution engine")
             return 0
 
-    def rerun_task(self,mail_receiver):
+    def rerun_task(self, mail_receiver):
         error_handler_log.critical(self.error_msg_full)
         self.notice(mail_receiver)
         return 1
 
-    def drop_task(self, task, task_queue,mail_receiver):
+    def drop_task(self, task, task_queue, mail_receiver):
         error_handler_log.critical(self.error_msg_full)
         self.notice(mail_receiver)
         task_queue.remove_task(task)
         return 0
 
-    def record_and_continue(self,mail_receiver):
+    def record_and_continue(self, mail_receiver):
         error_handler_log.info(self.error_msg_full)
         self.notice(mail_receiver)
         return 1
 
-    def mark_task(self,task,state,mail_receiver):
+    def mark_task(self, task, state, mail_receiver):
         error_handler_log.info(self.error_msg_full)
         self.notice(mail_receiver)
         task.set_state(state)
         return 1
 
-    def notice(self,mail_receiver):
-        email=email_operator.Email()
-        receiver=[email.default_receiver]
+    def notice(self, mail_receiver):
+        email = email_operator.Email()
+        receiver = [email.default_receiver]
         if mail_receiver:
             receiver.extend(mail_receiver)
-        email.send_email("Error Handle Notice Of Automation Framework",receiver,self.error_msg_full, 'plain')
+        email.send_email("Error Handle Notice Of Automation Framework", receiver, self.error_msg_full, 'plain')
 
 
 if __name__ == '__main__':
