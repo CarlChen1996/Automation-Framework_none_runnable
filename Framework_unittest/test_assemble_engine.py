@@ -99,7 +99,7 @@ class AssembleEngineTest(unittest.TestCase):
         self.task.set_status('SUCCES')
         self.assemble.assembleQueue.insert_task(task=self.task)
         self.assemble.send_task_to_execution()
-        error_handle_mock.assert_called_once_with(task=self.task, state='unknown')
+        error_handle_mock.assert_called_once_with(task=self.task, state='unknown', mail_receiver=self.task.get_email())
 
     @patch('time.sleep')
     def test_send_task_to_execution_unfinished(self, sleep_mock):
@@ -115,9 +115,10 @@ class AssembleEngineTest(unittest.TestCase):
         self.assemble.get_signal_after_send(self.task)
         remove.assert_called_once_with(self.task)
 
+    @patch('Common_Library.email_operator.Email._Email__init_connection')
     @patch('Common_Library.email_operator.Email.send_email')
     @patch('Framework_Kernel.task_queue.Queue.remove_task')
-    def test_get_ack_wrong_from_execution_engine(self, remove, email_mock):
+    def test_get_ack_wrong_from_execution_engine(self, remove, email_mock, connect_mock):
         self.pipe[1].send(self.task)
         self.assemble.get_signal_after_send(self.task)
         remove.assert_not_called()
@@ -155,10 +156,11 @@ class AssembleEngineTest(unittest.TestCase):
         script_mock.return_value = True
         self.assertTrue(self.assemble.validate_task(self.task))
 
+    @patch('Common_Library.email_operator.Email._Email__init_connection')
     @patch('Common_Library.email_operator.Email.send_email')
     @patch('Framework_Kernel.validator.HostValidator.validate_uut')
     @patch('Framework_Kernel.validator.ScriptValidator.validate')
-    def test_validate_task_false(self, script_mock, uut_mock, email_mock):
+    def test_validate_task_false(self, script_mock, uut_mock, email_mock, connect_mock):
         self.task.insert_uut_list(self.uut_windows)
         script_mock.return_value = False
         self.assertFalse(self.assemble.validate_task(self.task))
@@ -231,7 +233,7 @@ class AssembleEngineTest(unittest.TestCase):
         self.assemble._AssembleEngine__build_node_list = []
         p = threading.Thread(target=self.refresh_node_list,
                              args=(self.assemble._AssembleEngine__build_node_list, self.linux_build_host))
-        p.daemon = True
+        p.daemon = False
         p.start()
         temp_node_list = []
         build_node_type = LinuxBuildHost
@@ -248,7 +250,7 @@ class AssembleEngineTest(unittest.TestCase):
         self.linux_build_host.state = 'Busy'
         self.assemble._AssembleEngine__build_node_list = [self.linux_build_host]
         p = threading.Thread(target=self.set_host_state)
-        p.daemon = True
+        p.daemon = False
         p.start()
         temp_node_list = []
         build_node_type = LinuxBuildHost
@@ -266,7 +268,7 @@ class AssembleEngineTest(unittest.TestCase):
         self.windows_build_host.state = 'Idle'
         self.assemble._AssembleEngine__build_node_list = [self.windows_build_host]
         p = threading.Thread(target=self.set_host_type)
-        p.daemon = True
+        p.daemon = False
         p.start()
         temp_node_list = []
         build_node_type = LinuxBuildHost
@@ -283,16 +285,52 @@ class AssembleEngineTest(unittest.TestCase):
         build_node_type = WindowsBuildHost
         temp_task_list = [self.task]
         temp_node_list = [self.windows_build_host]
+        self.assemble.current_thread_count_win = 1
         max_thread = 2
         self.assemble.create_build_thread(os, build_node_type, temp_task_list, temp_node_list, max_thread)
         start_mock.assert_called_once()
         join_mock.assert_called_once()
+        self.assertEqual(self.assemble.current_thread_count_win, 2)
 
-    def test_create_build_thread_equal_thread(self):
-        pass
+    def modify_current_thread_count(self):
+        time.sleep(0.1)
+        self.assemble.current_thread_count_win = 2
 
-    def test_create_build_thread_more_than_max_thread(self):
-        pass
+    @patch('threading.Thread.join')
+    def test_create_build_thread_equal_thread(self, join_mock):
+        os = 'win'
+        build_node_type = WindowsBuildHost
+        temp_task_list = [self.task]
+        temp_node_list = [self.windows_build_host]
+        self.assemble.current_thread_count_win = 4
+        max_thread = 4
+        p = threading.Thread(target=self.modify_current_thread_count)
+        p.daemon = False
+        p.start()
+        with patch('time.sleep') as sleep_mock:
+            with patch('threading.Thread.start') as start_mock:
+                self.assemble.create_build_thread(os, build_node_type, temp_task_list, temp_node_list, max_thread)
+        start_mock.assert_called_once()
+        join_mock.assert_called_once()
+        self.assertEqual(self.assemble.current_thread_count_win, 3)
+
+    @patch('threading.Thread.join')
+    def test_create_build_thread_more_than_max_thread(self, join_mock):
+        os = 'win'
+        build_node_type = WindowsBuildHost
+        temp_task_list = [self.task]
+        temp_node_list = [self.windows_build_host]
+        self.assemble.current_thread_count_win = 5
+        max_thread = 4
+        p = threading.Thread(target=self.modify_current_thread_count)
+        p.daemon = False
+        p.start()
+        with patch('time.sleep') as sleep_mock:
+            with patch('threading.Thread.start') as start_mock:
+                self.assemble.create_build_thread(os, build_node_type, temp_task_list, temp_node_list, max_thread)
+        start_mock.assert_called_once()
+        join_mock.assert_called_once()
+        self.assertEqual(self.assemble.current_thread_count_win, 3)
 
     @patch('time.sleep')
     @patch('threading.Thread.start')
@@ -306,12 +344,14 @@ class AssembleEngineTest(unittest.TestCase):
         build_node_type = WindowsBuildHost
         temp_task_list = []
         temp_node_list = []
+        self.assemble.current_thread_count_win = 1
         max_thread = 2
         self.assemble.create_build_thread(os, build_node_type, temp_task_list, temp_node_list, max_thread)
         task_mock.assert_called_once_with(os, temp_task_list)
         node_mock.assert_called_once_with(temp_node_list, build_node_type)
         start_mock.assert_called_once()
         join_mock.assert_called_once()
+        self.assertEqual(self.assemble.current_thread_count_win, 2)
 
     @patch('Framework_Kernel.task.Task.set_state')
     @patch('Framework_Kernel.assemble_engine.AssembleEngine._AssembleEngine__refresh_temp_task_list')
@@ -327,11 +367,13 @@ class AssembleEngineTest(unittest.TestCase):
         build_node_type = WindowsBuildHost
         temp_task_list = [self.task]
         temp_node_list = [self.windows_build_host]
+        self.assemble.current_thread_count_win = 1
         max_thread = 2
         self.assemble.create_build_thread(os, build_node_type, temp_task_list, temp_node_list, max_thread)
         self.assertEqual(start_mock.call_count, 2)
         self.assertEqual(join_mock.call_count, 2)
         self.assertEqual(state_mock.call_count, 3)
+        self.assertEqual(self.assemble.current_thread_count_win, 2)
 
     def test_build_win(self):
         task = Mock(spec=Task)

@@ -48,34 +48,38 @@ class ExecutionEngineTest(unittest.TestCase):
         self.execution.insert_task_to_queue()
         self.assertEqual(self.pipe[1].recv(), self.task_name)
 
+    @patch('Common_Library.email_operator.Email._Email__init_connection')
     @patch('os.remove')
     @patch('Framework_Kernel.report.Report.remove_report_folder')
     @patch('Framework_Kernel.execution_engine.ExecutionEngine.email_parameter')
     @patch('Common_Library.email_operator.Email.send_email')
-    def test_send_email(self, email_mock, message_mock, remove_folder_mock, remove_mock):
+    def test_send_email(self, email_mock, message_mock, remove_folder_mock, remove_mock, connect_mock):
         message_mock.return_value = '', '', '', '', ''
         self.execution.execution_queue.insert_task(task=self.task)
         self.execution.send_report(self.task)
         email_mock.assert_called_once()
 
+    @patch('Common_Library.email_operator.Email._Email__init_connection')
     @patch('os.remove')
     @patch('Framework_Kernel.execution_engine.ExecutionEngine.email_parameter')
     @patch('Framework_Kernel.report.Report.remove_report_folder')
     @patch('Common_Library.email_operator.Email.send_email')
     @patch('Framework_Kernel.task_queue.Queue.remove_task')
     def test_remove_task_from_execution_queue_mock(self, remove_task_mock, email_mock, remove_folder_mock,
-                                                   message_mock, remove_mock):
+                                                   message_mock, remove_mock, connect_mock):
         message_mock.return_value = '', '', '', '', ''
         self.execution.execution_queue.insert_task(task=self.task)
         self.assertIn(self.task, self.execution.execution_queue.get_task_list())
         self.execution.send_report(self.task)
         remove_task_mock.assert_called_once_with(self.task)
 
+    @patch('Common_Library.email_operator.Email._Email__init_connection')
     @patch('os.remove')
     @patch('Framework_Kernel.execution_engine.ExecutionEngine.email_parameter')
     @patch('Framework_Kernel.report.Report.remove_report_folder')
     @patch('Common_Library.email_operator.Email.send_email')
-    def test_remove_task_from_execution_queue(self, email_mock, remove_folder_mock, message_mock, remove_mock):
+    def test_remove_task_from_execution_queue(self, email_mock, remove_folder_mock, message_mock, remove_mock,
+                                              connect_mock):
         message_mock.return_value = '', '', '', '', ''
         self.execution.execution_queue.insert_task(task=self.task)
         self.assertIn(self.task, self.execution.execution_queue.get_task_list())
