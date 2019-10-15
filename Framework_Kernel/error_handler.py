@@ -22,9 +22,11 @@ class ErrorLevel:
         self.terminate_framework = '00'
         self.reset_framework = '01'
         self.reset_engine = '02'
-        self.rerun_task = '03'
-        self.drop_task = '04'
-        self.continue_task = '05'
+        self.drop_task = '03'
+        self.rerun_task = '04'
+        self.mark_task = '05'
+        self.record_and_continue = '06'
+
 
 
 class ErrorMsg():
@@ -55,7 +57,8 @@ class ErrorHandler:
             ErrorLevel().reset_engine: self.reset_engine,
             ErrorLevel().rerun_task: self.rerun_task,
             ErrorLevel().drop_task: self.drop_task,
-            ErrorLevel().continue_task: self.continue_task
+            ErrorLevel().record_and_continue: self.record_and_continue,
+            ErrorLevel().mark_task: self.mark_task
         }
         if self.error_level in self.error_handle_map_dict.keys():
             return self.error_handle_map_dict[self.error_level]
@@ -97,6 +100,7 @@ class ErrorHandler:
         error_handler_log.critical(self.error_msg)
         print("rerun_task")
         print(self.engine_code, ':', self.error_level, ':', self.error_details)
+        return 1
 
     def drop_task(self, task, task_queue):
         error_handler_log.critical(self.error_msg)
@@ -105,10 +109,18 @@ class ErrorHandler:
         task_queue.remove_task(task)
         return 0
 
-    def continue_task(self):
+    def record_and_continue(self):
         error_handler_log.info(self.error_msg)
         print("continue_task")
         print(self.engine_code, ':', self.error_level, ':', self.error_details)
+        return 1
+
+    def mark_task(self,task,state):
+        error_handler_log.info(self.error_msg)
+        print("mark_task")
+        task.set_state(state)
+        print(self.engine_code, ':', self.error_level, ':', self.error_details)
+        return 1
 
 
 if __name__ == '__main__':

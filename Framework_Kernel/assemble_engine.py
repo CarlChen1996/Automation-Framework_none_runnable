@@ -190,10 +190,10 @@ class AssembleEngine(Engine):
                 '''
                 deal with build fail
                 '''
-                error_msg_instance = ErrorMsg(EngineCode().assembly_engine, ErrorLevel().drop_task,
-                                              "build task fail,drop it")
+                error_msg_instance = ErrorMsg(EngineCode().assembly_engine, ErrorLevel().mark_task,
+                                              "build task fail,mark state to unknown")
                 error_handle_instance = ErrorHandler(error_msg_instance)
-                handle_res = error_handle_instance.handle(task=task, task_queue=self.assembleQueue)
+                handle_res = error_handle_instance.handle(task=task, state="unknown")
                 if not handle_res:
                     continue
 
@@ -212,8 +212,8 @@ class AssembleEngine(Engine):
             '''
             deal with send task to execute engine fail
             '''
-            error_msg_instance = ErrorMsg(EngineCode().assembly_engine, ErrorLevel().continue_task,
-                                          "send task to execute engine fail,continue")
+            error_msg_instance = ErrorMsg(EngineCode().assembly_engine, ErrorLevel().record_and_continue,
+                                          "send task to execute engine fail")
             error_handle_instance = ErrorHandler(error_msg_instance)
             error_handle_instance.handle()
             assemble_log.info(
@@ -257,16 +257,16 @@ class AssembleEngine(Engine):
     def validate_task(self, task):
         s_validator = ScriptValidator()
         if not s_validator.validate(task):
-            error_msg_instance = ErrorMsg(EngineCode().assembly_engine, ErrorLevel().continue_task,
-                                          "validate task {} fail".format(task.get_name()))
+            error_msg_instance = ErrorMsg(EngineCode().assembly_engine, ErrorLevel().record_and_continue,
+                                          "validate task script in  {} fail".format(task.get_name()))
             error_handle_instance = ErrorHandler(error_msg_instance)
             error_handle_instance.handle()
             return False
         h_validator = HostValidator()
         for uut in task.get_uut_list():
             if not h_validator.validate_uut(uut):
-                error_msg_instance = ErrorMsg(EngineCode().assembly_engine, ErrorLevel().continue_task,
-                                              "validate task uut {} fail".format(task.get_name()))
+                error_msg_instance = ErrorMsg(EngineCode().assembly_engine, ErrorLevel().record_and_continue,
+                                              "validate task uut in {} fail on {}".format(task.get_name(), uut))
                 error_handle_instance = ErrorHandler(error_msg_instance)
                 error_handle_instance.handle()
                 return False
@@ -282,17 +282,14 @@ class AssembleEngine(Engine):
             print('build finished {} on {}'.format(task.get_name(), node.get_hostname()))
             task.set_state('Assemble Finished')
             node.state = 'Idle'
-            if os == 'win':
-                self.current_thread_count_win -= 1
-            elif os == 'linux':
-                self.current_thread_count_linux -= 1
         except Exception as e:
             assemble_log.error('New thread Error, Exception:\n{}'.format(e))
             task.set_state('WAIT ASSEMBLE')
             node.state = 'Idle'
-            if os == 'win':
+        finally:
+            if os == 'win'and self.current_thread_count_win > 0:
                 self.current_thread_count_win -= 1
-            elif os == 'linux':
+            elif os == 'linux' and self.current_thread_count_linux > 0:
                 self.current_thread_count_linux -= 1
 
     def create_os_thread(self, os, build_node_type, temp_task_list, temp_node_list, current_thread, max_thread):

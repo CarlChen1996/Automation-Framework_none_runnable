@@ -91,7 +91,8 @@ class ConfigurationEngine(Engine):
             if self.validate_server(server):
                 valid_server_list.append(server)
             else:
-                error_msg_instance = ErrorMsg(EngineCode().config_engine, ErrorLevel().continue_task, "validate server {} fail".format(server.get_hostname()))
+                error_msg_instance = ErrorMsg(EngineCode().config_engine, ErrorLevel().record_and_continue,
+                                              "validate server {} fail".format(server.get_hostname()))
                 error_handle_instance = ErrorHandler(error_msg_instance)
                 error_handle_instance.handle()
         self.send_signal.send(valid_server_list)
