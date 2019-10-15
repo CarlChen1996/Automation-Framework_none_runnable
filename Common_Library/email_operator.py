@@ -14,6 +14,8 @@ class Email:
         self.smtp_port = self.settings['smtp_port']
         self.smtp = self.__init_connection()
         self.sender = self.settings['default_sender']
+        self.default_receiver = self.settings['default_receiver']
+
 
     def __load_settings(self):
         config_file = os.path.join(os.getcwd(), r'.\Configuration\config_framework_list.yml')
