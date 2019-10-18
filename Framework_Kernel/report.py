@@ -133,6 +133,11 @@ class Report:
                     'case_name': 'No result return',
                     'steps': [],
                     'result': 'fail'
+                },{
+                    'uut_name': i.get_ip(),
+                    'case_name': 'No result return',
+                    'steps': [],
+                    'result': 'pass'
                 }]
                 result.extend(empty_result)
                 """
