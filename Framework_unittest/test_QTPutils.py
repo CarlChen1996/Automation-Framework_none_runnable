@@ -5,7 +5,7 @@
 # @File    : test_QTPutils.py
 # @Project : Automation-Framework
 
-'''
+"""
 set_up:Instantiated task, instantiated QTP_HPDM and Host
 test_launch_QTP: test launch QTP
 test_discover_device: test discover device by QTP
@@ -13,8 +13,7 @@ test_create_template: test create template by QTP
 test_deploy_package: test deploy package by QTP
 test_execute_package: test execute package by QTP
 test_collect_result: test collect result by QTP
-'''
-
+"""
 
 from Framework_Kernel import task
 from Framework_Kernel.QTPutils import HPDMOperator
@@ -72,3 +71,6 @@ class QTPutilsTest(unittest.TestCase):
     def test_collect_result(self, run_script_mock):
         self.qtp.get_result(self.deploy_host)
         run_script_mock.assert_called_once_with(self.qtp._HPDMOperator__get_result_path)
+
+    def test_run_qtp_script(self):
+        pass

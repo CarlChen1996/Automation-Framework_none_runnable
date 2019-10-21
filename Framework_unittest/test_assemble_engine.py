@@ -290,6 +290,8 @@ class AssembleEngineTest(unittest.TestCase):
         self.assemble.create_build_thread(os, build_node_type, temp_task_list, temp_node_list, max_thread)
         start_mock.assert_called_once()
         join_mock.assert_called_once()
+        self.assertEqual(self.task.get_state(), 'ASSEMBLING')
+        self.assertEqual(self.windows_build_host.state, 'Busy')
         self.assertEqual(self.assemble.current_thread_count_win, 2)
 
     def modify_current_thread_count(self):
@@ -310,6 +312,7 @@ class AssembleEngineTest(unittest.TestCase):
         with patch('time.sleep') as sleep_mock:
             with patch('threading.Thread.start') as start_mock:
                 self.assemble.create_build_thread(os, build_node_type, temp_task_list, temp_node_list, max_thread)
+                sleep_mock.assert_called_with(self.assemble.loop_interval)
         start_mock.assert_called_once()
         join_mock.assert_called_once()
         self.assertEqual(self.assemble.current_thread_count_win, 3)
@@ -328,6 +331,7 @@ class AssembleEngineTest(unittest.TestCase):
         with patch('time.sleep') as sleep_mock:
             with patch('threading.Thread.start') as start_mock:
                 self.assemble.create_build_thread(os, build_node_type, temp_task_list, temp_node_list, max_thread)
+                sleep_mock.assert_called_with(self.assemble.loop_interval)
         start_mock.assert_called_once()
         join_mock.assert_called_once()
         self.assertEqual(self.assemble.current_thread_count_win, 3)
@@ -439,3 +443,11 @@ class AssembleEngineTest(unittest.TestCase):
         self.assemble.start()
         self.assemble.stop()
         stop_mock.assert_called_once()
+
+    def test_get_current(self):
+        self.assemble.current_thread_count_win = 0
+        self.assemble.current_thread_count_linux = 0
+        self.assertEqual(self.assemble.get_current('win'), 0)
+        self.assertEqual(self.assemble.get_current('win', 1), 1)
+        self.assertEqual(self.assemble.get_current('linux'), 0)
+        self.assertEqual(self.assemble.get_current('linux', 1), 1)
