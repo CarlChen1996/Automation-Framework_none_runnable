@@ -95,7 +95,7 @@ class AssembleEngine(Engine):
 
     def get_task_from_folder(self, file_list):
         if len(file_list) == 0:
-            time.sleep(10)
+            time.sleep(self.loop_interval)
         else:
             self.generate_task(file_list)
 
@@ -164,7 +164,7 @@ class AssembleEngine(Engine):
         assemble_log.info(
             '[Thread_fresh_testplan] left task in assemble queue: {}'.format(
                 len(self.assembleQueue.get_task_list())))
-        time.sleep(10)
+        time.sleep(self.loop_interval)
 
     def __fresh_queue_execution(self):
         while True:
@@ -198,7 +198,7 @@ class AssembleEngine(Engine):
                 if not handle_res:
                     continue
 
-        time.sleep(10)
+        time.sleep(self.loop_interval)
 
     def get_signal_after_send(self, task):
         send_status = self.__pipe.recv()
