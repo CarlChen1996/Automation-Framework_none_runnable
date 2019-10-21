@@ -1,3 +1,4 @@
+import sys
 from multiprocessing import Pipe
 from Framework_Kernel.log import controller_log
 from Framework_Kernel import configuration_engine
@@ -194,7 +195,10 @@ if __name__ == '__main__':
         "+++++++++++++++++++++++ 02:auto,default +++++++++++++++++")
     controller_log.info(
         "+++++++++++++++++++++++ 99:exit +++++++++++++++++++++++++")
-    run_mode = get_keyboard_input(60)
+    if len(sys.argv) > 1:
+        run_mode = sys.argv[1]
+    else:
+        run_mode = get_keyboard_input(60)
     controller_log.info(run_mode)
     while True:
         if run_mode == "01":  # manual mode
