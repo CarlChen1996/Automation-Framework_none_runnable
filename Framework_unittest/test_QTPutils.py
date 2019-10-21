@@ -33,13 +33,18 @@ class QTPutilsTest(unittest.TestCase):
     test_launch_QTP:Method for asserting exception content not found
     e = pywintypes.com_error(-2147352567, 'Exception occurred.', (0, 'Micro Focus Unified Functional Testing',
                             'Cannot open test.', None, 0, -2146827282), None)
-    '''
-
+                            
     def test_launch_QTP(self):
         try:
             self.qtp._HPDMOperator__run_qtp_script('')
         except Exception as e:
             self.assertIsInstance(e, pywintypes.com_error)
+    '''
+
+    def test_run_qtp_script(self):
+        # launch qtp
+        # self.qtp._HPDMOperator__run_qtp_script()
+        pass
 
     @patch('Framework_Kernel.QTPutils.HPDMOperator._HPDMOperator__run_qtp_script')
     def test_discover_device(self, run_script_mock):
@@ -71,6 +76,3 @@ class QTPutilsTest(unittest.TestCase):
     def test_collect_result(self, run_script_mock):
         self.qtp.get_result(self.deploy_host)
         run_script_mock.assert_called_once_with(self.qtp._HPDMOperator__get_result_path)
-
-    def test_run_qtp_script(self):
-        pass
