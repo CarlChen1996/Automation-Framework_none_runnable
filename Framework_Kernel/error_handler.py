@@ -124,10 +124,10 @@ class ErrorHandler:
         error_handler_log.critical(self.error_msg_full)
         self.notice(mail_receiver)
         engine.start()
-        if engine.status.is_alive():
+        if engine.is_alive():
             error_handler_log.info("[watch_executor_thread] start execution engine successfully")
             error_handler_log.info("[watch_executor_thread] execution engine pid {} current status is {}"
-                                   .format(engine.status.pid, str(engine.status.is_alive())))
+                                   .format(engine.pid, str(engine.is_alive())))
             return 1
         else:
             error_handler_log.info("[watch_executor_thread] can't start execution engine")
