@@ -24,6 +24,17 @@ class HostTest(unittest.TestCase):
         self.jenkins_build = host.Build()
         self.jenkins_build.job_name = ''
         self.jenkins_host = JenkinsServer()
+        self.deploy_host = host.WindowsDeployHost('1.1.1.1', 111111)
+        self.deploy = host.Deploy(self.deploy_host)
+        self.host_father = host.Host('1.1.1.1', 111111)
+        self.windows_host = host.WindowsHost('1.1.1.2', 222222)
+        self.linux_host = host.LinuxHost('1.1.1.3', 333333)
+        self.windows_build_host = host.WindowsBuildHost('1.1.1.4', 444444)
+        self.linux_build_host = host.LinuxBuildHost('1.1.1.5', 555555)
+        self.windows_deploy_host = host.WindowsDeployHost('1.1.1.6', 666666)
+        self.linux_deploy_host = host.LinuxDeployHost('1.1.1.7', 777777)
+        self.windows_execute_host = host.WindowsExecuteHost('1.1.1.8', 888888)
+        self.linux_execute_host = host.LinuxExecuteHost('1.1.1.9', 999999)
 
     @patch('Framework_Kernel.host.Build.jenkins_parameter')
     def test_connect_jenkins_mock(self, connect_mock):
@@ -130,3 +141,114 @@ class HostTest(unittest.TestCase):
 
     def test_generate_scripts_config(self):
         pass
+
+    @patch('Framework_Kernel.QTPutils.HPDMOperator.deploy_task')
+    def test_deploy_task(self, deploy_mock):
+        self.deploy.deploy_task(self.task)
+        deploy_mock.assert_called_once_with(self.task, self.deploy_host)
+
+    def test_get_ip(self):
+        self.assertEqual(self.host_father.get_ip(), '1.1.1.1')
+        self.assertEqual(self.windows_host.get_ip(), '1.1.1.2')
+        self.assertEqual(self.linux_host.get_ip(), '1.1.1.3')
+        self.assertEqual(self.windows_build_host.get_ip(), '1.1.1.4')
+        self.assertEqual(self.linux_build_host.get_ip(), '1.1.1.5')
+        self.assertEqual(self.windows_deploy_host.get_ip(), '1.1.1.6')
+        self.assertEqual(self.linux_deploy_host.get_ip(), '1.1.1.7')
+        self.assertEqual(self.windows_execute_host.get_ip(), '1.1.1.8')
+        self.assertEqual(self.linux_execute_host.get_ip(), '1.1.1.9')
+
+    def test_get_hostname(self):
+        hostname = ''
+        self.assertEqual(self.host_father.get_hostname(), hostname)
+        self.assertEqual(self.windows_host.get_hostname(), hostname)
+        self.assertEqual(self.linux_host.get_hostname(), hostname)
+        self.assertEqual(self.windows_build_host.get_hostname(), hostname)
+        self.assertEqual(self.linux_build_host.get_hostname(), hostname)
+        self.assertEqual(self.windows_deploy_host.get_hostname(), hostname)
+        self.assertEqual(self.linux_deploy_host.get_hostname(), hostname)
+        self.assertEqual(self.windows_execute_host.get_hostname(), hostname)
+        self.assertEqual(self.linux_execute_host.get_hostname(), hostname)
+
+    def test_get_version(self):
+        version = ''
+        self.assertEqual(self.host_father.get_version(), version)
+        self.assertEqual(self.windows_host.get_version(), version)
+        self.assertEqual(self.linux_host.get_version(), version)
+        self.assertEqual(self.windows_build_host.get_version(), version)
+        self.assertEqual(self.linux_build_host.get_version(), version)
+        self.assertEqual(self.windows_deploy_host.get_version(), version)
+        self.assertEqual(self.linux_deploy_host.get_version(), version)
+        self.assertEqual(self.windows_execute_host.get_version(), version)
+        self.assertEqual(self.linux_execute_host.get_version(), version)
+
+    def test_get_mac(self):
+        self.assertEqual(self.host_father.get_mac(), 111111)
+        self.assertEqual(self.windows_host.get_mac(), 222222)
+        self.assertEqual(self.linux_host.get_mac(), 333333)
+        self.assertEqual(self.windows_build_host.get_mac(), 444444)
+        self.assertEqual(self.linux_build_host.get_mac(), 555555)
+        self.assertEqual(self.windows_deploy_host.get_mac(), 666666)
+        self.assertEqual(self.linux_deploy_host.get_mac(), 777777)
+        self.assertEqual(self.windows_execute_host.get_mac(), 888888)
+        self.assertEqual(self.linux_execute_host.get_mac(), 999999)
+
+    def test_get_username(self):
+        username = ''
+        self.assertEqual(self.host_father.get_username(), username)
+        self.assertEqual(self.windows_host.get_username(), username)
+        self.assertEqual(self.linux_host.get_username(), username)
+        self.assertEqual(self.windows_build_host.get_username(), username)
+        self.assertEqual(self.linux_build_host.get_username(), username)
+        self.assertEqual(self.windows_deploy_host.get_username(), username)
+        self.assertEqual(self.linux_deploy_host.get_username(), username)
+        self.assertEqual(self.windows_execute_host.get_username(), username)
+        self.assertEqual(self.linux_execute_host.get_username(), username)
+
+    def test_get_password(self):
+        password = ''
+        self.assertEqual(self.host_father.get_password(), password)
+        self.assertEqual(self.windows_host.get_password(), password)
+        self.assertEqual(self.linux_host.get_password(), password)
+        self.assertEqual(self.windows_build_host.get_password(), password)
+        self.assertEqual(self.linux_build_host.get_password(), password)
+        self.assertEqual(self.windows_deploy_host.get_password(), password)
+        self.assertEqual(self.linux_deploy_host.get_password(), password)
+        self.assertEqual(self.windows_execute_host.get_password(), password)
+        self.assertEqual(self.linux_execute_host.get_password(), password)
+
+    def test_get_domain(self):
+        domain = ''
+        self.assertEqual(self.host_father.get_domain(), domain)
+        self.assertEqual(self.windows_host.get_domain(), domain)
+        self.assertEqual(self.linux_host.get_domain(), domain)
+        self.assertEqual(self.windows_build_host.get_domain(), domain)
+        self.assertEqual(self.linux_build_host.get_domain(), domain)
+        self.assertEqual(self.windows_deploy_host.get_domain(), domain)
+        self.assertEqual(self.linux_deploy_host.get_domain(), domain)
+        self.assertEqual(self.windows_execute_host.get_domain(), domain)
+        self.assertEqual(self.linux_execute_host.get_domain(), domain)
+
+    @patch('Framework_Kernel.host.Build.build_task')
+    def test_host_build_call(self, build_mock):
+        self.windows_build_host.build_task(self.task)
+        build_mock.assert_called_once_with(self.task)
+        build_mock.reset_mock()
+        self.linux_build_host.build_task(self.task)
+        build_mock.assert_called_once_with(self.task)
+
+    @patch('Framework_Kernel.host.Deploy.deploy_task')
+    def test_host_deploy_call(self, deploy_mock):
+        self.windows_deploy_host.deploy_task(self.task)
+        deploy_mock.assert_called_once_with(self.task)
+        deploy_mock.reset_mock()
+        self.linux_deploy_host.deploy_task(self.task)
+        deploy_mock.assert_called_once_with(self.task)
+
+    @patch('Framework_Kernel.host.Execute.collect_result')
+    def test_host_execute_call(self, execute_mock):
+        self.windows_execute_host.collect_result(self.task)
+        execute_mock.assert_called_once_with(self.task)
+        execute_mock.reset_mock()
+        self.linux_execute_host.collect_result(self.task)
+        execute_mock.assert_called_once_with(self.task)

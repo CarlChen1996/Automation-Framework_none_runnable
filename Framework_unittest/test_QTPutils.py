@@ -5,7 +5,7 @@
 # @File    : test_QTPutils.py
 # @Project : Automation-Framework
 
-'''
+"""
 set_up:Instantiated task, instantiated QTP_HPDM and Host
 test_launch_QTP: test launch QTP
 test_discover_device: test discover device by QTP
@@ -13,8 +13,7 @@ test_create_template: test create template by QTP
 test_deploy_package: test deploy package by QTP
 test_execute_package: test execute package by QTP
 test_collect_result: test collect result by QTP
-'''
-
+"""
 
 from Framework_Kernel import task
 from Framework_Kernel.QTPutils import HPDMOperator
@@ -34,13 +33,18 @@ class QTPutilsTest(unittest.TestCase):
     test_launch_QTP:Method for asserting exception content not found
     e = pywintypes.com_error(-2147352567, 'Exception occurred.', (0, 'Micro Focus Unified Functional Testing',
                             'Cannot open test.', None, 0, -2146827282), None)
-    '''
-
+                            
     def test_launch_QTP(self):
         try:
             self.qtp._HPDMOperator__run_qtp_script('')
         except Exception as e:
             self.assertIsInstance(e, pywintypes.com_error)
+    '''
+
+    def test_run_qtp_script(self):
+        # launch qtp
+        # self.qtp._HPDMOperator__run_qtp_script()
+        pass
 
     @patch('Framework_Kernel.QTPutils.HPDMOperator._HPDMOperator__run_qtp_script')
     def test_discover_device(self, run_script_mock):

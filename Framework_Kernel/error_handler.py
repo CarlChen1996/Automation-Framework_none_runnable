@@ -125,12 +125,12 @@ class ErrorHandler:
         self.notice(mail_receiver)
         engine.start()
         if engine.status.is_alive():
-            error_handler_log.info("[watch_executor_thread] start execution engine successfully")
-            error_handler_log.info("[watch_executor_thread] execution engine pid {} current status is {}"
+            error_handler_log.info("[watch_thread] start engine successfully")
+            error_handler_log.info("[watch_thread] engine pid {} current status is {}"
                                    .format(engine.status.pid, str(engine.status.is_alive())))
             return 1
         else:
-            error_handler_log.info("[watch_executor_thread] can't start execution engine")
+            error_handler_log.info("[watch_thread] can't start engine")
             return 0
 
     def rerun_task(self, mail_receiver):
