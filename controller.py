@@ -9,6 +9,7 @@ from Common_Library.functions import get_keyboard_input
 from multiprocessing import Process
 import threading
 import time
+import os
 
 
 def run_with_manual_mode():
@@ -126,7 +127,18 @@ def run_with_auto_mode():
         res = error_handle_instance_execute.handle(mail_receiver=None)
         if not res:
             return
-
+    if not build_server_list or not deploy_list:
+        error_msg_instance_execute = ErrorMsg(EngineCode().controller, ErrorLevel().reset_framework,
+                                              'Due to execute server or build server empty ,'
+                                              'framework will be reset after 60s')
+        error_handle_instance_execute = ErrorHandler(error_msg_instance_execute)
+        error_handle_instance_execute.handle(mail_receiver=None)
+        time.sleep(60)
+        python = sys.executable
+        if len(sys.argv)>1:
+            os.execl(python,'controller',*sys.argv)
+        else:
+            os.execl(python,'controller',sys.argv.extend(['02']))
     instance_assemble_engine.start()
     controller_log.info('assemble finished')
     print('=================start execution engine=====================')
