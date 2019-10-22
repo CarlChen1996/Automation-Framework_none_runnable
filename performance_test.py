@@ -164,7 +164,6 @@ if __name__ == '__main__':
     generate_node(settings['build_node_win'], settings['build_node_lin'], settings['deploy_server'])
     # replace files
     replace_files()
-    replace_validator()
     # start generate test plans
     t = Thread(target=generate_test_plan, args=(settings['test_plan_count'], settings['generate_plan_interval'],
                                                settings['generate_plan_delay']))
