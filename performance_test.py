@@ -6,14 +6,14 @@
 # @Project : Automation-Framework
 import os
 import psutil
-import shutil
-import sys
 import time
 import pandas as pd
+import astunparse
 import yaml
-from multiprocessing import Process
+import ast
 from threading import Thread
-from subprocess import Popen,PIPE
+from subprocess import Popen
+
 
 def generate_test_plan(count, interval, delay):
     start_time = time.time()
@@ -71,29 +71,88 @@ def generate_node(build_node_w_count, build_node_tp_count, deploy_node_w_count):
                          'password': 'Shanghai2010',
                          'domain': ''}
         data.append(deploy_node_w)
-    with open(src_config, 'w', encoding='utf-8') as f:
+    with open(root+'/Configuration/config_server_list.yml', 'w', encoding='utf-8') as f:
         yaml.dump(data, f)
 
 
 def replace_files():
-    shutil.copy(src_config, dst_config)
-    shutil.copy(src_jenkins, dst_jenkins)
-    shutil.copy(src_qtp, dst_qtp)
-    shutil.copy(src_validator, dst_validator)
+    replace_validator()
+    replace_qtp()
+    replace_jenkins()
 
 
-def backup_files():
-    shutil.copy(dst_config + src_config, 'source')
-    shutil.copy(dst_jenkins + src_jenkins, 'source')
-    shutil.copy(dst_qtp + src_qtp, 'source')
-    shutil.copy(dst_validator + src_validator, 'source')
+def replace_validator():
+    with open(root+'/Framework_kernel/validator.py', 'r+', encoding='utf-8') as f1, \
+            open(root+'/Framework_Performance/validator.py', 'r+', encoding='utf-8')as f2,\
+            open(root+'/Framework_kernel/host.py', 'r+', encoding='utf-8')as f3,\
+            open(root+'/Framework_kernel/report.py', 'r+', encoding='utf-8')as f4:
+        validator = f1.read()
+        validator_node = ast.parse(validator)
+        fake_validator = f2.read()
+        fake_validator_node = ast.parse(fake_validator)
+        host = f3.read()
+        host_node = ast.parse(host)
+        report = f4.read()
+        report_node = ast.parse(report)
+        # validator
+        validator_node.body[16].body[2] = fake_validator_node.body[4].body[0]
+        validator_node.body[16].body[4] = fake_validator_node.body[4].body[1]
+        validator_node.body[16].body[5] = fake_validator_node.body[4].body[2]
+        validator_node.body[16].body[8] = fake_validator_node.body[4].body[3]
+        validator_node.body[17].body[0] = fake_validator_node.body[5].body[0]
+        # print(ast.dump(validator_node.body[-1]))
+        # host
+        host_node.body[12].body[-2] = fake_validator_node.body[-3]
+        # report
+        report_node.body[-1].body[-2] = fake_validator_node.body[-2]
+        validator_source = astunparse.unparse(validator_node)
+        host_source = astunparse.unparse(host_node)
+        report_source = astunparse.unparse(report_node)
+        # print(validator_source)
+        f1.seek(0, 0)
+        f1.truncate()
+        f1.write(validator_source)
+        f3.seek(0, 0)
+        f3.truncate()
+        f3.write(host_source)
+        f4.seek(0, 0)
+        f4.truncate()
+        f4.write(report_source)
 
 
-def recovery_files():
-    shutil.copy('source' + src_config, dst_config)
-    shutil.copy('source' + src_jenkins, dst_jenkins)
-    shutil.copy('source' + src_qtp, dst_qtp)
-    shutil.copy('source' + src_validator, dst_validator)
+def replace_qtp():
+    with open(root+'/Framework_kernel/QTPutils.py', 'r+', encoding='utf-8') as f1, \
+            open(root+'/Framework_Performance/QTPutils.py', 'r+', encoding='utf-8')as f2:
+        qtp = f1.read()
+        fake_qtp = f2.read()
+        qtp_node = ast.parse(qtp)
+        fake_qtp_node = ast.parse(fake_qtp)
+        qtp_node.body[-1].body[-3] = fake_qtp_node.body[-1].body[-3]
+        qtp_node.body[-1].body[-2] = fake_qtp_node.body[-1].body[-2]
+        qtp_node.body[-1].body[-1] = fake_qtp_node.body[-1].body[-1]
+        qtp_source = astunparse.unparse(qtp_node)
+        f1.seek(0, 0)
+        f1.truncate()
+        f1.write(qtp_source)
+
+
+def replace_jenkins():
+    with open(root+'/Common_Library/jenkins_operator.py', 'r+', encoding='utf-8') as f1, \
+            open(root+'/Framework_Performance/jenkins_operator.py', 'r+', encoding='utf-8')as f2:
+        jenkins = f1.read()
+        fake_jenkins = f2.read()
+        jenkins_node = ast.parse(jenkins)
+        fake_jenkins_node = ast.parse(fake_jenkins)
+        jenkins_node.body[-1].body[-4] = fake_jenkins_node.body[-1].body[-1]
+        jenkins_node.body[-1].body[-5] = fake_jenkins_node.body[-1].body[-2]
+        jenkins_node.body[-1].body[-6] = fake_jenkins_node.body[-1].body[-3]
+        jenkins_node.body[-1].body[-8] = fake_jenkins_node.body[-1].body[-4]
+        jenkins_node.body[-1].body[-9] = fake_jenkins_node.body[-1].body[-5]
+        jenkins_node.body[-1].body[-10] = fake_jenkins_node.body[-1].body[-6]
+        jenkins_source = astunparse.unparse(jenkins_node)
+        f1.seek(0, 0)
+        f1.truncate()
+        f1.write(jenkins_source)
 
 
 if __name__ == '__main__':
@@ -101,18 +160,11 @@ if __name__ == '__main__':
     root = os.getcwd()
     with open(root+'/Configuration/config_performance_test.yml') as f:
         settings = yaml.safe_load(f)
-    src_config = root+'/Framework_Performance/config_server_list.yml'
-    src_jenkins = root+'/Framework_Performance/jenkins_operator.py'
-    src_qtp = root+'/Framework_Performance/QTPutils.py'
-    src_validator = root+'/Framework_Performance/validator.py'
-    dst_config = root + '/Configuration'
-    dst_jenkins = root + '/Common_Library'
-    dst_qtp = root + '/Framework_Kernel'
-    dst_validator = root + '/Framework_Kernel'
     # generate server config file
     generate_node(settings['build_node_win'], settings['build_node_lin'], settings['deploy_server'])
     # replace files
     replace_files()
+    replace_validator()
     # start generate test plans
     t = Thread(target=generate_test_plan, args=(settings['test_plan_count'], settings['generate_plan_interval'],
                                                settings['generate_plan_delay']))
@@ -125,5 +177,4 @@ if __name__ == '__main__':
         time.sleep(10)
     # f.wait()
     # t.join()
-
 
