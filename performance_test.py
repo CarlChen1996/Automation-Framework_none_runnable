@@ -98,7 +98,8 @@ def replace_validator():
         validator_node.body[16].body[2] = fake_validator_node.body[4].body[0]
         validator_node.body[16].body[4] = fake_validator_node.body[4].body[1]
         validator_node.body[16].body[5] = fake_validator_node.body[4].body[2]
-        validator_node.body[16].body[8] = fake_validator_node.body[4].body[3]
+        validator_node.body[16].body[7] = fake_validator_node.body[4].body[3]
+        validator_node.body[16].body[8] = fake_validator_node.body[4].body[4]
         validator_node.body[17].body[0] = fake_validator_node.body[5].body[0]
         # print(ast.dump(validator_node.body[-1]))
         # host

@@ -9,18 +9,22 @@ import time
 
 class JenkinsServer():
     def create_job(self, job_name, job_config_file):
-        print('jenkins create build job')
+        print('jenkins create build job,wait 20s')
+        time.sleep(20)
         return True
 
     def initial_job_configuration(self, need_build):
-        print('@@@@@@@@@building,wait 10s@@@@@@@@')
-        time.sleep(10)
+        print('building,wait 20s')
+        time.sleep(20)
         return True
 
     def delete_job(self, job_name):
-        print('delete job')
+        print('delete job,wait 20s')
+        time.sleep(20)
 
     def build_job(self, job_name):
+        print('build_job,wait 20s')
+        time.sleep(20)
         return True
 
     def get_last_build_number(self, job_name):
@@ -31,4 +35,6 @@ class JenkinsServer():
 
     def get_build_result(self, job_name, build_number):
         result = 'SUCCESS'
+        print('get build result,wait 20')
+        time.sleep(20)
         return result

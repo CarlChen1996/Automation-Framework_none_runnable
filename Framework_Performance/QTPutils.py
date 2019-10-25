@@ -9,16 +9,16 @@ import time
 
 class HPDMOperator:
     def deploy_task(self, task, deploy_host):
-        time.sleep(3)
         print('deploy '+task.get_name()+' finished')
+        time.sleep(100)
         return True
 
     def execute_task(self, host):
-        time.sleep(5)
         print('execute on '+host.get_ip()+'finished')
+        time.sleep(300)
         return True
 
     def get_result(self, host):
-        time.sleep(2)
         print('get result on'+host.get_ip()+'finished')
+        time.sleep(100)
         return True
