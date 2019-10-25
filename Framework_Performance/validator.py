@@ -6,7 +6,7 @@
 # @Project : Automation-Framework
 import os
 import yaml
-from Framework_Kernel.log import configuration_log, execution_log
+from Framework_Kernel.log import configuration_log, execution_log, assemble_log
 
 
 class Validator:
@@ -29,6 +29,13 @@ class HostValidator(Validator):
     @staticmethod
     def __validate_HPDM(host):
         return True
+
+
+    def validate_uut(self, host):
+        assemble_log.info('validate_uut ' + host.get_ip() + ' pass')
+        host.status = 'on'
+        return True
+
 
     @staticmethod
     def validate_ftp(ftp_settings):
