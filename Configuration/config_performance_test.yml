@@ -1,6 +1,6 @@
-test_plan_count: 1000
+test_plan_count: 10000
 generate_plan_interval: 10
-generate_plan_delay: 300
+generate_plan_delay: 3
 # generate 10 test_plans then sleep 10s
 build_node_win: 10
 build_node_lin: 10

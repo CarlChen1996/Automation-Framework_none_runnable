@@ -7,6 +7,7 @@
 import os
 import yaml
 from Framework_Kernel.log import configuration_log, execution_log, assemble_log
+from Framework_Kernel.report import Report
 
 
 class Validator:
@@ -14,6 +15,11 @@ class Validator:
 
 
 class HostValidator(Validator):
+
+    def validate_jenkins_server(self):
+        configuration_log.info('validate_jenkins_server pass')
+        return True
+
     def validate_build_server(self, host):
         result = True
         if result:
@@ -25,17 +31,14 @@ class HostValidator(Validator):
     def __validate_QTP(host):
         return True
 
-
     @staticmethod
     def __validate_HPDM(host):
         return True
-
 
     def validate_uut(self, host):
         assemble_log.info('validate_uut ' + host.get_ip() + ' pass')
         host.status = 'on'
         return True
-
 
     @staticmethod
     def validate_ftp(ftp_settings):
@@ -50,6 +53,7 @@ class ScriptValidator(Validator):
         return True
 
 
+# host
 def build_task(self, task):
     # Check if script empty
     if not task.get_script_list():
@@ -65,6 +69,8 @@ def build_task(self, task):
     # self.generate_scripts_config(task)
     return task
 
+
+# report
 def __load_uut_result(self):
     result = []
     if not os.path.exists(self.__test_report_root):
@@ -94,6 +100,16 @@ def __load_uut_result(self):
     return result
 
 
-if __name__ == '__main__':
-    h = Validator()
-    print()
+#
+def send_report(self, task):
+    report = Report(task)
+    # Send Email
+    email_subject, email_to, html, att_zip, task_report_path = self.email_parameter(report, task)
+    if html is not False:
+        report.remove_report_folder(task_report_path)
+        # os.remove(att_zip)
+        self.execution_queue.remove_task(task)
+        execution_log.info("[thread_executor] remove {} from task_list".format(task.get_name()))
+        execution_log.info('[thread_executor] remove {} from execute queue'.format(task.get_name()))
+    else:
+        execution_log.info("Failed to find the email template, please double check")
