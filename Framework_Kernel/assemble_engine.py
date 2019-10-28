@@ -258,6 +258,9 @@ class AssembleEngine(Engine):
     def validate_task(self, task):
         s_validator = ScriptValidator()
         if not s_validator.validate(task):
+            """
+            validate task fail
+            """
             error_msg_instance = ErrorMsg(EngineCode().assembly_engine, ErrorLevel().record_and_continue,
                                           "validate task script in  {} fail".format(task.get_name()))
             error_handle_instance = ErrorHandler(error_msg_instance)
@@ -266,6 +269,9 @@ class AssembleEngine(Engine):
         h_validator = HostValidator()
         for uut in task.get_uut_list():
             if not h_validator.validate_uut(uut):
+                """
+                validate uut fail
+                """
                 error_msg_instance = ErrorMsg(EngineCode().assembly_engine, ErrorLevel().record_and_continue,
                                               "validate task uut in {} fail on {}".format(task.get_name(), uut.get_ip()))
                 error_handle_instance = ErrorHandler(error_msg_instance)

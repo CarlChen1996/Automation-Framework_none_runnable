@@ -111,22 +111,25 @@ def run_with_auto_mode():
     check build server not empty
     """
     if not build_server_list:
-        error_msg_instance_build = ErrorMsg(EngineCode().config_engine, ErrorLevel().terminate_framework,
+        error_msg_instance_build = ErrorMsg(EngineCode().config_engine, ErrorLevel().record_and_continue,
                                             'build server list is empty')
         error_handle_instance_build = ErrorHandler(error_msg_instance_build)
         res = error_handle_instance_build.handle(mail_receiver=None)
         if not res:
-            return
+            pass
     """
     check execute server not empty
     """
     if not deploy_list:
-        error_msg_instance_execute = ErrorMsg(EngineCode().config_engine, ErrorLevel().terminate_framework,
+        error_msg_instance_execute = ErrorMsg(EngineCode().config_engine, ErrorLevel().record_and_continue,
                                               'execute server list is empty')
         error_handle_instance_execute = ErrorHandler(error_msg_instance_execute)
         res = error_handle_instance_execute.handle(mail_receiver=None)
         if not res:
-            return
+            pass
+    """
+    check both build server list and execute server list 
+    """
     if not build_server_list or not deploy_list:
         error_msg_instance_execute = ErrorMsg(EngineCode().controller, ErrorLevel().reset_framework,
                                               'Due to execute server or build server empty ,'
@@ -158,6 +161,9 @@ def run_with_auto_mode():
 def keep_assemble_alive():
     while True:
         time.sleep(5)
+        """
+        keep assemble engine alive
+        """
         if not isinstance(instance_assemble_engine.status, Process):
             error_msg_instance = ErrorMsg(EngineCode().controller, ErrorLevel().reset_engine,
                                           'reset assemble_engine for process instance check fail')
@@ -174,6 +180,9 @@ def keep_assemble_alive():
 def keep_executor_alive():
     while True:
         time.sleep(5)
+        """
+        keep execute engine alive
+        """
         if not isinstance(instance_execution_engine.status, Process):
             error_msg_instance = ErrorMsg(EngineCode().controller, ErrorLevel().reset_engine,
                                           'reset execution_engine for process instance check fail')
