@@ -63,10 +63,14 @@ class HostValidator(Validator):
     def validate_build_server(self, host):
         result = self.ping(host.get_ip())
         if result:
-            configuration_log.info('validate_build_server ' + host.get_ip() + ' pass')
-            host.status = 'on'
-            self.get_jenkins_node_state(host)
-            return True
+            if self.get_jenkins_node_state(host):
+                configuration_log.info('validate_build_server ' + host.get_ip() + ' pass')
+                host.status = 'on'
+                return True
+            else:
+                configuration_log.info('validate_build_server ' + host.get_ip() + ' fail')
+                host.status = 'off'
+                return False
         else:
             configuration_log.info('validate_build_server ' + host.get_ip() + ' fail')
             host.status = 'off'
@@ -74,9 +78,14 @@ class HostValidator(Validator):
 
     @staticmethod
     def get_jenkins_node_state(host):
-        jenkins_host = jenkins_operator.JenkinsServer()
-        jenkins_host.connect()
-        host.state = jenkins_host.get_jenkins_node_state(host.get_hostname())
+        try:
+            jenkins_host = jenkins_operator.JenkinsServer()
+            jenkins_host.connect()
+            host.state = jenkins_host.get_jenkins_node_state(host.get_hostname())
+            return True
+        except Exception as e:
+            configuration_log.error(e)
+            return False
 
     @staticmethod
     def __validate_QTP(host):

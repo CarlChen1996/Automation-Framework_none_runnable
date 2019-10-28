@@ -114,6 +114,6 @@ class ConfigurationEngineTest(unittest.TestCase):
         self.assertFalse(self.configuration.validate_server(self.deploy_server))
 
     def test_validate_server_false(self):
-        server = host.LinuxDeployHost(ip='15.83.248.251', mac=5666666, hostname='Deploy_Node_1', version=1.0,
-                                      username='Administrator', password='Shanghai2010', domain=None)
+        server = host.WindowsExecuteHost(ip='15.83.248.251', mac=5666666, hostname='Deploy_Node_1', version=1.0,
+                                         username='Administrator', password='Shanghai2010', domain=None)
         self.assertFalse(self.configuration.validate_server(server))
