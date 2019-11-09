@@ -25,7 +25,7 @@ class HPDMOperator:
         self.__ftp_user = config_ftp['username']
         self.__ftp_passwd = config_ftp['password']
         # ----------QTP settings------------------
-        config_qtp = settings_dict['qtp_settings']
+        config_qtp = framework_settings['qtp_settings']
         config_qtp_script = config_qtp['scripts_path']
         self.__test_data_path = r'Configuration\{}'.format(config_qtp['test_data'])
         self.__create_filter_path = config_qtp_script['create_filter']
@@ -34,8 +34,8 @@ class HPDMOperator:
         self.__discover_devices_path = config_qtp_script['discover_devices']
         self.__get_result_path = config_qtp_script['get_result']
         # ---------HPDM settings ----------------------
-        self.__os_list = settings_dict['hpdm_settings']['os_list']
-        self.__repository_path = settings_dict['hpdm_settings']['repository_path']
+        self.__os_list = framework_settings['hpdm_settings']['os_list']
+        self.__repository_path = framework_settings['hpdm_settings']['repository_path']
 
     # General Excel file as QTP DataTable
     def __initial_test_data(self, task):

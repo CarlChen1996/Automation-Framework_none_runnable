@@ -6,7 +6,7 @@
 # @Project : Automation-Framework
 from Framework_Kernel.engine import Engine
 from Framework_Kernel.task_queue import Queue
-from Framework_Kernel.analyzer import framework_settings
+from Framework_Kernel.analyzer import framework_settings, Analyzer
 from Framework_Kernel.task import Task
 from Framework_Kernel.host import WindowsExecuteHost, LinuxExecuteHost, WindowsBuildHost, LinuxBuildHost
 from Framework_Kernel.validator import HostValidator
