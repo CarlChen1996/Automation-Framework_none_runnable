@@ -13,7 +13,7 @@ import jenkins
 import paramiko
 import pythoncom
 
-from Framework_Kernel.analyzer import Analyzer
+from Framework_Kernel.analyzer import framework_settings
 from Framework_Kernel.log import configuration_log, assemble_log, execution_log
 from Common_Library.file_transfer import FTPUtils
 from win32com.client import DispatchEx
@@ -47,11 +47,7 @@ class HostValidator(Validator):
         return True
 
     def validate_jenkins_server(self):
-        config_file = os.path.join(
-            os.getcwd(), r'.\Configuration\config_framework_list.yml')
-        analyzer = Analyzer()
-        jenkins_settings = analyzer.analyze_file(
-            config_file)['jenkins_settings']
+        jenkins_settings = framework_settings['jenkins_settings']
         try:
             jenkins.Jenkins(jenkins_settings['server_address'], jenkins_settings['username'], jenkins_settings['token'])\
                 .get_info()

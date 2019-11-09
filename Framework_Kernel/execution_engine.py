@@ -14,7 +14,7 @@ from Common_Library.file_transfer import FTPUtils
 from Common_Library.email_operator import Email
 from Common_Library.functions import render_template, zip_dir
 from Framework_Kernel.task_queue import Queue
-from Framework_Kernel.analyzer import Analyzer
+from Framework_Kernel.analyzer import framework_settings
 from Framework_Kernel.validator import HostValidator
 from Framework_Kernel.report import Report
 from Framework_Kernel.log import execution_log
@@ -33,9 +33,7 @@ class ExecutionEngine(Engine):
         self.__temp_host_list = []
 
     def __load_config(self):
-        analyer = Analyzer()
-        settings_dict = analyer.analyze_file(os.path.join(os.getcwd(), r'Configuration\config_framework_list.yml'))
-        global_settings = settings_dict['global_settings']
+        global_settings = framework_settings['global_settings']
         return global_settings
 
     def start(self):
@@ -170,9 +168,7 @@ class ExecutionEngine(Engine):
     @staticmethod
     def download_result():
         # Retrive FTP Settings from configuration file
-        config_file = os.path.join(os.getcwd(), r'.\Configuration\config_framework_list.yml')
-        analyze_handler = Analyzer()
-        ftp_settings = analyze_handler.analyze_file(config_file)['ftp_settings']
+        ftp_settings = framework_settings['ftp_settings']
         validate_ftp = HostValidator.validate_ftp(ftp_settings)
         if validate_ftp:
             ftp_util = FTPUtils(ftp_settings['server_address'], ftp_settings['username'], ftp_settings['password'])
@@ -220,9 +216,6 @@ class ExecutionEngine(Engine):
         result_path = task_report_path + '.zip'
         att_zip = zip_dir(task_report_path, result_path)
         # Render Email
-        analyze_handler = Analyzer()
-        setting_file = r'.\Configuration\config_framework_list.yml'
-        settings = analyze_handler.analyze_file(setting_file)
-        template_file = settings['email_settings']['report_summary']
+        template_file = framework_settings['email_settings']['report_summary']
         html = render_template(template_file, vars=email_vars)
         return email_subject, email_to, html, att_zip, task_report_path

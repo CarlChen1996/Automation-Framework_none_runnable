@@ -10,7 +10,7 @@ import jenkins
 import time
 import os
 from lxml import etree as et
-from Framework_Kernel.analyzer import Analyzer
+from Framework_Kernel.analyzer import framework_settings
 from Framework_Kernel.log import assemble_log
 
 
@@ -35,9 +35,7 @@ class JenkinsServer():
         self.config_module_linux = os.path.join(os.getcwd(), self.settings['build_job_linux'])
 
     def __load_settings(self):
-        config_file = os.path.join(os.getcwd(), r'.\Configuration\config_framework_list.yml')
-        analyer = Analyzer()
-        jenkins_settings = analyer.analyze_file(config_file)['jenkins_settings']
+        jenkins_settings = framework_settings['jenkins_settings']
         return jenkins_settings
 
     def connect(self):

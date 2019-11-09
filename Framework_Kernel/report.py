@@ -6,7 +6,8 @@
 # @Project : Automation-Framework
 from jinja2 import Environment, FileSystemLoader
 from Framework_Kernel.log import execution_log
-from Framework_Kernel.analyzer import Analyzer
+# from Framework_Kernel.analyzer import Analyzer
+from Framework_Kernel.analyzer import framework_settings
 import yaml
 import os
 import shutil
@@ -52,9 +53,7 @@ class Report:
         self.script_version = '1.0'
 
     def __load_settings(self):
-        config_file = os.path.join(os.getcwd(), r'.\Configuration\config_framework_list.yml')
-        analyer = Analyzer()
-        report_settings = analyer.analyze_file(config_file)['report_settings']
+        report_settings = framework_settings['report_settings']
         return report_settings
 
     # generate html

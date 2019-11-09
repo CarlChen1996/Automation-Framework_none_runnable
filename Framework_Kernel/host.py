@@ -9,7 +9,7 @@ import os
 import time
 from Framework_Kernel.log import assemble_log, execution_log
 from Framework_Kernel import QTPutils
-from Framework_Kernel.analyzer import Analyzer
+from Framework_Kernel.analyzer import framework_settings
 from Common_Library import file_operator, file_transfer, jenkins_operator
 from Framework_Kernel.validator import HostValidator
 import datetime
@@ -172,9 +172,7 @@ class Build:
         # self.log.info("upload script config file to {}".format(store_dir))
         remote_base_path = store_dir
         # Retrive FTP Settings from configuration file
-        config_file = os.path.join(os.getcwd(), r'.\Configuration\config_framework_list.yml')
-        analyze_hanlder = Analyzer()
-        ftp_settings = analyze_hanlder.analyze_file(config_file)['ftp_settings']
+        ftp_settings = framework_settings['ftp_settings']
         ftp_util = file_transfer.FTPUtils(ftp_settings['server_address'], ftp_settings['username'],
                                           ftp_settings['password'])
         ftp_util.change_dir(remote_base_path)

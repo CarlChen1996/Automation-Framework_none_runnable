@@ -39,3 +39,7 @@ class Analyzer:
                 result_list.append({current_file: result})
         assemble_log.info("generate data finished")
         return result_list
+
+
+framework_settings = Analyzer().analyze_file(os.path.join(
+            (os.path.abspath(r".\Configuration")), "config_framework_list.yml"))

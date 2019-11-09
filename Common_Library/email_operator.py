@@ -1,7 +1,6 @@
 import smtplib
-import os
 import ntpath
-from Framework_Kernel.analyzer import Analyzer
+from Framework_Kernel.analyzer import framework_settings
 from Framework_Kernel.log import controller_log
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -17,9 +16,7 @@ class Email:
         self.default_receiver = self.settings['default_receiver']
 
     def __load_settings(self):
-        config_file = os.path.join(os.getcwd(), r'.\Configuration\config_framework_list.yml')
-        analyer = Analyzer()
-        email_settings = analyer.analyze_file(config_file)['email_settings']
+        email_settings = framework_settings['email_settings']
         return email_settings
 
     def __init_connection(self):

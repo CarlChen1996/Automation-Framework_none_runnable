@@ -8,21 +8,19 @@ import time
 import win32com.client
 import os
 import openpyxl
-from Framework_Kernel.analyzer import Analyzer
+# from Framework_Kernel.analyzer import Analyzer
+from Framework_Kernel.analyzer import framework_settings
 from Common_Library.file_transfer import FTPUtils
 
 
 class HPDMOperator:
     def __init__(self):
-        self.__config_file = os.path.join(os.getcwd(), r'.\Configuration\config_framework_list.yml')
         self.__load_config()
         self.__ip = ''
 
     def __load_config(self):
-        analyer = Analyzer()
-        settings_dict = analyer.analyze_file(self.__config_file)
         # -----------FTP settings ----------------
-        config_ftp = settings_dict['ftp_settings']
+        config_ftp = framework_settings['ftp_settings']
         self.__ftp = config_ftp['server_address']
         self.__ftp_user = config_ftp['username']
         self.__ftp_passwd = config_ftp['password']
