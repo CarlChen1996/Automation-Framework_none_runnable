@@ -7,7 +7,7 @@
 from jinja2 import Environment, FileSystemLoader
 from Framework_Kernel.log import execution_log
 # from Framework_Kernel.analyzer import Analyzer
-from Framework_Kernel.analyzer import framework_settings
+from Framework_Kernel.analyzer import  FrameworkSettings
 import yaml
 import os
 import shutil
@@ -53,7 +53,7 @@ class Report:
         self.script_version = '1.0'
 
     def __load_settings(self):
-        report_settings = framework_settings['report_settings']
+        report_settings = FrameworkSettings().report_settings
         return report_settings
 
     # generate html

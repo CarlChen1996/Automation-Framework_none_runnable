@@ -6,7 +6,7 @@
 # @Project : Automation-Framework
 from Framework_Kernel.engine import Engine
 from Framework_Kernel.task_queue import Queue
-from Framework_Kernel.analyzer import framework_settings, Analyzer
+from Framework_Kernel.analyzer import FrameworkSettings, Analyzer
 from Framework_Kernel.task import Task
 from Framework_Kernel.host import WindowsExecuteHost, LinuxExecuteHost, WindowsBuildHost, LinuxBuildHost
 from Framework_Kernel.validator import HostValidator
@@ -40,7 +40,7 @@ class AssembleEngine(Engine):
         self.temp_node_linux = []
 
     def __load_config(self):
-        global_settings = framework_settings['global_settings']
+        global_settings = FrameworkSettings().global_settings
         return global_settings
 
     def start(self):

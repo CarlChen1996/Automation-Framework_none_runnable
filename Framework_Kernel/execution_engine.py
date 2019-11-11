@@ -14,7 +14,7 @@ from Common_Library.file_transfer import FTPUtils
 from Common_Library.email_operator import Email
 from Common_Library.functions import render_template, zip_dir
 from Framework_Kernel.task_queue import Queue
-from Framework_Kernel.analyzer import framework_settings
+from Framework_Kernel.analyzer import FrameworkSettings
 from Framework_Kernel.validator import HostValidator
 from Framework_Kernel.report import Report
 from Framework_Kernel.log import execution_log
@@ -33,7 +33,7 @@ class ExecutionEngine(Engine):
         self.__temp_host_list = []
 
     def __load_config(self):
-        global_settings = framework_settings['global_settings']
+        global_settings = FrameworkSettings().global_settings
         return global_settings
 
     def start(self):

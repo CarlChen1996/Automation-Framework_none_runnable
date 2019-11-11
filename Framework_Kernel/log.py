@@ -14,6 +14,7 @@ from PIL import ImageGrab
 import yaml
 
 lock = multiprocessing.Lock()
+# need to do: can not import log_settings from analyzer because analyzer has import this module already
 with open(os.path.join(os.getcwd() + r'/Configuration/config_framework_list.yml'), 'r', encoding='utf-8') as f:
     log_settings = yaml.safe_load(f.read())['log_settings']
 

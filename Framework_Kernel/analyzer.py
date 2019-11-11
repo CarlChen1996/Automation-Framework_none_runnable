@@ -5,6 +5,8 @@
 # @File    : Analyzer.py
 # @Project : demo
 import os
+import threading
+
 from Common_Library.file_operator import YamlFile
 from Common_Library.file_operator import XlsxFile
 from Framework_Kernel.log import assemble_log
@@ -41,5 +43,27 @@ class Analyzer:
         return result_list
 
 
-framework_settings = Analyzer().analyze_file(os.path.join(
+class FrameworkSettings:
+    _instance_lock = threading.Lock()
+    framework_settings = Analyzer().analyze_file(os.path.join(
             (os.path.abspath(r".\Configuration")), "config_framework_list.yml"))
+
+    def __init__(self, *args, **kwargs):
+        self.__framework_settings = FrameworkSettings.framework_settings
+        self.ftp_settings = self.__framework_settings['ftp_settings']
+        self.jenkins_settings = self.__framework_settings['jenkins_settings']
+        self.qtp_settings = self.__framework_settings['qtp_settings']
+        self.hpdm_settings = self.__framework_settings['hpdm_settings']
+        self.email_settings = self.__framework_settings['email_settings']
+        self.report_settings = self.__framework_settings['report_settings']
+        self.log_settings = self.__framework_settings['log_settings']
+        self.global_settings = self.__framework_settings['global_settings']
+
+    def __new__(cls, *args, **kwargs):
+        if not hasattr(cls, '_instance'):
+            with FrameworkSettings._instance_lock:
+                if not hasattr(cls, '_instance'):
+                    FrameworkSettings._instance = super().__new__(cls)
+            return FrameworkSettings._instance
+        else:
+            return FrameworkSettings._instance
