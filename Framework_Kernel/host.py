@@ -53,6 +53,15 @@ class Host:
     def get_version(self):
         return self.__version
 
+    def get_target_platform(self):
+        if 'wes' in self.__version.lower():
+            target_platform = 'win'
+        elif 'tp' in self.__version.lower():
+            target_platform = 'linux'
+        else:
+            target_platform = 'unknown OS'
+        return target_platform
+
     def get_mac(self):
         return self.__mac
 

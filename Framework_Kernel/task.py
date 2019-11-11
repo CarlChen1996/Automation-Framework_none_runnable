@@ -71,6 +71,12 @@ class Task:
     def get_need_build(self):
         return self.__need_build
 
+    def get_target_platform(self):
+        if self.__uut_list:
+            return self.__uut_list[0].get_target_platform()
+        else:
+            return 'uut list is empty'
+
     # ---------Below is funtion for task-------------
     def build(self, host):
         host.build_task(self)

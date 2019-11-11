@@ -219,20 +219,20 @@ class AssembleEngine(Engine):
                 '[fresh_queue_execution]-----send task and received task is not the same one- ----------'
             )
 
-    def get_os_type(self, task):
-        build_server_os = ''
-        for i in task.get_uut_list():
-            if 'wes' in i.get_version().lower():
-                build_server_os = 'win'
-            elif 'tp' in i.get_version().lower():
-                build_server_os = 'linux'
-        return build_server_os
+    # def get_os_type(self, task):
+    #     build_server_os = ''
+    #     for i in task.get_uut_list():
+    #         if 'wes' in i.get_version().lower():
+    #             build_server_os = 'win'
+    #         elif 'tp' in i.get_version().lower():
+    #             build_server_os = 'linux'
+    #     return build_server_os
 
     def __refresh_temp_task_list(self, os, temp_task_list):
         while True:
             assemble_log.info('=======================Begin to fresh temp task list==========================')
             for task in self.assembleQueue.get_task_list():
-                if task.get_state().upper() == 'WAIT ASSEMBLE' and self.get_os_type(task) == os:
+                if task.get_state().upper() == 'WAIT ASSEMBLE' and task.get_target_platform() == os:
                     temp_task_list.append(task)
             if not temp_task_list:
                 assemble_log.info('---No valid task, waiting for new task-----')
