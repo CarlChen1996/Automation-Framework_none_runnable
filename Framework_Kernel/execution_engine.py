@@ -168,7 +168,7 @@ class ExecutionEngine(Engine):
     @staticmethod
     def download_result():
         # Retrive FTP Settings from configuration file
-        ftp_settings = framework_settings['ftp_settings']
+        ftp_settings = FrameworkSettings().ftp_settings
         validate_ftp = HostValidator.validate_ftp(ftp_settings)
         if validate_ftp:
             ftp_util = FTPUtils(ftp_settings['server_address'], ftp_settings['username'], ftp_settings['password'])
@@ -216,6 +216,6 @@ class ExecutionEngine(Engine):
         result_path = task_report_path + '.zip'
         att_zip = zip_dir(task_report_path, result_path)
         # Render Email
-        template_file = framework_settings['email_settings']['report_summary']
+        template_file = FrameworkSettings().email_settings['report_summary']
         html = render_template(template_file, vars=email_vars)
         return email_subject, email_to, html, att_zip, task_report_path
